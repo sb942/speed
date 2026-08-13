@@ -116,55 +116,11 @@
       .hidden-video {
         display: none;
       }
-
-      /* ========================================= */
-      /* --- LOADER STYLES --- */
-      /* ========================================= */
-      #loader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #ffffff;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        font-family: sans-serif;
-        color: #333;
-        transition: opacity 0.5s ease;
-      }
-
-      .spinner {
-        width: 50px;
-        height: 50px;
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #ff0000;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 20px;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
     </style>
   </head>
   <body>
-    <!-- Loading Screen -->
-    <div id="loader">
-      <div class="spinner"></div>
-      <div id="loader-text">Loading 2D Assets & 3D Engine...</div>
-    </div>
-
     <!-- Hidden Video Sources for the PSP Screen -->
+    <!-- They must start muted to bypass browser autoplay blocks -->
     <video
       id="video1"
       class="hidden-video"
@@ -209,7 +165,6 @@
       const charEl = document.getElementById("charImg");
       const textEl = document.getElementById("brandText");
 
-      // Global flag to tell the 3D engine when 2D is done downloading
       window.ASSETS_2D_LOADED = false;
 
       function preload2DAssets() {
@@ -245,7 +200,6 @@
           const baselineBottom = textBottom + vw * 0.015;
           const impactPoint = vw / 2 + textRect.width / 2 - vw * 0.01;
 
-          // RESTORED PERFECT JUMP MATH
           const maxJumpHeight = textRect.height * 1.15;
           const charRestX = vw * 0.05;
           const charTargetX = vw * 0.7;
@@ -279,7 +233,6 @@
           if (progress >= jumpStart && progress <= jumpEnd) {
             const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
 
-            // RESTORED STEEP ANGLE SHAPE
             const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
 
             charBottomOffset = baselineBottom + arc * maxJumpHeight;
@@ -344,12 +297,25 @@
 
       const canvas = document.getElementById("pspCanvas");
       const stageContainer = document.getElementById("stageContainer");
-      const loaderEl = document.getElementById("loader");
 
       // Videos
       const video1 = document.getElementById("video1");
       const video2 = document.getElementById("video2");
       let currentVideo = video1;
+
+      // Automatically unmute videos on the first user interaction
+      let audioEnabled = false;
+      window.addEventListener(
+        "pointerdown",
+        () => {
+          if (!audioEnabled) {
+            video1.muted = false;
+            video2.muted = false;
+            audioEnabled = true;
+          }
+        },
+        { once: true },
+      );
 
       // 1. Scene Setup - Transparent to reveal CSS pure white
       const renderer = new THREE.WebGLRenderer({
@@ -617,8 +583,7 @@
             if (!o.isMesh) return;
             const n = o.name.toLowerCase();
 
-            // CRITICAL FIX: Delete the massive invisible ground plane!
-            // This was throwing off the entire scaling calculation.
+            // Delete the massive invisible ground plane
             if (n.includes("ground")) {
               bin.push(o);
               return;
@@ -670,13 +635,10 @@
 
           modelReady = true;
           fitToView();
-          checkLoaderCompletion();
         },
         undefined,
         (err) => {
           console.error("Failed to load psp.glb", err);
-          document.getElementById("loader-text").innerHTML =
-            "Error loading psp.glb. Ensure you are running a Local Server.";
         },
       );
 
@@ -696,15 +658,6 @@
         buttons[role] = { role, mesh, home: mesh.position.clone(), axis, t: 0 };
         mesh.userData.role = role;
         pressable.push(mesh);
-      }
-
-      function checkLoaderCompletion() {
-        if (modelReady && window.ASSETS_2D_LOADED) {
-          loaderEl.style.opacity = "0";
-          setTimeout(() => (loaderEl.style.display = "none"), 500);
-        } else {
-          setTimeout(checkLoaderCompletion, 100);
-        }
       }
 
       // 6. Raycasting & DRAG Interaction
@@ -729,16 +682,12 @@
           const deltaX = e.clientX - previousMousePosition.x;
           const deltaY = e.clientY - previousMousePosition.y;
 
-          // If moved more than 2 pixels, count it as a drag (not a tap)
           if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) {
             hasDragged = true;
           }
 
-          // Adjust rotation sensitivity
           dragTargetX += deltaX * 0.006;
           dragTargetY += deltaY * 0.006;
-
-          // Clamp vertical rotation so you can't flip it upside down
           dragTargetY = Math.max(-0.6, Math.min(0.6, dragTargetY));
 
           previousMousePosition = { x: e.clientX, y: e.clientY };
@@ -780,7 +729,6 @@
         isDragging = false;
         canvas.releasePointerCapture(e.pointerId);
 
-        // Only trigger a button press if the user was tapping, not dragging
         if (!hasDragged) {
           const r = canvas.getBoundingClientRect();
           ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
@@ -803,7 +751,7 @@
             currentVideo
               .play()
               .catch((e) =>
-                console.log("Click the screen first to allow audio"),
+                console.log("Waiting for user interaction to allow audio"),
               );
           } else {
             currentVideo.pause();
@@ -815,7 +763,6 @@
       // 7. Post Processing & Resize
       const composer = new EffectComposer(renderer);
 
-      // Let CSS Background completely show through (alpha = 0)
       const renderPass = new RenderPass(scene, camera);
       renderPass.clearColor = new THREE.Color(0xffffff);
       renderPass.clearAlpha = 0;
@@ -829,8 +776,7 @@
           .setFromObject(model)
           .getSize(new THREE.Vector3());
 
-        // Now that the invisible floor is deleted, this math accurately targets the PSP!
-        // Increased to 1.8 for a huge, satisfyingly large console layout.
+        // Scaled fill multiplier to 5.0
         const fill = 0.7;
 
         const vFov = THREE.MathUtils.degToRad(camera.fov);
@@ -861,11 +807,11 @@
         const dt = Math.min(0.05, clock.getDelta());
         const t = clock.elapsedTime;
 
-        // Apply Drag Rotation (smoothly interpolate to target)
+        // Apply Drag Rotation
         root.rotation.y += (dragTargetX - root.rotation.y) * 0.1;
         root.rotation.x += (dragTargetY - root.rotation.x) * 0.1;
 
-        // Subtle Idle Movement (added on top of drag rotation)
+        // Subtle Idle Movement
         idleGroup.rotation.y = Math.sin(t * 1.5) * 0.05;
         idleGroup.rotation.x = Math.cos(t * 1.2) * 0.03;
         idleGroup.position.y = Math.sin(t * 2.0) * 0.08;
