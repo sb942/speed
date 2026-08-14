@@ -1,475 +1,601 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Interactive Scrolling Motion Graphic</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        /* 100dvh prevents mobile address bar layout breaking */
-        html, body {
-            width: 100%;
-            height: 100dvh;
-            background-color: #ffffff;
-            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-            overflow-x: hidden;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-        }
+      /* 
+         * SCROLL GLITCH FIX:
+         * Lock the body and HTML so they cannot scroll, and offload all
+         * scrolling to a dedicated container. This fixes the mobile bounce/jitter.
+         */
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        overflow: hidden;
+      }
 
-        .slide {
-            position: relative;
-            width: 100vw;
-            height: 100dvh;
-            scroll-snap-align: start;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      .scroll-container {
+        width: 100vw;
+        height: 100dvh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
+      }
 
-        /* ========================================= */
-        /* --- SLIDE 1: 2D ANIMATION STYLES --- */
-        /* ========================================= */
-        #slide-1 {
-            background-color: #ffffff;
-        }
+      .slide {
+        position: relative;
+        width: 100vw;
+        height: 100dvh;
+        scroll-snap-align: start;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        .brand-text {
-            position: absolute;
-            font-family: Impact, 'Arial Black', sans-serif;
-            font-weight: 900;
-            font-stretch: ultra-condensed;
-            color: #ff0000;
-            text-transform: uppercase;
-            
-            /* Pure VW scaling prevents alignment glitches across devices */
-            font-size: 13vw; 
-            letter-spacing: 0.05em; 
-            transform: scaleX(0.75);
-            white-space: nowrap;
-            user-select: none;
-            z-index: 10;
-            will-change: transform;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scaleX(0.75);
-        }
+      /* ========================================= */
+      /* --- SLIDE 1: 2D ANIMATION STYLES --- */
+      /* ========================================= */
+      #slide-1 {
+        background-color: #ffffff;
+      }
 
-        .car {
-            position: absolute;
-            height: 8vw; 
-            object-fit: contain;
-            z-index: 20;
-            will-change: transform, left, bottom;
-            display: none; 
-            pointer-events: none;
-        }
+      .brand-text {
+        position: absolute;
+        font-family: Impact, "Arial Black", sans-serif;
+        font-weight: 900;
+        font-stretch: ultra-condensed;
+        color: #ff0000;
+        text-transform: uppercase;
+        font-size: 13vw;
+        letter-spacing: 0.05em;
+        transform: scaleX(0.75);
+        white-space: nowrap;
+        user-select: none;
+        z-index: 10;
+        will-change: transform;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scaleX(0.75);
+      }
 
-        .character {
-            position: absolute;
-            height: 12vw; 
-            object-fit: contain;
-            z-index: 30;
-            will-change: transform, bottom, left;
-            display: none; 
-            pointer-events: none;
-        }
+      .car {
+        position: absolute;
+        height: 8vw;
+        object-fit: contain;
+        z-index: 20;
+        will-change: transform, left, bottom;
+        display: none;
+        pointer-events: none;
+      }
 
-        /* ========================================= */
-        /* --- SLIDE 2: 3D PSP CANVAS STYLES --- */
-        /* ========================================= */
-        #slide-2 {
-            background-color: #ffffff; 
-        }
+      .character {
+        position: absolute;
+        height: 12vw;
+        object-fit: contain;
+        z-index: 30;
+        will-change: transform, bottom, left;
+        display: none;
+        pointer-events: none;
+      }
 
-        .machine__stage {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-        }
+      /* ========================================= */
+      /* --- SLIDE 2: 3D PSP CANVAS STYLES --- */
+      /* ========================================= */
+      #slide-2 {
+        background-color: #ffffff;
+      }
 
-        #pspCanvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-            /* pan-y allows vertical scrolling on mobile while allowing interaction */
-            touch-action: pan-y;
-            cursor: grab;
-        }
+      .machine__stage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+      }
 
-        #pspCanvas:active {
-            cursor: grabbing;
-        }
+      #pspCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        touch-action: pan-y; /* Crucial: Allows vertical scrolling on slide 2 */
+        cursor: grab;
+      }
 
-        .hidden-video {
-            display: none;
-        }
+      #pspCanvas:active {
+        cursor: grabbing;
+      }
 
-        /* Faint Black Lining Mute Button with SVG Skeleton */
-        .mute-btn {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            z-index: 50;
-            background: transparent;
-            border: 1px solid rgba(0, 0, 0, 0.25);
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background 0.2s ease, border-color 0.2s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      .hidden-video {
+        display: none;
+      }
 
-        .mute-btn:hover {
-            background: rgba(0, 0, 0, 0.04);
-            border-color: rgba(0, 0, 0, 0.4);
-        }
+      .mute-btn {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        z-index: 50;
+        background: transparent;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition:
+          background 0.2s ease,
+          border-color 0.2s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .mute-btn:hover {
+        background: rgba(0, 0, 0, 0.04);
+        border-color: rgba(0, 0, 0, 0.4);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <video
+      id="video1"
+      class="hidden-video"
+      src="video1.mp4"
+      loop
+      muted
+      playsinline
+      crossorigin="anonymous"
+    ></video>
+    <video
+      id="video2"
+      class="hidden-video"
+      src="video2.mp4"
+      loop
+      muted
+      playsinline
+      crossorigin="anonymous"
+    ></video>
 
-    <!-- Hidden Video Sources for the PSP Screen -->
-    <video id="video1" class="hidden-video" src="video1.mp4" loop muted playsinline crossorigin="anonymous"></video>
-    <video id="video2" class="hidden-video" src="video2.mp4" loop muted playsinline crossorigin="anonymous"></video>
-
-    <!-- SLIDE 1: The 2D Motion Graphic -->
-    <section class="slide" id="slide-1">
+    <!-- Wrapped in a robust scroll container -->
+    <main class="scroll-container" id="scrollContainer">
+      <!-- SLIDE 1: The 2D Motion Graphic -->
+      <section class="slide" id="slide-1">
         <div class="brand-text" id="brandText">ISHOWSPEED</div>
-        <img src="5.png" alt="Red Sports Car" class="car" id="carImg">
-        <img src="1.png" alt="Character" class="character" id="charImg">
-    </section>
+        <img src="5.png" alt="Red Sports Car" class="car" id="carImg" />
+        <img src="1.png" alt="Character" class="character" id="charImg" />
+      </section>
 
-    <!-- SLIDE 2: The 3D Interactive PSP -->
-    <section class="slide" id="slide-2">
+      <!-- SLIDE 2: The 3D Interactive PSP -->
+      <section class="slide" id="slide-2">
         <div class="machine__stage" id="stageContainer">
-            <canvas id="pspCanvas"></canvas>
-            <button id="muteBtn" class="mute-btn">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                    <line x1="23" y1="9" x2="17" y2="15"></line>
-                    <line x1="17" y1="9" x2="23" y2="15"></line>
-                </svg>
-            </button>
+          <canvas id="pspCanvas"></canvas>
+          <button id="muteBtn" class="mute-btn">
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              stroke="rgba(0,0,0,0.6)"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          </button>
         </div>
-    </section>
+      </section>
+    </main>
 
     <!-- ========================================================= -->
-    <!-- SCRIPT 1: 2D ANIMATION LOGIC (Vanilla JS) -->
+    <!-- SCRIPT 1: GLOBALS & 2D LOGIC -->
     <!-- ========================================================= -->
     <script>
-        const carEl = document.getElementById('carImg');
-        const charEl = document.getElementById('charImg');
-        const textEl = document.getElementById('brandText');
-        const slide1El = document.getElementById('slide-1');
+      // -----------------------------------------------------
+      // SAFE CROSS-BROWSER FULLSCREEN
+      // -----------------------------------------------------
+      document.addEventListener("click", () => {
+        const doc = window.document;
+        const docEl = doc.documentElement;
+        const requestFullScreen =
+          docEl.requestFullscreen ||
+          docEl.mozRequestFullScreen ||
+          docEl.webkitRequestFullscreen ||
+          docEl.msRequestFullscreen;
 
-        // Silent cache warming
-        const imageSources = ['1.png', '2.png', '3.png', '4.png', '5.png'];
-        imageSources.forEach(src => new Image().src = src);
-
-        function init2DAnimation() {
-            carEl.style.display = 'block';
-            charEl.style.display = 'block';
-            
-            let startTime = performance.now();
-            const totalDuration = 5000; 
-
-            function updateAnimation(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / totalDuration, 1.0);
-                const vw = window.innerWidth;
-
-                // ALIGNMENT GLITCH FIX: 
-                // Dynamically lock the baseline to the text element's exact location inside the container.
-                const textRect = textEl.getBoundingClientRect();
-                const sceneRect = slide1El.getBoundingClientRect();
-                const baselineBottom = sceneRect.bottom - textRect.bottom; 
-                
-                const impactPoint = (vw / 2) + (textRect.width / 2) - (vw * 0.01); 
-                
-                const maxJumpHeight = textRect.height * 1.15; 
-                const charRestX = vw * 0.05; 
-                const charTargetX = vw * 0.70; 
-                const jumpDistance = charTargetX - charRestX;
-
-                const carWidth = carEl.getBoundingClientRect().width || (vw * 0.2);
-                const carStartX = vw + carWidth + (vw * 0.05);
-
-                let carX = carStartX;
-                let textTranslateX = 0;
-                let charBottomOffset = baselineBottom;
-                let charX = charRestX;
-                let currentPose = '1.png';
-
-                // Sequence Timing
-                if (progress > 0.15) {
-                    const carProgress = Math.min((progress - 0.15) / 0.75, 1.0); 
-                    const endCarX = -carWidth - (vw * 0.1); 
-                    const easeP = x => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
-                    carX = carStartX - (carStartX - endCarX) * easeP(carProgress);
-                }
-
-                if (carX <= impactPoint) {
-                    textTranslateX = carX - impactPoint; 
-                }
-
-                const jumpStart = 0.30;
-                const jumpEnd = 0.65;
-                
-                if (progress >= jumpStart && progress <= jumpEnd) {
-                    const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
-                    
-                    const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
-                    
-                    charBottomOffset = baselineBottom + (arc * maxJumpHeight);
-                    charX = charRestX + (jumpP * jumpDistance);
-
-                    if (jumpP < 0.2) currentPose = '1.png';
-                    else if (jumpP < 0.5) currentPose = '2.png';
-                    else if (jumpP < 0.8) currentPose = '3.png';
-                    else currentPose = '4.png';
-                    
-                } else if (progress > jumpEnd) {
-                    charBottomOffset = baselineBottom;
-                    charX = charTargetX;
-                    currentPose = '4.png';
-                }
-
-                // Apply CSS Updates
-                textEl.style.transform = `translate(calc(-50% + ${textTranslateX}px), -50%) scaleX(0.75)`;
-                carEl.style.left = `${carX}px`;
-                carEl.style.bottom = `${baselineBottom}px`;
-                charEl.style.left = `${charX}px`;
-                charEl.style.bottom = `${charBottomOffset}px`;
-                
-                if (charEl.getAttribute('src') !== currentPose) charEl.src = currentPose;
-
-                if (progress < 1.0) {
-                    requestAnimationFrame(updateAnimation);
-                } else {
-                    setTimeout(() => {
-                        requestAnimationFrame(t => {
-                            startTime = t;
-                            requestAnimationFrame(updateAnimation);
-                        });
-                    }, 1000);
-                }
+        if (
+          !doc.fullscreenElement &&
+          !doc.mozFullScreenElement &&
+          !doc.webkitFullscreenElement &&
+          !doc.msFullscreenElement
+        ) {
+          if (requestFullScreen) {
+            try {
+              requestFullScreen.call(docEl).catch((err) => {
+                // Suppress errors silently. Apple devices will just ignore it.
+              });
+            } catch (err) {
+              // Silent fail for unsupported browsers
             }
-            requestAnimationFrame(updateAnimation);
+          }
         }
+      });
 
-        window.addEventListener('load', init2DAnimation);
+      // -----------------------------------------------------
+      // 2D ANIMATION LOGIC
+      // -----------------------------------------------------
+      const carEl = document.getElementById("carImg");
+      const charEl = document.getElementById("charImg");
+      const textEl = document.getElementById("brandText");
+      const slide1El = document.getElementById("slide-1");
+
+      const imageSources = ["1.png", "2.png", "3.png", "4.png", "5.png"];
+      imageSources.forEach((src) => (new Image().src = src));
+
+      function init2DAnimation() {
+        carEl.style.display = "block";
+        charEl.style.display = "block";
+
+        let startTime = performance.now();
+        const totalDuration = 5000;
+
+        function updateAnimation(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / totalDuration, 1.0);
+          const vw = window.innerWidth;
+
+          // HEIGHT FIX:
+          // We add `vw * 0.025` to perfectly lift the character's feet
+          // exactly up to the font's visual baseline.
+          const textRect = textEl.getBoundingClientRect();
+          const sceneRect = slide1El.getBoundingClientRect();
+          const baselineBottom =
+            sceneRect.bottom - textRect.bottom + vw * 0.025;
+
+          const impactPoint = vw / 2 + textRect.width / 2 - vw * 0.01;
+
+          const maxJumpHeight = textRect.height * 1.15;
+          const charRestX = vw * 0.05;
+          const charTargetX = vw * 0.7;
+          const jumpDistance = charTargetX - charRestX;
+
+          const carWidth = carEl.getBoundingClientRect().width || vw * 0.2;
+          const carStartX = vw + carWidth + vw * 0.05;
+
+          let carX = carStartX;
+          let textTranslateX = 0;
+          let charBottomOffset = baselineBottom;
+          let charX = charRestX;
+          let currentPose = "1.png";
+
+          if (progress > 0.15) {
+            const carProgress = Math.min((progress - 0.15) / 0.75, 1.0);
+            const endCarX = -carWidth - vw * 0.1;
+            const easeP = (x) =>
+              x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+            carX = carStartX - (carStartX - endCarX) * easeP(carProgress);
+          }
+
+          if (carX <= impactPoint) {
+            textTranslateX = carX - impactPoint;
+          }
+
+          const jumpStart = 0.3;
+          const jumpEnd = 0.65;
+
+          if (progress >= jumpStart && progress <= jumpEnd) {
+            const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
+            const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
+
+            charBottomOffset = baselineBottom + arc * maxJumpHeight;
+            charX = charRestX + jumpP * jumpDistance;
+
+            if (jumpP < 0.2) currentPose = "1.png";
+            else if (jumpP < 0.5) currentPose = "2.png";
+            else if (jumpP < 0.8) currentPose = "3.png";
+            else currentPose = "4.png";
+          } else if (progress > jumpEnd) {
+            charBottomOffset = baselineBottom;
+            charX = charTargetX;
+            currentPose = "4.png";
+          }
+
+          textEl.style.transform = `translate(calc(-50% + ${textTranslateX}px), -50%) scaleX(0.75)`;
+          carEl.style.left = `${carX}px`;
+          carEl.style.bottom = `${baselineBottom}px`;
+          charEl.style.left = `${charX}px`;
+          charEl.style.bottom = `${charBottomOffset}px`;
+
+          if (charEl.getAttribute("src") !== currentPose)
+            charEl.src = currentPose;
+
+          if (progress < 1.0) {
+            requestAnimationFrame(updateAnimation);
+          } else {
+            setTimeout(() => {
+              requestAnimationFrame((t) => {
+                startTime = t;
+                requestAnimationFrame(updateAnimation);
+              });
+            }, 1000);
+          }
+        }
+        requestAnimationFrame(updateAnimation);
+      }
+
+      window.addEventListener("load", init2DAnimation);
     </script>
 
     <!-- ========================================================= -->
     <!-- SCRIPT 2: 3D PSP LOGIC (Three.js WebGL Engine) -->
     <!-- ========================================================= -->
     <script type="importmap">
-    {
+      {
         "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
         }
-    }
+      }
     </script>
 
     <script type="module">
-        import * as THREE from 'three';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-        import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+      import * as THREE from "three";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+      import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+      import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+      import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
-        const canvas = document.getElementById('pspCanvas');
-        const stageContainer = document.getElementById('stageContainer');
-        const muteBtn = document.getElementById('muteBtn');
-        
-        // SVG Icons
-        const svgMuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
-        const svgUnmuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+      const canvas = document.getElementById("pspCanvas");
+      const stageContainer = document.getElementById("stageContainer");
+      const muteBtn = document.getElementById("muteBtn");
+      const scrollContainer = document.getElementById("scrollContainer");
 
-        // Videos
-        const video1 = document.getElementById('video1');
-        const video2 = document.getElementById('video2');
-        let currentVideo = video1;
+      // SVG Icons
+      const svgMuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+      const svgUnmuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
 
-        // Auto-unmute
-        let audioEnabled = false;
-        window.addEventListener('pointerdown', () => {
-            if (!audioEnabled) {
-                video1.muted = false;
-                video2.muted = false;
-                audioEnabled = true;
-                muteBtn.innerHTML = svgUnmuted; 
-            }
-        }, { once: true });
+      // Videos
+      const video1 = document.getElementById("video1");
+      const video2 = document.getElementById("video2");
+      let currentVideo = video1;
 
-        // Manual Mute Button
-        muteBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            const isMuted = !currentVideo.muted;
-            video1.muted = isMuted;
-            video2.muted = isMuted;
-            muteBtn.innerHTML = isMuted ? svgMuted : svgUnmuted;
-            audioEnabled = !isMuted; 
-        });
+      // Auto-unmute
+      let audioEnabled = false;
+      document.addEventListener(
+        "click",
+        () => {
+          if (!audioEnabled) {
+            video1.muted = false;
+            video2.muted = false;
+            audioEnabled = true;
+            muteBtn.innerHTML = svgUnmuted;
+          }
+        },
+        { once: true },
+      );
 
-        // 1. Scene Setup
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-        renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.05;
-        renderer.outputColorSpace = THREE.SRGBColorSpace;
-        renderer.setClearColor(0xffffff, 0); 
+      // Manual Mute Button
+      muteBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isMuted = !currentVideo.muted;
+        video1.muted = isMuted;
+        video2.muted = isMuted;
+        muteBtn.innerHTML = isMuted ? svgMuted : svgUnmuted;
+        audioEnabled = !isMuted;
+      });
 
-        const scene = new THREE.Scene();
-        scene.background = null; 
+      // 1. Scene Setup
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.setClearColor(0xffffff, 0);
 
-        const camera = new THREE.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 0.1, 400);
-        camera.position.set(0, 0, 30);
+      const scene = new THREE.Scene();
+      scene.background = null;
 
-        const root = new THREE.Group(); 
-        const idleGroup = new THREE.Group(); 
-        const model = new THREE.Group(); 
-        
-        idleGroup.add(model);
-        root.add(idleGroup);
-        scene.add(root);
+      const camera = new THREE.PerspectiveCamera(
+        34,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        400,
+      );
+      camera.position.set(0, 0, 30);
 
-        // 2. Lighting Setup
-        const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 1.5);
-        scene.add(hemi);
+      const root = new THREE.Group();
+      const idleGroup = new THREE.Group();
+      const model = new THREE.Group();
 
-        const keyLight = new THREE.DirectionalLight(0xbcd4e8, 1.2);
-        keyLight.position.set(-8, 9, 12);
-        scene.add(keyLight);
+      idleGroup.add(model);
+      root.add(idleGroup);
+      scene.add(root);
 
-        const rimIce = new THREE.DirectionalLight(0x7fe3ff, 1.5);
-        rimIce.position.set(11, 4, -9);
-        scene.add(rimIce);
+      // 2. Lighting Setup
+      const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 1.5);
+      scene.add(hemi);
 
-        const rimHot = new THREE.DirectionalLight(0xff2e7e, 1.0);
-        rimHot.position.set(-12, -5, -7);
-        scene.add(rimHot);
+      const keyLight = new THREE.DirectionalLight(0xbcd4e8, 1.2);
+      keyLight.position.set(-8, 9, 12);
+      scene.add(keyLight);
 
-        const pressLight = new THREE.PointLight(0x7fe3ff, 0, 9, 2);
-        scene.add(pressLight);
-        let pressLightLife = 0;
+      const rimIce = new THREE.DirectionalLight(0x7fe3ff, 1.5);
+      rimIce.position.set(11, 4, -9);
+      scene.add(rimIce);
 
-        // 3. UV Math
-        function largestFaceNormal(mesh) {
-            const geo = mesh.geometry;
-            const pos = geo.getAttribute('position');
-            const idx = geo.getIndex();
-            const count = idx ? idx.count : pos.count;
-            const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
-            const ab = new THREE.Vector3(), ac = new THREE.Vector3(), cr = new THREE.Vector3();
-            let best = -1;
-            const out = new THREE.Vector3(0, 0, 1);
-            for (let i = 0; i < count; i += 3) {
-                const i0 = idx ? idx.getX(i) : i;
-                const i1 = idx ? idx.getX(i + 1) : i + 1;
-                const i2 = idx ? idx.getX(i + 2) : i + 2;
-                a.fromBufferAttribute(pos, i0);
-                b.fromBufferAttribute(pos, i1);
-                c.fromBufferAttribute(pos, i2);
-                ab.subVectors(b, a); ac.subVectors(c, a);
-                cr.crossVectors(ab, ac);
-                const area = cr.lengthSq();
-                if (area > best) { best = area; out.copy(cr).normalize(); }
-            }
-            return out.applyMatrix3(new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld)).normalize();
+      const rimHot = new THREE.DirectionalLight(0xff2e7e, 1.0);
+      rimHot.position.set(-12, -5, -7);
+      scene.add(rimHot);
+
+      const pressLight = new THREE.PointLight(0x7fe3ff, 0, 9, 2);
+      scene.add(pressLight);
+      let pressLightLife = 0;
+
+      // 3. UV Math
+      function largestFaceNormal(mesh) {
+        const geo = mesh.geometry;
+        const pos = geo.getAttribute("position");
+        const idx = geo.getIndex();
+        const count = idx ? idx.count : pos.count;
+        const a = new THREE.Vector3(),
+          b = new THREE.Vector3(),
+          c = new THREE.Vector3();
+        const ab = new THREE.Vector3(),
+          ac = new THREE.Vector3(),
+          cr = new THREE.Vector3();
+        let best = -1;
+        const out = new THREE.Vector3(0, 0, 1);
+        for (let i = 0; i < count; i += 3) {
+          const i0 = idx ? idx.getX(i) : i;
+          const i1 = idx ? idx.getX(i + 1) : i + 1;
+          const i2 = idx ? idx.getX(i + 2) : i + 2;
+          a.fromBufferAttribute(pos, i0);
+          b.fromBufferAttribute(pos, i1);
+          c.fromBufferAttribute(pos, i2);
+          ab.subVectors(b, a);
+          ac.subVectors(c, a);
+          cr.crossVectors(ab, ac);
+          const area = cr.lengthSq();
+          if (area > best) {
+            best = area;
+            out.copy(cr).normalize();
+          }
+        }
+        return out
+          .applyMatrix3(new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld))
+          .normalize();
+      }
+
+      function buildScreenUVs(mesh, nrm, right, up) {
+        const geo = mesh.geometry;
+        const p = geo.getAttribute("position");
+        const mw = mesh.matrixWorld;
+        const wp = [];
+        const v = new THREE.Vector3();
+        for (let i = 0; i < p.count; i++) {
+          v.fromBufferAttribute(p, i).applyMatrix4(mw);
+          wp.push(v.clone());
         }
 
-        function buildScreenUVs(mesh, nrm, right, up) {
-            const geo = mesh.geometry;
-            const p = geo.getAttribute('position');
-            const mw = mesh.matrixWorld;
-            const wp = [];
-            const v = new THREE.Vector3();
-            for (let i = 0; i < p.count; i++) {
-                v.fromBufferAttribute(p, i).applyMatrix4(mw);
-                wp.push(v.clone());
-            }
+        const e1 = right.clone().projectOnPlane(nrm).normalize();
+        const e2 = new THREE.Vector3().crossVectors(nrm, e1).normalize();
 
-            const e1 = right.clone().projectOnPlane(nrm).normalize();
-            const e2 = new THREE.Vector3().crossVectors(nrm, e1).normalize();
-
-            const a = [], b = [];
-            let ma = 0, mb = 0;
-            for (let i = 0; i < wp.length; i++) {
-                const x = wp[i].dot(e1), y = wp[i].dot(e2);
-                a.push(x); b.push(y); ma += x; mb += y;
-            }
-            ma /= a.length; mb /= b.length;
-
-            let Saa = 0, Sbb = 0, Sab = 0;
-            for (let i = 0; i < a.length; i++) {
-                const da = a[i] - ma, db = b[i] - mb;
-                Saa += da * da; Sbb += db * db; Sab += da * db;
-            }
-            const th = 0.5 * Math.atan2(2 * Sab, Saa - Sbb);
-            const cs = Math.cos(th), sn = Math.sin(th);
-
-            const U = e1.clone().multiplyScalar(cs).addScaledVector(e2, sn).normalize();
-            const V = e1.clone().multiplyScalar(-sn).addScaledVector(e2, cs).normalize();
-            if (U.dot(right) < 0) U.negate();
-            if (V.dot(up) < 0) V.negate();
-
-            let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
-            const us = [], vs = [];
-            for (let i = 0; i < wp.length; i++) {
-                const u = wp[i].dot(U), w = wp[i].dot(V);
-                us.push(u); vs.push(w);
-                if (u < minU) minU = u; if (u > maxU) maxU = u;
-                if (w < minV) minV = w; if (w > maxV) maxV = w;
-            }
-            const du = (maxU - minU) || 1, dv = (maxV - minV) || 1;
-            const uv = new Float32Array(p.count * 2);
-            for (let i = 0; i < p.count; i++) {
-                uv[i * 2] = (us[i] - minU) / du;
-                uv[i * 2 + 1] = (vs[i] - minV) / dv;
-            }
-            geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+        const a = [],
+          b = [];
+        let ma = 0,
+          mb = 0;
+        for (let i = 0; i < wp.length; i++) {
+          const x = wp[i].dot(e1),
+            y = wp[i].dot(e2);
+          a.push(x);
+          b.push(y);
+          ma += x;
+          mb += y;
         }
+        ma /= a.length;
+        mb /= b.length;
 
-        // 4. CRT Shader & Video Textures
-        const videoTex1 = new THREE.VideoTexture(video1);
-        videoTex1.colorSpace = THREE.SRGBColorSpace;
-        const videoTex2 = new THREE.VideoTexture(video2);
-        videoTex2.colorSpace = THREE.SRGBColorSpace;
-        
-        let activeVideoTexture = videoTex1;
+        let Saa = 0,
+          Sbb = 0,
+          Sab = 0;
+        for (let i = 0; i < a.length; i++) {
+          const da = a[i] - ma,
+            db = b[i] - mb;
+          Saa += da * da;
+          Sbb += db * db;
+          Sab += da * db;
+        }
+        const th = 0.5 * Math.atan2(2 * Sab, Saa - Sbb);
+        const cs = Math.cos(th),
+          sn = Math.sin(th);
 
-        const crtMat = new THREE.ShaderMaterial({
-            uniforms: {
-                uTex:    { value: activeVideoTexture },
-                uTime:   { value: 0 },
-                uPower:  { value: 1.0 }, 
-                uWarp:   { value: 0 },   
-                uGrid:   { value: new THREE.Vector2(240, 136) },
-                uBright: { value: 0.92 }
-            },
-            transparent: false,
-            toneMapped: false,
-            vertexShader: `
+        const U = e1
+          .clone()
+          .multiplyScalar(cs)
+          .addScaledVector(e2, sn)
+          .normalize();
+        const V = e1
+          .clone()
+          .multiplyScalar(-sn)
+          .addScaledVector(e2, cs)
+          .normalize();
+        if (U.dot(right) < 0) U.negate();
+        if (V.dot(up) < 0) V.negate();
+
+        let minU = Infinity,
+          maxU = -Infinity,
+          minV = Infinity,
+          maxV = -Infinity;
+        const us = [],
+          vs = [];
+        for (let i = 0; i < wp.length; i++) {
+          const u = wp[i].dot(U),
+            w = wp[i].dot(V);
+          us.push(u);
+          vs.push(w);
+          if (u < minU) minU = u;
+          if (u > maxU) maxU = u;
+          if (w < minV) minV = w;
+          if (w > maxV) maxV = w;
+        }
+        const du = maxU - minU || 1,
+          dv = maxV - minV || 1;
+        const uv = new Float32Array(p.count * 2);
+        for (let i = 0; i < p.count; i++) {
+          uv[i * 2] = (us[i] - minU) / du;
+          uv[i * 2 + 1] = (vs[i] - minV) / dv;
+        }
+        geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+      }
+
+      // 4. CRT Shader & Video Textures
+      const videoTex1 = new THREE.VideoTexture(video1);
+      videoTex1.colorSpace = THREE.SRGBColorSpace;
+      const videoTex2 = new THREE.VideoTexture(video2);
+      videoTex2.colorSpace = THREE.SRGBColorSpace;
+
+      let activeVideoTexture = videoTex1;
+
+      const crtMat = new THREE.ShaderMaterial({
+        uniforms: {
+          uTex: { value: activeVideoTexture },
+          uTime: { value: 0 },
+          uPower: { value: 1.0 },
+          uWarp: { value: 0 },
+          uGrid: { value: new THREE.Vector2(240, 136) },
+          uBright: { value: 0.92 },
+        },
+        transparent: false,
+        toneMapped: false,
+        vertexShader: `
                 varying vec2 vUv;
                 void main(){
                     vUv = uv;
                     gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
                 }`,
-            fragmentShader: `
+        fragmentShader: `
                 precision highp float;
                 uniform sampler2D uTex;
                 uniform float uTime, uPower, uWarp, uBright;
@@ -518,249 +644,284 @@
                     col *= open;
 
                     gl_FragColor = vec4(col * uBright, 1.0);
-                }`
-        });
+                }`,
+      });
 
-        // 5. Load Model
-        let screenMesh = null;
-        const buttons = {}; 
-        const pressable = [];
-        let modelReady = false;
+      // 5. Load Model
+      let modelReady = false;
+      let screenMesh = null;
+      const buttons = {};
+      const pressable = [];
 
-        new GLTFLoader().load(
-            'psp.glb',
-            (gltf) => {
-                model.add(gltf.scene);
-                gltf.scene.updateWorldMatrix(true, true);
+      new GLTFLoader().load(
+        "psp.glb",
+        (gltf) => {
+          model.add(gltf.scene);
+          gltf.scene.updateWorldMatrix(true, true);
 
-                const bin = [];
+          const bin = [];
 
-                gltf.scene.traverse((o) => {
-                    if (!o.isMesh) return;
-                    const n = o.name.toLowerCase();
+          gltf.scene.traverse((o) => {
+            if (!o.isMesh) return;
+            const n = o.name.toLowerCase();
 
-                    if (n.includes('ground')) {
-                        bin.push(o);
-                        return;
-                    }
-                    
-                    if (n.includes('screen') || n.includes('display')) {
-                        screenMesh = o;
-                        o.material = crtMat;
-                    }
-                    
-                    const m = n.match(/^button(\d+)/);
-                    if (m || n.includes('button')) {
-                        let role = n;
-                        if(n.includes('left') || n.includes('dpad_l')) role = 'left';
-                        if(n.includes('right') || n.includes('dpad_r')) role = 'right';
-                        if(n.includes('cross') || n.includes('x')) role = 'cross';
-                        if(n.includes('circle') || n.includes('o')) role = 'circle';
-                        
-                        mapButton(role, o);
-                    }
-                });
-
-                bin.forEach((o) => { o.parent && o.parent.remove(o); });
-
-                if (screenMesh) {
-                    const sNrm = largestFaceNormal(screenMesh);
-                    if (sNrm.z < 0) sNrm.negate();
-                    buildScreenUVs(screenMesh, sNrm, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0));
-                }
-
-                const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
-                model.scale.setScalar(10 / Math.max(size.x, size.y, size.z));
-                model.updateWorldMatrix(true, true);
-                model.position.sub(new THREE.Box3().setFromObject(model).getCenter(new THREE.Vector3()));
-                
-                modelReady = true;
-                fitToView();
-            },
-            undefined,
-            (err) => {
-                console.error('Failed to load psp.glb', err);
+            if (n.includes("ground")) {
+              bin.push(o);
+              return;
             }
+
+            if (n.includes("screen") || n.includes("display")) {
+              screenMesh = o;
+              o.material = crtMat;
+            }
+
+            const m = n.match(/^button(\d+)/);
+            if (m || n.includes("button")) {
+              let role = n;
+              if (n.includes("left") || n.includes("dpad_l")) role = "left";
+              if (n.includes("right") || n.includes("dpad_r")) role = "right";
+              if (n.includes("cross") || n.includes("x")) role = "cross";
+              if (n.includes("circle") || n.includes("o")) role = "circle";
+
+              mapButton(role, o);
+            }
+          });
+
+          bin.forEach((o) => {
+            o.parent && o.parent.remove(o);
+          });
+
+          if (screenMesh) {
+            const sNrm = largestFaceNormal(screenMesh);
+            if (sNrm.z < 0) sNrm.negate();
+            buildScreenUVs(
+              screenMesh,
+              sNrm,
+              new THREE.Vector3(1, 0, 0),
+              new THREE.Vector3(0, 1, 0),
+            );
+          }
+
+          const size = new THREE.Box3()
+            .setFromObject(model)
+            .getSize(new THREE.Vector3());
+          model.scale.setScalar(10 / Math.max(size.x, size.y, size.z));
+          model.updateWorldMatrix(true, true);
+          model.position.sub(
+            new THREE.Box3()
+              .setFromObject(model)
+              .getCenter(new THREE.Vector3()),
+          );
+
+          modelReady = true;
+          fitToView();
+        },
+        undefined,
+        (err) => {
+          console.error("Failed to load psp.glb", err);
+        },
+      );
+
+      function mapButton(role, mesh) {
+        const parent = mesh.parent || model;
+        const pq = new THREE.Quaternion();
+        parent.getWorldQuaternion(pq);
+        const ps = new THREE.Vector3();
+        parent.getWorldScale(ps);
+        const axis = new THREE.Vector3(0, 0, 1).applyQuaternion(pq.invert());
+        axis.set(
+          axis.x / (ps.x || 1),
+          axis.y / (ps.y || 1),
+          axis.z / (ps.z || 1),
         );
 
-        function mapButton(role, mesh) {
-            const parent = mesh.parent || model;
-            const pq = new THREE.Quaternion(); parent.getWorldQuaternion(pq);
-            const ps = new THREE.Vector3(); parent.getWorldScale(ps);
-            const axis = new THREE.Vector3(0, 0, 1).applyQuaternion(pq.invert());
-            axis.set(axis.x / (ps.x || 1), axis.y / (ps.y || 1), axis.z / (ps.z || 1));
-            
-            buttons[role] = { role, mesh, home: mesh.position.clone(), axis, t: 0 };
-            mesh.userData.role = role;
-            pressable.push(mesh);
+        buttons[role] = { role, mesh, home: mesh.position.clone(), axis, t: 0 };
+        mesh.userData.role = role;
+        pressable.push(mesh);
+      }
+
+      // 6. Raycasting & DRAG Interaction - Mobile Tap Fixed
+      const raycaster = new THREE.Raycaster();
+      const ptr = new THREE.Vector2();
+
+      let isDragging = false;
+      let startTouchX = 0;
+      let startTouchY = 0;
+      let dragTargetX = 0;
+      let dragTargetY = 0;
+      let previousMousePosition = { x: 0, y: 0 };
+
+      canvas.addEventListener("pointerdown", (e) => {
+        isDragging = true;
+        startTouchX = e.clientX;
+        startTouchY = e.clientY;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+        canvas.setPointerCapture(e.pointerId);
+      });
+
+      canvas.addEventListener("pointermove", (e) => {
+        if (isDragging) {
+          const deltaX = e.clientX - previousMousePosition.x;
+          const deltaY = e.clientY - previousMousePosition.y;
+
+          dragTargetX += deltaX * 0.006;
+          dragTargetY += deltaY * 0.006;
+          dragTargetY = Math.max(-0.6, Math.min(0.6, dragTargetY));
+
+          previousMousePosition = { x: e.clientX, y: e.clientY };
+        }
+      });
+
+      function pressButton(role) {
+        const b = buttons[role];
+        if (b) {
+          b.t = 1;
+          const wp = new THREE.Box3()
+            .setFromObject(b.mesh)
+            .getCenter(new THREE.Vector3());
+          pressLight.position.copy(wp).add(new THREE.Vector3(0, 0, 1.4));
+          pressLight.color.set(0x7fe3ff);
+          pressLightLife = 1;
         }
 
-        // 6. Raycasting & DRAG Interaction
-        const raycaster = new THREE.Raycaster();
-        const ptr = new THREE.Vector2();
-        
-        let isDragging = false;
-        let hasDragged = false;
-        let dragTargetX = 0;
-        let dragTargetY = 0;
-        let previousMousePosition = { x: 0, y: 0 };
-
-        canvas.addEventListener('pointerdown', (e) => {
-            isDragging = true;
-            hasDragged = false;
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-            canvas.setPointerCapture(e.pointerId);
-        });
-
-        canvas.addEventListener('pointermove', (e) => {
-            if (isDragging) {
-                const deltaX = e.clientX - previousMousePosition.x;
-                const deltaY = e.clientY - previousMousePosition.y;
-
-                if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) {
-                    hasDragged = true;
-                }
-
-                dragTargetX += deltaX * 0.006;
-                dragTargetY += deltaY * 0.006;
-                dragTargetY = Math.max(-0.6, Math.min(0.6, dragTargetY));
-
-                previousMousePosition = { x: e.clientX, y: e.clientY };
-            }
-        });
-
-        function pressButton(role) {
-            const b = buttons[role];
-            if (b) {
-                b.t = 1; 
-                const wp = new THREE.Box3().setFromObject(b.mesh).getCenter(new THREE.Vector3());
-                pressLight.position.copy(wp).add(new THREE.Vector3(0, 0, 1.4));
-                pressLight.color.set(0x7fe3ff);
-                pressLightLife = 1;
-            }
-            
-            if (currentVideo === video1) {
-                video1.pause();
-                video2.currentTime = 0;
-                video2.play();
-                currentVideo = video2;
-                crtMat.uniforms.uTex.value = videoTex2;
-            } else {
-                video2.pause();
-                video1.currentTime = 0;
-                video1.play();
-                currentVideo = video1;
-                crtMat.uniforms.uTex.value = videoTex1;
-            }
-            
-            crtMat.uniforms.uWarp.value = 1.0; 
+        if (currentVideo === video1) {
+          video1.pause();
+          video2.currentTime = 0;
+          video2.play();
+          currentVideo = video2;
+          crtMat.uniforms.uTex.value = videoTex2;
+        } else {
+          video2.pause();
+          video1.currentTime = 0;
+          video1.play();
+          currentVideo = video1;
+          crtMat.uniforms.uTex.value = videoTex1;
         }
 
-        canvas.addEventListener('pointerup', (e) => {
-            isDragging = false;
-            canvas.releasePointerCapture(e.pointerId);
+        crtMat.uniforms.uWarp.value = 1.0;
+      }
 
-            if (!hasDragged) {
-                const r = canvas.getBoundingClientRect();
-                ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
-                ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+      // Changed to 'click' for much more robust mobile button tapping
+      canvas.addEventListener("click", (e) => {
+        // Check if it was a tap vs a drag swipe (allowing 10px of fat-finger wiggle room)
+        const dragDistance =
+          Math.abs(e.clientX - startTouchX) + Math.abs(e.clientY - startTouchY);
 
-                raycaster.setFromCamera(ptr, camera);
-                const hits = raycaster.intersectObjects(pressable, false);
-                
-                if (hits.length > 0 && hits[0].object.userData.role) {
-                    pressButton(hits[0].object.userData.role);
-                }
-            }
-        });
+        if (dragDistance < 10) {
+          const r = canvas.getBoundingClientRect();
+          ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+          ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
 
-        let inView = false;
-        new IntersectionObserver((es) => {
-            inView = es[0].isIntersecting;
-            if (inView) {
-                currentVideo.play().catch(e => console.log("Waiting for interaction"));
-            } else {
-                currentVideo.pause();
-            }
-        }, { threshold: 0.1 }).observe(canvas);
+          raycaster.setFromCamera(ptr, camera);
+          const hits = raycaster.intersectObjects(pressable, false);
 
-        // 7. Post Processing & Resize
-        const composer = new EffectComposer(renderer);
-        
-        const renderPass = new RenderPass(scene, camera);
-        renderPass.clearColor = new THREE.Color(0xffffff);
-        renderPass.clearAlpha = 0; 
-        composer.addPass(renderPass);
-        
-        composer.addPass(new OutputPass());
+          if (hits.length > 0 && hits[0].object.userData.role) {
+            pressButton(hits[0].object.userData.role);
+          }
+        }
+      });
 
-        function fitToView() {
-            if (!modelReady) return;
-            const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
-            
-            const fill = 0.7; 
-            
-            const vFov = THREE.MathUtils.degToRad(camera.fov);
-            const distH = (size.y / 2) / Math.tan(vFov / 2);
-            const distW = (size.x / 2) / (Math.tan(vFov / 2) * camera.aspect);
-            camera.position.set(0, 0, Math.max(distH, distW) / fill + size.z);
-            camera.lookAt(0, 0, 0);
-            camera.updateProjectionMatrix();
+      canvas.addEventListener("pointerup", (e) => {
+        isDragging = false;
+        canvas.releasePointerCapture(e.pointerId);
+      });
+
+      let inView = false;
+      new IntersectionObserver(
+        (es) => {
+          inView = es[0].isIntersecting;
+          if (inView) {
+            currentVideo
+              .play()
+              .catch((e) => console.log("Waiting for interaction"));
+          } else {
+            currentVideo.pause();
+          }
+        },
+        { threshold: 0.1 },
+      ).observe(canvas);
+
+      // 7. Post Processing & Resize
+      const composer = new EffectComposer(renderer);
+
+      const renderPass = new RenderPass(scene, camera);
+      renderPass.clearColor = new THREE.Color(0xffffff);
+      renderPass.clearAlpha = 0;
+      composer.addPass(renderPass);
+
+      composer.addPass(new OutputPass());
+
+      function fitToView() {
+        if (!modelReady) return;
+        const size = new THREE.Box3()
+          .setFromObject(model)
+          .getSize(new THREE.Vector3());
+
+        const fill = 0.7;
+
+        const vFov = THREE.MathUtils.degToRad(camera.fov);
+        const distH = size.y / 2 / Math.tan(vFov / 2);
+        const distW = size.x / 2 / (Math.tan(vFov / 2) * camera.aspect);
+        camera.position.set(0, 0, Math.max(distH, distW) / fill + size.z);
+        camera.lookAt(0, 0, 0);
+        camera.updateProjectionMatrix();
+      }
+
+      window.addEventListener("resize", () => {
+        const w = stageContainer.clientWidth,
+          h = stageContainer.clientHeight;
+        renderer.setSize(w, h, false);
+        composer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        fitToView();
+      });
+
+      // 8. Render Loop
+      const clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (!inView) return;
+
+        const dt = Math.min(0.05, clock.getDelta());
+        const t = clock.elapsedTime;
+
+        // Apply Drag Rotation
+        root.rotation.y += (dragTargetX - root.rotation.y) * 0.1;
+        root.rotation.x += (dragTargetY - root.rotation.x) * 0.1;
+
+        // Subtle Idle Movement
+        idleGroup.rotation.y = Math.sin(t * 1.5) * 0.05;
+        idleGroup.rotation.x = Math.cos(t * 1.2) * 0.03;
+        idleGroup.position.y = Math.sin(t * 2.0) * 0.08;
+
+        crtMat.uniforms.uTime.value = t;
+        crtMat.uniforms.uWarp.value *= Math.pow(0.0025, dt);
+        if (crtMat.uniforms.uWarp.value < 0.001)
+          crtMat.uniforms.uWarp.value = 0;
+
+        const PRESS_DEPTH = 0.17;
+        for (const k in buttons) {
+          const b = buttons[k];
+          if (b.t <= 0.0005) continue;
+          b.t *= Math.pow(0.004, dt);
+          if (b.t < 0.0005) b.t = 0;
+          const d = b.axis.clone().multiplyScalar(-PRESS_DEPTH * b.t);
+          b.mesh.position.copy(b.home).add(d);
         }
 
-        window.addEventListener('resize', () => {
-            const w = stageContainer.clientWidth, h = stageContainer.clientHeight;
-            renderer.setSize(w, h, false);
-            composer.setSize(w, h);
-            camera.aspect = w / h;
-            camera.updateProjectionMatrix();
-            fitToView();
-        });
-
-        // 8. Render Loop
-        const clock = new THREE.Clock();
-
-        function animate() {
-            requestAnimationFrame(animate);
-            if (!inView) return;
-
-            const dt = Math.min(0.05, clock.getDelta());
-            const t = clock.elapsedTime;
-            
-            // Apply Drag Rotation
-            root.rotation.y += (dragTargetX - root.rotation.y) * 0.1;
-            root.rotation.x += (dragTargetY - root.rotation.x) * 0.1;
-
-            // Subtle Idle Movement
-            idleGroup.rotation.y = Math.sin(t * 1.5) * 0.05;
-            idleGroup.rotation.x = Math.cos(t * 1.2) * 0.03;
-            idleGroup.position.y = Math.sin(t * 2.0) * 0.08;
-
-            crtMat.uniforms.uTime.value = t;
-            crtMat.uniforms.uWarp.value *= Math.pow(0.0025, dt); 
-            if (crtMat.uniforms.uWarp.value < 0.001) crtMat.uniforms.uWarp.value = 0;
-
-            const PRESS_DEPTH = 0.17;
-            for (const k in buttons) {
-                const b = buttons[k];
-                if (b.t <= 0.0005) continue;
-                b.t *= Math.pow(0.004, dt);
-                if (b.t < 0.0005) b.t = 0;
-                const d = b.axis.clone().multiplyScalar(-PRESS_DEPTH * b.t);
-                b.mesh.position.copy(b.home).add(d);
-            }
-
-            if (pressLightLife > 0) {
-                pressLightLife -= dt * 3.4;
-                pressLight.intensity = Math.max(0, pressLightLife) * 26;
-            } else {
-                pressLight.intensity = 0;
-            }
-
-            composer.render();
+        if (pressLightLife > 0) {
+          pressLightLife -= dt * 3.4;
+          pressLight.intensity = Math.max(0, pressLightLife) * 26;
+        } else {
+          pressLight.intensity = 0;
         }
-        animate();
-        window.dispatchEvent(new Event('resize'));
+
+        composer.render();
+      }
+      animate();
+      window.dispatchEvent(new Event("resize"));
     </script>
-</body>
+  </body>
 </html>
