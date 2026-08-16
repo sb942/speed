@@ -14,11 +14,6 @@
         padding: 0;
       }
 
-      /* 
-         * SCROLL GLITCH FIX:
-         * Lock the body and HTML so they cannot scroll, and offload all
-         * scrolling to a dedicated container. This fixes the mobile bounce/jitter.
-         */
       html,
       body {
         width: 100%;
@@ -31,7 +26,7 @@
       .scroll-container {
         width: 100vw;
         height: 100dvh;
-        overflow-y: auto;
+        overflow-y: scroll;
         overflow-x: hidden;
         scroll-snap-type: y mandatory;
         scroll-behavior: smooth;
@@ -42,19 +37,94 @@
         width: 100vw;
         height: 100dvh;
         scroll-snap-align: start;
+        scroll-snap-stop: always;
         overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+      }
+
+      /* ========================================= */
+      /* --- CUSTOM LOADER OVERLAY --------------- */
+      /* ========================================= */
+      #loaderOverlay {
+        position: fixed;
+        inset: 0;
+        background: #ffffff;
+        z-index: 9999;
         display: flex;
         justify-content: center;
         align-items: center;
       }
 
+      .loader-content {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 120px;
+        height: 120px;
+      }
+
+      .loader-ring {
+        position: absolute;
+        transform: rotate(-90deg);
+        transition: opacity 0.3s ease;
+      }
+
+      .progress-ring {
+        stroke-dasharray: 339.29; /* Circumference of r=54 */
+        stroke-dashoffset: 339.29;
+        transition: stroke-dashoffset 0.1s linear;
+      }
+
+      #loader-icon {
+        width: 65px;
+        height: 65px;
+        object-fit: contain;
+        z-index: 10000;
+      }
+
+      /* ========================================= */
+      /* --- GLOBAL UI LAYER (ICONS) ------------- */
+      /* ========================================= */
+      #ui-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        pointer-events: none;
+      }
+
+      .corner-icon {
+        position: absolute;
+        bottom: clamp(20px, 5vw, 40px);
+        width: 15vw;
+        max-width: 110px;
+        pointer-events: auto;
+        cursor: pointer;
+        object-fit: contain;
+        transition: filter 0.1s ease;
+      }
+
+      .corner-icon:active {
+        filter: brightness(0.7);
+      }
+
+      #b-icon {
+        left: clamp(20px, 5vw, 40px);
+        transform-origin: center;
+        opacity: 0; /* Hidden initially so loader icon can take its place */
+      }
+
+      #cd-icon {
+        right: clamp(20px, 5vw, 40px);
+        transform-origin: center;
+      }
+
       /* ========================================= */
       /* --- SLIDE 1: 2D ANIMATION STYLES --- */
       /* ========================================= */
-      #slide-1 {
-        background-color: #ffffff;
-      }
-
       .brand-text {
         position: absolute;
         font-family: Impact, "Arial Black", sans-serif;
@@ -95,12 +165,84 @@
       }
 
       /* ========================================= */
-      /* --- SLIDE 2: 3D PSP CANVAS STYLES --- */
+      /* --- SLIDE 2: FAST PHOTO STICKER STYLES -- */
       /* ========================================= */
-      #slide-2 {
-        background-color: #ffffff;
+      .marquee-container {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 1;
+        will-change: transform;
       }
 
+      /* Perfectly mathematically seamless marquee setup */
+      .marquee-track {
+        display: flex;
+        width: max-content;
+        animation: marquee 12s linear infinite;
+        will-change: transform;
+      }
+
+      .marquee-half {
+        display: flex;
+        gap: 5vw;
+        padding-right: 5vw; /* Bridges the gap exactly to the next loop */
+      }
+
+      .marquee-half img {
+        height: 15vw;
+        object-fit: contain;
+      }
+
+      @keyframes marquee {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      .sticker-container {
+        position: relative;
+        z-index: 5;
+        width: 60vw;
+        height: 60vw;
+        max-width: 450px;
+        max-height: 450px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .sticker-img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background-color: #f0f0f0;
+        border: clamp(8px, 2vw, 15px) solid #ffffff;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+        opacity: 0;
+        transform: scale(1.8) rotate(0deg);
+        transition:
+          transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          opacity 0.1s ease-out;
+        pointer-events: none;
+      }
+
+      .sticker-img.show {
+        opacity: 1;
+      }
+
+      /* ========================================= */
+      /* --- SLIDE 3: 3D PSP CANVAS STYLES --- */
+      /* ========================================= */
       .machine__stage {
         position: absolute;
         inset: 0;
@@ -115,7 +257,7 @@
         width: 100%;
         height: 100%;
         display: block;
-        touch-action: pan-y; /* Crucial: Allows vertical scrolling on slide 2 */
+        touch-action: pan-y;
         cursor: grab;
       }
 
@@ -123,13 +265,13 @@
         cursor: grabbing;
       }
 
-      .hidden-video {
+      .hidden-audio-video {
         display: none;
       }
 
       .mute-btn {
         position: absolute;
-        bottom: 30px;
+        top: 30px;
         right: 30px;
         z-index: 50;
         background: transparent;
@@ -152,9 +294,10 @@
     </style>
   </head>
   <body>
+    <!-- Audio / Video Assets -->
     <video
       id="video1"
-      class="hidden-video"
+      class="hidden-audio-video"
       src="video1.mp4"
       loop
       muted
@@ -163,13 +306,48 @@
     ></video>
     <video
       id="video2"
-      class="hidden-video"
+      class="hidden-audio-video"
       src="video2.mp4"
       loop
       muted
       playsinline
       crossorigin="anonymous"
     ></video>
+    <audio id="b-audio" class="hidden-audio-video" src="b.mp3"></audio>
+    <audio id="wc-audio" class="hidden-audio-video" src="wc.mp3" loop></audio>
+
+    <!-- Custom Loading Overlay -->
+    <div id="loaderOverlay">
+      <div class="loader-content">
+        <svg class="loader-ring" width="120" height="120" viewBox="0 0 120 120">
+          <circle
+            cx="60"
+            cy="60"
+            r="54"
+            fill="none"
+            stroke="#eeeeee"
+            stroke-width="6"
+          />
+          <circle
+            class="progress-ring"
+            cx="60"
+            cy="60"
+            r="54"
+            fill="none"
+            stroke="#ff0000"
+            stroke-width="6"
+            stroke-linecap="round"
+          />
+        </svg>
+        <img src="6.png" id="loader-icon" alt="loading" />
+      </div>
+    </div>
+
+    <!-- Global Fixed UI Overlay -->
+    <div id="ui-layer">
+      <img src="6.png" id="b-icon" class="corner-icon" alt="Effect Icon" />
+      <img src="cd.png" id="cd-icon" class="corner-icon" alt="CD Icon" />
+    </div>
 
     <!-- Wrapped in a robust scroll container -->
     <main class="scroll-container" id="scrollContainer">
@@ -180,8 +358,37 @@
         <img src="1.png" alt="Character" class="character" id="charImg" />
       </section>
 
-      <!-- SLIDE 2: The 3D Interactive PSP -->
+      <!-- SLIDE 2: The Fast Photo Sticker Sequence -->
       <section class="slide" id="slide-2">
+        <div class="marquee-container">
+          <div class="marquee-track">
+            <div class="marquee-half">
+              <img src="p.png" alt="trail" /><img src="p.png" alt="trail" /><img
+                src="p.png"
+                alt="trail"
+              /><img src="p.png" alt="trail" />
+              <img src="p.png" alt="trail" /><img src="p.png" alt="trail" /><img
+                src="p.png"
+                alt="trail"
+              /><img src="p.png" alt="trail" />
+            </div>
+            <div class="marquee-half">
+              <img src="p.png" alt="trail" /><img src="p.png" alt="trail" /><img
+                src="p.png"
+                alt="trail"
+              /><img src="p.png" alt="trail" />
+              <img src="p.png" alt="trail" /><img src="p.png" alt="trail" /><img
+                src="p.png"
+                alt="trail"
+              /><img src="p.png" alt="trail" />
+            </div>
+          </div>
+        </div>
+        <div class="sticker-container" id="stickerContainer"></div>
+      </section>
+
+      <!-- SLIDE 3: The 3D Interactive PSP -->
+      <section class="slide" id="slide-3">
         <div class="machine__stage" id="stageContainer">
           <canvas id="pspCanvas"></canvas>
           <button id="muteBtn" class="mute-btn">
@@ -205,12 +412,194 @@
     </main>
 
     <!-- ========================================================= -->
-    <!-- SCRIPT 1: GLOBALS & 2D LOGIC -->
+    <!-- SCRIPT 1: PRELOADER, ICONS, & ANIMATION BOOTSTRAPPING -->
     <!-- ========================================================= -->
     <script>
       // -----------------------------------------------------
-      // SAFE CROSS-BROWSER FULLSCREEN
+      // PRELOAD ASSETS
       // -----------------------------------------------------
+      window.ASSETS_LOADED = false;
+      let loadedCount = 0;
+
+      const stickerImages = [
+        "8.jpeg",
+        "9.jpg",
+        "10.jpg",
+        "11.jpg",
+        "12.jpg",
+        "13.jpg",
+        "14.jpg",
+        "15.jpg",
+        "16.jpg",
+        "17.jpg",
+        "18.jpg",
+        "19.jpg",
+        "20.jpg",
+        "21.jpg",
+        "22.jpg",
+        "23.jpg",
+        "24.jpeg",
+      ];
+      const allImages = [
+        "1.png",
+        "2.png",
+        "3.png",
+        "4.png",
+        "5.png",
+        "p.png",
+        "6.png",
+        "7.png",
+        "cd.png",
+        ...stickerImages,
+      ];
+
+      allImages.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === allImages.length) window.ASSETS_LOADED = true;
+        };
+        img.onerror = () => {
+          // Ensure broken links don't break the loader
+          loadedCount++;
+          if (loadedCount === allImages.length) window.ASSETS_LOADED = true;
+        };
+      });
+
+      // -----------------------------------------------------
+      // CUSTOM LOADER & FLIP ANIMATION
+      // -----------------------------------------------------
+      const loaderOverlay = document.getElementById("loaderOverlay");
+      const loaderIcon = document.getElementById("loader-icon");
+      const progressRing = document.querySelector(".progress-ring");
+      const loaderRingSvg = document.querySelector(".loader-ring");
+      const realBIcon = document.getElementById("b-icon");
+
+      // Silent Flashing while loading
+      let isSix = true;
+      const toggleInt = setInterval(() => {
+        isSix = !isSix;
+        loaderIcon.src = isSix ? "6.png" : "7.png";
+      }, 200);
+
+      let loadProgress = 0;
+      const circ = 339.29; // Stroke dash max
+
+      // Progress Physics
+      const progInt = setInterval(() => {
+        loadProgress += 100 / 30; // Forces a minimum 1.5 second cool loading animation
+        if (loadProgress >= 100) loadProgress = 100;
+
+        progressRing.style.strokeDashoffset =
+          circ - (circ * loadProgress) / 100;
+
+        if (loadProgress === 100 && window.ASSETS_LOADED) {
+          clearInterval(progInt);
+          clearInterval(toggleInt);
+
+          loaderIcon.src = "6.png"; // Finalize
+          loaderRingSvg.style.opacity = "0"; // Hide Red Ring
+          loaderIcon.style.transformOrigin = "top left"; // Predictable FLIP origin
+
+          // Measure coordinates for the transition
+          const targetRect = realBIcon.getBoundingClientRect();
+          const startRect = loaderIcon.getBoundingClientRect();
+
+          const dx = targetRect.left - startRect.left;
+          const dy = targetRect.top - startRect.top;
+          const scale = targetRect.width / startRect.width;
+
+          loaderOverlay.style.transition = "background-color 0.8s ease";
+          loaderOverlay.style.backgroundColor = "transparent";
+
+          // FLIP!
+          loaderIcon.style.transition =
+            "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
+          loaderIcon.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+
+          // Once movement finishes
+          setTimeout(() => {
+            realBIcon.style.opacity = "1";
+            loaderOverlay.remove();
+
+            // Bootstrap the actual site animations!
+            init2DAnimation();
+
+            // Exactly 9 SECONDS after entering site, trigger sound effect
+            setTimeout(triggerBEffect, 9000);
+          }, 800);
+        }
+      }, 50);
+
+      // -----------------------------------------------------
+      // CORNER ICON INTERACTIVITY & PHYSICS
+      // -----------------------------------------------------
+      const bIcon = document.getElementById("b-icon");
+      const bAudio = document.getElementById("b-audio");
+      const cdIcon = document.getElementById("cd-icon");
+      const wcAudio = document.getElementById("wc-audio");
+      const scrollContainer = document.getElementById("scrollContainer");
+
+      let isCdPlaying = false;
+      let cdRotation = 0;
+      let cdVelocity = 0;
+      let targetCdRotation = 0;
+      let bRotation = 0;
+
+      function triggerBEffect() {
+        bIcon.src = "7.png";
+        bAudio.currentTime = 0;
+        const playPromise = bAudio.play();
+        if (playPromise !== undefined) playPromise.catch((e) => {});
+
+        setTimeout(() => {
+          bIcon.src = "6.png";
+          bAudio.pause();
+        }, 300);
+      }
+
+      bIcon.addEventListener("click", triggerBEffect);
+
+      cdIcon.addEventListener("click", () => {
+        isCdPlaying = !isCdPlaying;
+        if (isCdPlaying) {
+          wcAudio.play().catch((e) => {});
+        } else {
+          wcAudio.pause();
+        }
+      });
+
+      // Icon physics & Scroll tracking
+      scrollContainer.addEventListener("scroll", () => {
+        bRotation = Math.sin(scrollContainer.scrollTop * 0.005) * 20;
+      });
+
+      function uiPhysicsLoop() {
+        if (isCdPlaying) {
+          cdVelocity = Math.min(cdVelocity + 0.05, 3.5);
+          cdRotation += cdVelocity;
+        } else {
+          if (cdVelocity > 0) {
+            cdVelocity -= 0.03;
+            cdRotation += cdVelocity;
+            if (cdVelocity <= 0) {
+              cdVelocity = 0;
+              targetCdRotation = Math.round(cdRotation / 360) * 360;
+            }
+          } else {
+            cdRotation += (targetCdRotation - cdRotation) * 0.08;
+          }
+        }
+
+        cdIcon.style.transform = `rotate(${cdRotation}deg)`;
+        bIcon.style.transform = `rotate(${bRotation}deg)`;
+
+        requestAnimationFrame(uiPhysicsLoop);
+      }
+      uiPhysicsLoop();
+
+      // Safe Fullscreen Click Listener
       document.addEventListener("click", () => {
         const doc = window.document;
         const docEl = doc.documentElement;
@@ -219,7 +608,6 @@
           docEl.mozRequestFullScreen ||
           docEl.webkitRequestFullscreen ||
           docEl.msRequestFullscreen;
-
         if (
           !doc.fullscreenElement &&
           !doc.mozFullScreenElement &&
@@ -228,26 +616,109 @@
         ) {
           if (requestFullScreen) {
             try {
-              requestFullScreen.call(docEl).catch((err) => {
-                // Suppress errors silently. Apple devices will just ignore it.
-              });
-            } catch (err) {
-              // Silent fail for unsupported browsers
-            }
+              requestFullScreen.call(docEl).catch(() => {});
+            } catch (err) {}
           }
         }
       });
 
       // -----------------------------------------------------
-      // 2D ANIMATION LOGIC
+      // SLIDE 2: FAST PHOTO STICKER SEQUENCE
+      // -----------------------------------------------------
+      const slide2El = document.getElementById("slide-2");
+      const stickerContainer = document.getElementById("stickerContainer");
+      let stickerInterval;
+      let isStickerPlaying = false;
+      let isSequenceRunning = false;
+
+      function playStickerSequence() {
+        if (isStickerPlaying) return;
+        isStickerPlaying = true;
+        isSequenceRunning = false;
+
+        stickerContainer.innerHTML = "";
+        let currentIndex = 0;
+
+        stickerInterval = setInterval(() => {
+          if (currentIndex >= stickerImages.length) {
+            clearInterval(stickerInterval);
+            return;
+          }
+
+          const img = document.createElement("img");
+          img.src = stickerImages[currentIndex];
+          img.className = "sticker-img";
+
+          const rot = (Math.random() - 0.5) * 20;
+          const offX = (Math.random() - 0.5) * 30;
+          const offY = (Math.random() - 0.5) * 30;
+
+          const targetTransform = `translate(${offX}px, ${offY}px) scale(1) rotate(${rot}deg)`;
+          img.dataset.targetTransform = targetTransform;
+
+          stickerContainer.appendChild(img);
+          void img.offsetWidth;
+
+          img.classList.add("show");
+          img.style.transform = targetTransform;
+
+          currentIndex++;
+        }, 150); // Fast stop-motion spawn
+      }
+
+      stickerContainer.addEventListener("click", () => {
+        if (isSequenceRunning) return;
+        const stickers = Array.from(document.querySelectorAll(".sticker-img"));
+        if (stickers.length < 2) return;
+
+        const isExpanded = stickers[1].classList.contains("show");
+        isSequenceRunning = true;
+
+        if (isExpanded) {
+          let delay = 0;
+          for (let i = stickers.length - 1; i >= 1; i--) {
+            setTimeout(() => {
+              stickers[i].classList.remove("show");
+              stickers[i].style.transform = "scale(1.8) rotate(0deg)";
+            }, delay);
+            delay += 60;
+          }
+          setTimeout(() => (isSequenceRunning = false), delay + 200);
+        } else {
+          let delay = 0;
+          for (let i = 1; i < stickers.length; i++) {
+            setTimeout(() => {
+              stickers[i].classList.add("show");
+              stickers[i].style.transform = stickers[i].dataset.targetTransform;
+            }, delay);
+            delay += 60;
+          }
+          setTimeout(() => (isSequenceRunning = false), delay + 200);
+        }
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+              playStickerSequence();
+            } else if (!entry.isIntersecting) {
+              clearInterval(stickerInterval);
+              isStickerPlaying = false;
+            }
+          });
+        },
+        { threshold: [0, 0.5] },
+      );
+
+      observer.observe(slide2El);
+
+      // -----------------------------------------------------
+      // SLIDE 1: 2D JUMP ANIMATION LOGIC
       // -----------------------------------------------------
       const carEl = document.getElementById("carImg");
       const charEl = document.getElementById("charImg");
       const textEl = document.getElementById("brandText");
-      const slide1El = document.getElementById("slide-1");
-
-      const imageSources = ["1.png", "2.png", "3.png", "4.png", "5.png"];
-      imageSources.forEach((src) => (new Image().src = src));
 
       function init2DAnimation() {
         carEl.style.display = "block";
@@ -261,11 +732,10 @@
           const progress = Math.min(elapsed / totalDuration, 1.0);
           const vw = window.innerWidth;
 
-          // HEIGHT FIX:
-          // We add `vw * 0.025` to perfectly lift the character's feet
-          // exactly up to the font's visual baseline.
           const textRect = textEl.getBoundingClientRect();
-          const sceneRect = slide1El.getBoundingClientRect();
+          const sceneRect = document
+            .getElementById("slide-1")
+            .getBoundingClientRect();
           const baselineBottom =
             sceneRect.bottom - textRect.bottom + vw * 0.025;
 
@@ -339,8 +809,6 @@
         }
         requestAnimationFrame(updateAnimation);
       }
-
-      window.addEventListener("load", init2DAnimation);
     </script>
 
     <!-- ========================================================= -->
@@ -365,18 +833,14 @@
       const canvas = document.getElementById("pspCanvas");
       const stageContainer = document.getElementById("stageContainer");
       const muteBtn = document.getElementById("muteBtn");
-      const scrollContainer = document.getElementById("scrollContainer");
 
-      // SVG Icons
       const svgMuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
       const svgUnmuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
 
-      // Videos
       const video1 = document.getElementById("video1");
       const video2 = document.getElementById("video2");
       let currentVideo = video1;
 
-      // Auto-unmute
       let audioEnabled = false;
       document.addEventListener(
         "click",
@@ -391,7 +855,6 @@
         { once: true },
       );
 
-      // Manual Mute Button
       muteBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         const isMuted = !currentVideo.muted;
@@ -401,7 +864,6 @@
         audioEnabled = !isMuted;
       });
 
-      // 1. Scene Setup
       const renderer = new THREE.WebGLRenderer({
         canvas,
         antialias: true,
@@ -433,7 +895,6 @@
       root.add(idleGroup);
       scene.add(root);
 
-      // 2. Lighting Setup
       const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 1.5);
       scene.add(hemi);
 
@@ -453,7 +914,6 @@
       scene.add(pressLight);
       let pressLightLife = 0;
 
-      // 3. UV Math
       function largestFaceNormal(mesh) {
         const geo = mesh.geometry;
         const pos = geo.getAttribute("position");
@@ -570,7 +1030,6 @@
         geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
       }
 
-      // 4. CRT Shader & Video Textures
       const videoTex1 = new THREE.VideoTexture(video1);
       videoTex1.colorSpace = THREE.SRGBColorSpace;
       const videoTex2 = new THREE.VideoTexture(video2);
@@ -647,12 +1106,6 @@
                 }`,
       });
 
-      // 5. Load Model
-      let modelReady = false;
-      let screenMesh = null;
-      const buttons = {};
-      const pressable = [];
-
       new GLTFLoader().load(
         "psp.glb",
         (gltf) => {
@@ -713,7 +1166,6 @@
               .getCenter(new THREE.Vector3()),
           );
 
-          modelReady = true;
           fitToView();
         },
         undefined,
@@ -740,7 +1192,6 @@
         pressable.push(mesh);
       }
 
-      // 6. Raycasting & DRAG Interaction - Mobile Tap Fixed
       const raycaster = new THREE.Raycaster();
       const ptr = new THREE.Vector2();
 
@@ -801,9 +1252,7 @@
         crtMat.uniforms.uWarp.value = 1.0;
       }
 
-      // Changed to 'click' for much more robust mobile button tapping
       canvas.addEventListener("click", (e) => {
-        // Check if it was a tap vs a drag swipe (allowing 10px of fat-finger wiggle room)
         const dragDistance =
           Math.abs(e.clientX - startTouchX) + Math.abs(e.clientY - startTouchY);
 
@@ -831,9 +1280,7 @@
         (es) => {
           inView = es[0].isIntersecting;
           if (inView) {
-            currentVideo
-              .play()
-              .catch((e) => console.log("Waiting for interaction"));
+            currentVideo.play().catch((e) => {});
           } else {
             currentVideo.pause();
           }
@@ -841,7 +1288,6 @@
         { threshold: 0.1 },
       ).observe(canvas);
 
-      // 7. Post Processing & Resize
       const composer = new EffectComposer(renderer);
 
       const renderPass = new RenderPass(scene, camera);
@@ -852,7 +1298,7 @@
       composer.addPass(new OutputPass());
 
       function fitToView() {
-        if (!modelReady) return;
+        if (!model.children.length) return;
         const size = new THREE.Box3()
           .setFromObject(model)
           .getSize(new THREE.Vector3());
@@ -877,7 +1323,6 @@
         fitToView();
       });
 
-      // 8. Render Loop
       const clock = new THREE.Clock();
 
       function animate() {
@@ -887,11 +1332,9 @@
         const dt = Math.min(0.05, clock.getDelta());
         const t = clock.elapsedTime;
 
-        // Apply Drag Rotation
         root.rotation.y += (dragTargetX - root.rotation.y) * 0.1;
         root.rotation.x += (dragTargetY - root.rotation.x) * 0.1;
 
-        // Subtle Idle Movement
         idleGroup.rotation.y = Math.sin(t * 1.5) * 0.05;
         idleGroup.rotation.x = Math.cos(t * 1.2) * 0.03;
         idleGroup.position.y = Math.sin(t * 2.0) * 0.08;
