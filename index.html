@@ -42,6 +42,19 @@
         }
 
         /* ========================================= */
+        /* --- HARDWARE ASSET CACHE (PREVENTS BLANKING) - */
+        /* ========================================= */
+        #hardware-cache {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -9999;
+        }
+
+        /* ========================================= */
         /* --- CUSTOM LOADER OVERLAY --------------- */
         /* ========================================= */
         #loaderOverlay {
@@ -72,7 +85,8 @@
         .progress-ring {
             stroke-dasharray: 339.29; 
             stroke-dashoffset: 339.29;
-            transition: stroke-dashoffset 0.1s linear;
+            /* Smoothly animates as real assets load */
+            transition: stroke-dashoffset 0.4s ease-out; 
         }
 
         #loader-icon {
@@ -282,6 +296,9 @@
 </head>
 <body>
 
+    <!-- Hardware Asset Cache (Forces GPU to decode images BEFORE user scrolls) -->
+    <div id="hardware-cache"></div>
+
     <!-- Audio / Video Assets -->
     <video id="video1" class="hidden-audio-video" src="video1.mp4" loop muted playsinline crossorigin="anonymous"></video>
     <video id="video2" class="hidden-audio-video" src="video2.mp4" loop muted playsinline crossorigin="anonymous"></video>
@@ -293,7 +310,7 @@
         <div class="loader-content">
             <svg class="loader-ring" width="120" height="120" viewBox="0 0 120 120">
                 <circle cx="60" cy="60" r="54" fill="none" stroke="#eeeeee" stroke-width="6" />
-                <circle class="progress-ring" cx="60" cy="60" r="54" fill="none" stroke="#ff0000" stroke-width="6" stroke-linecap="round" />
+                <circle class="progress-ring" id="progressRing" cx="60" cy="60" r="54" fill="none" stroke="#ff0000" stroke-width="6" stroke-linecap="round" />
             </svg>
             <img src="6.png" id="loader-icon" alt="loading">
         </div>
@@ -305,17 +322,16 @@
         <img src="cd.png" id="cd-icon" class="corner-icon" alt="CD Icon">
     </div>
 
-    <!-- Wrapped in a robust scroll container -->
     <main class="scroll-container" id="scrollContainer">
         
-        <!-- SLIDE 1: The 2D Motion Graphic -->
+        <!-- SLIDE 1 -->
         <section class="slide" id="slide-1">
             <div class="brand-text" id="brandText">ISHOWSPEED</div>
             <img src="5.png" alt="Red Sports Car" class="car" id="carImg">
             <img src="1.png" alt="Character" class="character" id="charImg">
         </section>
 
-        <!-- SLIDE 2: The Fast Photo Sticker Sequence -->
+        <!-- SLIDE 2 -->
         <section class="slide" id="slide-2">
             <div class="marquee-container">
                 <div class="marquee-track">
@@ -332,7 +348,7 @@
             <div class="sticker-container" id="stickerContainer"></div>
         </section>
 
-        <!-- SLIDE 3: The 3D Interactive PSP -->
+        <!-- SLIDE 3 -->
         <section class="slide" id="slide-3">
             <div class="machine__stage" id="stageContainer">
                 <canvas id="pspCanvas"></canvas>
@@ -348,15 +364,9 @@
     </main>
 
     <!-- ========================================================= -->
-    <!-- SCRIPT 1: PRELOADER, ICONS, & ANIMATION BOOTSTRAPPING -->
+    <!-- SCRIPT 1: REAL ASSET LOADER (Images & 3D Model Integration) -->
     <!-- ========================================================= -->
     <script>
-        // -----------------------------------------------------
-        // PRELOAD ASSETS
-        // -----------------------------------------------------
-        window.ASSETS_LOADED = false;
-        let loadedCount = 0;
-        
         const stickerImages = [
             '8.jpeg', '9.jpg', '10.jpg', '11.jpg', '12.jpg', '13.jpg', 
             '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', 
@@ -364,27 +374,34 @@
         ];
         const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages];
         
-        allImages.forEach(src => {
-            const img = new Image();
-            img.src = src;
-            img.onload = () => {
-                loadedCount++;
-                if(loadedCount === allImages.length) window.ASSETS_LOADED = true;
-            };
-            img.onerror = () => {
-                loadedCount++; 
-                if(loadedCount === allImages.length) window.ASSETS_LOADED = true;
-            };
-        });
+        const totalAssets = allImages.length + 1; 
+        let loadedAssets = 0;
 
-        // -----------------------------------------------------
-        // CUSTOM LOADER & FLIP ANIMATION
-        // -----------------------------------------------------
         const loaderOverlay = document.getElementById('loaderOverlay');
         const loaderIcon = document.getElementById('loader-icon');
-        const progressRing = document.querySelector('.progress-ring');
+        const progressRing = document.getElementById('progressRing');
         const loaderRingSvg = document.querySelector('.loader-ring');
         const realBIcon = document.getElementById('b-icon');
+        const hardwareCache = document.getElementById('hardware-cache');
+        const circ = 339.29; 
+
+        window.UPDATE_REAL_PROGRESS = function() {
+            loadedAssets++;
+            let percent = (loadedAssets / totalAssets) * 100;
+            progressRing.style.strokeDashoffset = circ - (circ * percent / 100);
+
+            if (loadedAssets >= totalAssets) {
+                finalizeLoading();
+            }
+        };
+
+        allImages.forEach(src => {
+            const img = new Image();
+            img.onload = window.UPDATE_REAL_PROGRESS;
+            img.onerror = window.UPDATE_REAL_PROGRESS; 
+            img.src = src;
+            hardwareCache.appendChild(img); 
+        });
 
         let isSix = true;
         const toggleInt = setInterval(() => {
@@ -392,46 +409,35 @@
             loaderIcon.src = isSix ? '6.png' : '7.png';
         }, 200);
 
-        let loadProgress = 0;
-        const circ = 339.29; 
-        
-        const progInt = setInterval(() => {
-            loadProgress += 100 / 30; 
-            if (loadProgress >= 100) loadProgress = 100;
+        function finalizeLoading() {
+            clearInterval(toggleInt);
             
-            progressRing.style.strokeDashoffset = circ - (circ * loadProgress / 100);
+            loaderIcon.src = '6.png'; 
+            loaderRingSvg.style.opacity = '0'; 
+            loaderIcon.style.transformOrigin = 'top left'; 
 
-            if (loadProgress === 100 && window.ASSETS_LOADED) {
-                clearInterval(progInt);
-                clearInterval(toggleInt);
+            const targetRect = realBIcon.getBoundingClientRect();
+            const startRect = loaderIcon.getBoundingClientRect();
+            
+            const dx = targetRect.left - startRect.left;
+            const dy = targetRect.top - startRect.top;
+            const scale = targetRect.width / startRect.width;
+
+            loaderOverlay.style.transition = 'background-color 0.8s ease';
+            loaderOverlay.style.backgroundColor = 'transparent';
+
+            loaderIcon.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+            loaderIcon.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+
+            setTimeout(() => {
+                realBIcon.style.opacity = '1'; 
+                loaderOverlay.remove(); 
                 
-                loaderIcon.src = '6.png'; 
-                loaderRingSvg.style.opacity = '0'; 
-                loaderIcon.style.transformOrigin = 'top left'; 
-
-                const targetRect = realBIcon.getBoundingClientRect();
-                const startRect = loaderIcon.getBoundingClientRect();
+                init2DAnimation(); 
                 
-                const dx = targetRect.left - startRect.left;
-                const dy = targetRect.top - startRect.top;
-                const scale = targetRect.width / startRect.width;
-
-                loaderOverlay.style.transition = 'background-color 0.8s ease';
-                loaderOverlay.style.backgroundColor = 'transparent';
-
-                loaderIcon.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
-                loaderIcon.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
-
-                setTimeout(() => {
-                    realBIcon.style.opacity = '1'; 
-                    loaderOverlay.remove(); 
-                    
-                    init2DAnimation(); 
-                    
-                    setTimeout(triggerBEffect, 9000);
-                }, 800);
-            }
-        }, 50);
+                setTimeout(triggerBEffect, 9000);
+            }, 800);
+        }
 
         // -----------------------------------------------------
         // CORNER ICON INTERACTIVITY & PHYSICS
@@ -499,17 +505,6 @@
         }
         uiPhysicsLoop();
 
-        document.addEventListener('click', () => {
-            const doc = window.document;
-            const docEl = doc.documentElement;
-            const requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen;
-            if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-                if (requestFullScreen) {
-                    try { requestFullScreen.call(docEl).catch(() => {}); } catch(err){}
-                }
-            }
-        });
-
         // -----------------------------------------------------
         // SLIDE 2: FAST PHOTO STICKER SEQUENCE
         // -----------------------------------------------------
@@ -569,7 +564,8 @@
                         stickers[i].classList.remove('show');
                         stickers[i].style.transform = 'scale(1.8) rotate(0deg)';
                     }, delay);
-                    delay += 60; 
+                    // Match the spawn speed interval
+                    delay += 150; 
                 }
                 setTimeout(() => isSequenceRunning = false, delay + 200);
             } else {
@@ -579,13 +575,13 @@
                         stickers[i].classList.add('show');
                         stickers[i].style.transform = stickers[i].dataset.targetTransform;
                     }, delay);
-                    delay += 60; 
+                    // Match the spawn speed interval
+                    delay += 150; 
                 }
                 setTimeout(() => isSequenceRunning = false, delay + 200);
             }
         });
 
-        // FIXED OBSERVER: explicitly attaches root to scrollContainer for mobile safely
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
@@ -987,10 +983,13 @@
                 model.position.sub(new THREE.Box3().setFromObject(model).getCenter(new THREE.Vector3()));
                 
                 fitToView();
+                
+                if (window.UPDATE_REAL_PROGRESS) window.UPDATE_REAL_PROGRESS();
             },
             undefined,
             (err) => {
                 console.error('Failed to load psp.glb', err);
+                if (window.UPDATE_REAL_PROGRESS) window.UPDATE_REAL_PROGRESS();
             }
         );
 
@@ -1086,7 +1085,6 @@
             canvas.releasePointerCapture(e.pointerId);
         });
 
-        // FIXED OBSERVER: explicitly attaches root to scrollContainer for safe video tracking
         const videoObserver = new IntersectionObserver((es) => {
             if (es[0].isIntersecting) {
                 currentVideo.play().catch(e => {});
@@ -1109,7 +1107,6 @@
             if (!model.children.length) return;
             const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
             
-            // Safe guard against NaN projection
             if (size.x === 0 || size.y === 0) return;
             
             const fill = 0.7; 
@@ -1168,7 +1165,6 @@
                 pressLight.intensity = 0;
             }
 
-            // ALWAYS Render Composer so PSP doesn't mysteriously disappear!
             composer.render();
         }
         animate();
