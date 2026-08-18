@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>Interactive Scrolling Motion Graphic</title>
+    <!-- GSAP for Advanced Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -42,7 +44,7 @@
         }
 
         /* ========================================= */
-        /* --- HARDWARE ASSET CACHE (PREVENTS BLANKING) - */
+        /* --- HARDWARE ASSET CACHE ---------------- */
         /* ========================================= */
         #hardware-cache {
             position: absolute;
@@ -85,7 +87,6 @@
         .progress-ring {
             stroke-dasharray: 339.29; 
             stroke-dashoffset: 339.29;
-            /* Smoothly animates as real assets load */
             transition: stroke-dashoffset 0.4s ease-out; 
         }
 
@@ -133,7 +134,7 @@
         }
 
         /* ========================================= */
-        /* --- SLIDE 1: 2D ANIMATION STYLES --- */
+        /* --- SLIDE 1: 2D ANIMATION STYLES -------- */
         /* ========================================= */
         .brand-text {
             position: absolute;
@@ -175,7 +176,7 @@
         }
 
         /* ========================================= */
-        /* --- SLIDE 2: FAST PHOTO STICKER STYLES -- */
+        /* --- SLIDE 2: FAST PHOTO STICKERS -------- */
         /* ========================================= */
         .marquee-container {
             position: absolute;
@@ -244,7 +245,117 @@
         }
 
         /* ========================================= */
-        /* --- SLIDE 3: 3D PSP CANVAS STYLES --- */
+        /* --- NEW SLIDE: INTERACTIVE EARTH -------- */
+        /* ========================================= */
+        #slide-interactive {
+            background-color: #ffffff;
+        }
+
+        #flagContainer {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flag-item {
+            position: absolute;
+            font-size: clamp(20px, 4vw, 40px);
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        #earthWrap {
+            position: absolute;
+            width: clamp(200px, 35vw, 400px);
+            height: clamp(200px, 35vw, 400px);
+            z-index: 20;
+            cursor: pointer;
+        }
+
+        #earthCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #staticImagesWrap, #dynamicImagesWrap {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        #staticImagesWrap { z-index: 30; }
+        #dynamicImagesWrap { z-index: 40; }
+
+        .collision-img {
+            position: absolute;
+            object-fit: contain;
+            /* Will be set dynamically, but default fallback */
+            width: clamp(60px, 10vw, 120px);
+            will-change: transform;
+        }
+
+        /* Fixed positions for Specific Elements */
+        #drumGroup {
+            position: absolute;
+            top: 5vh;
+            left: 5vw;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        #drumImg { width: clamp(80px, 12vw, 150px); }
+        #rImg { width: clamp(40px, 6vw, 80px); margin-top: -10px; }
+
+        #benImg {
+            position: absolute;
+            top: 5vh;
+            right: 5vw;
+            width: clamp(80px, 12vw, 150px);
+        }
+
+        #sixtyImg {
+            position: absolute;
+            left: 2vw;
+            width: clamp(50px, 8vw, 100px);
+            bottom: -20vh; /* Starting point */
+        }
+
+        #balloonImg {
+            position: absolute;
+            width: clamp(70px, 12vw, 140px);
+            z-index: 50; /* Topmost dynamic element */
+        }
+
+        /* Race Track */
+        #raceContainer {
+            position: absolute;
+            bottom: 5vh;
+            left: 0;
+            width: 100vw;
+            height: clamp(80px, 15vw, 180px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .runner {
+            position: absolute;
+            height: clamp(40px, 7vw, 80px);
+            object-fit: contain;
+            left: -15vw;
+            will-change: transform, left;
+        }
+
+        #runTop { top: 0; }
+        #runBottom { bottom: 0; }
+
+        /* ========================================= */
+        /* --- SLIDE 3: 3D PSP CANVAS STYLES ------- */
         /* ========================================= */
         .machine__stage {
             position: absolute;
@@ -296,7 +407,7 @@
 </head>
 <body>
 
-    <!-- Hardware Asset Cache (Forces GPU to decode images BEFORE user scrolls) -->
+    <!-- Hardware Asset Cache -->
     <div id="hardware-cache"></div>
 
     <!-- Audio / Video Assets -->
@@ -348,7 +459,35 @@
             <div class="sticker-container" id="stickerContainer"></div>
         </section>
 
-        <!-- SLIDE 3 -->
+        <!-- NEW SLIDE: INTERACTIVE 3D EARTH SECTION -->
+        <section class="slide" id="slide-interactive">
+            <div id="flagContainer"></div>
+            
+            <!-- Safe Zoned Images -->
+            <div id="staticImagesWrap"></div>
+
+            <!-- Dynamic Animations -->
+            <div id="dynamicImagesWrap">
+                <div id="drumGroup" class="collision-element">
+                    <img src="drum1.png" id="drumImg">
+                    <img src="r1.png" id="rImg">
+                </div>
+                <img src="ben1.png" id="benImg" class="collision-element">
+                <img src="60m.png" id="sixtyImg" class="collision-element">
+                <img src="ballon.png" id="balloonImg">
+                <div id="raceContainer">
+                    <img src="run1s.png" id="runTop" class="runner collision-element">
+                    <img src="run1a.png" id="runBottom" class="runner collision-element">
+                </div>
+            </div>
+
+            <!-- Central 3D Earth -->
+            <div id="earthWrap">
+                <canvas id="earthCanvas"></canvas>
+            </div>
+        </section>
+
+        <!-- SLIDE 3 (Formerly PSP) -->
         <section class="slide" id="slide-3">
             <div class="machine__stage" id="stageContainer">
                 <canvas id="pspCanvas"></canvas>
@@ -361,10 +500,11 @@
                 </button>
             </div>
         </section>
+
     </main>
 
     <!-- ========================================================= -->
-    <!-- SCRIPT 1: REAL ASSET LOADER (Images & 3D Model Integration) -->
+    <!-- SCRIPT 1: REAL ASSET LOADER -->
     <!-- ========================================================= -->
     <script>
         const stickerImages = [
@@ -372,9 +512,19 @@
             '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', 
             '20.jpg', '21.jpg', '22.jpg', '23.jpg', '24.jpeg'
         ];
-        const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages];
         
-        const totalAssets = allImages.length + 1; 
+        // Include new interactive slide static/dynamic images
+        const newSectionImages = [
+            'crboy.png', 'crmeet.png', 'ksi.png', 'kai.png', 'face.png', 'messi.png', 
+            'ney.png', 'prime.png', 'eat.png', 'boom.png', 'bal.png', 'i1.png', 
+            'kunfu.png', 'goal.png', 'drum1.png', 'drum2.png', 'r1.png', 'r2.png', 
+            'run1s.png', 'run2s.png', 'run1a.png', 'run2a.png', 'ben1.png', 'ben2.png', 
+            'ballon.png', '60m.png', 'https://unpkg.com/three@0.160.0/examples/textures/planets/earth_atmos_2048.jpg'
+        ];
+
+        const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages, ...newSectionImages];
+        
+        const totalAssets = allImages.length + 1; // +1 for PSP GLB
         let loadedAssets = 0;
 
         const loaderOverlay = document.getElementById('loaderOverlay');
@@ -399,6 +549,8 @@
             const img = new Image();
             img.onload = window.UPDATE_REAL_PROGRESS;
             img.onerror = window.UPDATE_REAL_PROGRESS; 
+            // Apply crossorigin for the external Earth texture to cache cleanly
+            if(src.includes('http')) img.crossOrigin = 'anonymous'; 
             img.src = src;
             hardwareCache.appendChild(img); 
         });
@@ -435,6 +587,7 @@
                 
                 init2DAnimation(); 
                 
+                // Exactly 9 SECONDS after entering site, trigger sound effect
                 setTimeout(triggerBEffect, 9000);
             }, 800);
         }
@@ -564,7 +717,6 @@
                         stickers[i].classList.remove('show');
                         stickers[i].style.transform = 'scale(1.8) rotate(0deg)';
                     }, delay);
-                    // Match the spawn speed interval
                     delay += 150; 
                 }
                 setTimeout(() => isSequenceRunning = false, delay + 200);
@@ -575,7 +727,6 @@
                         stickers[i].classList.add('show');
                         stickers[i].style.transform = stickers[i].dataset.targetTransform;
                     }, delay);
-                    // Match the spawn speed interval
                     delay += 150; 
                 }
                 setTimeout(() => isSequenceRunning = false, delay + 200);
@@ -690,7 +841,217 @@
     </script>
 
     <!-- ========================================================= -->
-    <!-- SCRIPT 3: 3D PSP LOGIC (Three.js WebGL Engine) -->
+    <!-- SCRIPT 2: NEW INTERACTIVE SLIDE LOGIC (GSAP + DOM) ------ -->
+    <!-- ========================================================= -->
+    <script>
+        const interactiveSlide = document.getElementById('slide-interactive');
+        
+        // Setup Static Images Non-Overlapping Engine
+        const staticImgs = ['crboy.png', 'crmeet.png', 'ksi.png', 'kai.png', 'face.png', 'messi.png', 'ney.png', 'prime.png', 'eat.png', 'boom.png', 'bal.png', 'i1.png', 'kunfu.png', 'goal.png'];
+        const staticWrap = document.getElementById('staticImagesWrap');
+        
+        function layoutStaticImages() {
+            staticWrap.innerHTML = '';
+            const placedBoxes = [];
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const isMobile = vw < 768;
+
+            // Define Global Exclusion Zones to protect UI and dynamic components
+            placedBoxes.push({ x: vw/2 - (vw*0.2), y: vh/2 - (vw*0.2), w: vw*0.4, h: vw*0.4 }); // Center Earth
+            placedBoxes.push({ x: 0, y: 0, w: vw*0.3, h: vh*0.3 }); // Top Left Drum/R
+            placedBoxes.push({ x: vw*0.7, y: 0, w: vw*0.3, h: vh*0.3 }); // Top Right Ben
+            placedBoxes.push({ x: 0, y: vh*0.75, w: vw, h: vh*0.25 }); // Bottom Race Track
+            placedBoxes.push({ x: 0, y: 0, w: vw*0.15, h: vh }); // Left 60m Column
+
+            staticImgs.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = 'collision-img collision-element'; // Tag for balloon interaction
+                
+                let placed = false;
+                let attempts = 0;
+                // Base size scales per device safely
+                const size = isMobile ? (vw * 0.15) : (vw * 0.08); 
+                
+                while (!placed && attempts < 500) {
+                    // Restrict spawn area to keep inside boundaries
+                    let testX = Math.random() * (vw - size);
+                    let testY = Math.random() * (vh - size);
+                    
+                    let overlap = placedBoxes.some(box => {
+                        return testX < box.x + box.w && testX + size > box.x &&
+                               testY < box.y + box.h && testY + size > box.y;
+                    });
+
+                    if (!overlap) {
+                        // Increase bounds slightly to ensure margin between pictures
+                        placedBoxes.push({ x: testX - 10, y: testY - 10, w: size + 20, h: size + 20 }); 
+                        img.style.left = `${testX}px`;
+                        img.style.top = `${testY}px`;
+                        img.style.width = `${size}px`;
+                        staticWrap.appendChild(img);
+                        placed = true;
+                    }
+                    attempts++;
+                }
+            });
+        }
+        // Build layout safely on startup and adjust strictly if screen rotates
+        window.addEventListener('resize', () => {
+            clearTimeout(window.resizeTimer);
+            window.resizeTimer = setTimeout(layoutStaticImages, 300);
+        });
+        layoutStaticImages();
+
+        // -----------------------------------------------------
+        // DYNAMIC ANIMATIONS (Loops & Toggles)
+        // -----------------------------------------------------
+        const drumImg = document.getElementById('drumImg');
+        const rImg = document.getElementById('rImg');
+        const benImg = document.getElementById('benImg');
+        const sixtyImg = document.getElementById('sixtyImg');
+        
+        let dState = false;
+        setInterval(() => {
+            dState = !dState;
+            drumImg.src = dState ? 'drum2.png' : 'drum1.png';
+            rImg.src = dState ? 'r2.png' : 'r1.png';
+        }, 300);
+
+        let bState = false;
+        setInterval(() => {
+            bState = !bState;
+            benImg.src = bState ? 'ben2.png' : 'ben1.png';
+        }, 500);
+
+        // 60m Rising 
+        let sixtyY = -20;
+        setInterval(() => {
+            sixtyY += 0.3;
+            if (sixtyY > 120) sixtyY = -20; // reset below screen
+            sixtyImg.style.bottom = `${sixtyY}vh`;
+        }, 16);
+
+        // Race Track Logistics
+        const runTop = document.getElementById('runTop');
+        const runBottom = document.getElementById('runBottom');
+        let rTopX = -15, rBotX = -15;
+        let rtState = false, rbState = false;
+
+        setInterval(() => { rtState = !rtState; runTop.src = rtState ? 'run2s.png' : 'run1s.png'; }, 120);
+        setInterval(() => { rbState = !rbState; runBottom.src = rbState ? 'run2a.png' : 'run1a.png'; }, 150);
+
+        function raceLoop() {
+            rTopX += 0.3;  // Top runs faster
+            rBotX += 0.22; // Bottom runs slower
+            
+            if (rTopX > 110) rTopX = -15;
+            if (rBotX > 110) rBotX = -15;
+
+            runTop.style.left = `${rTopX}vw`;
+            runBottom.style.left = `${rBotX}vw`;
+            requestAnimationFrame(raceLoop);
+        }
+        raceLoop();
+
+        // -----------------------------------------------------
+        // BALLOON COLLISION PHYSICS
+        // -----------------------------------------------------
+        const balloon = document.getElementById('balloonImg');
+        let balX = 40, balY = 40; // vw/vh
+        let vBalX = 0.25, vBalY = 0.2; 
+        
+        function balloonPhysics() {
+            balX += vBalX;
+            balY += vBalY;
+
+            // Bounce off boundaries
+            if (balX <= 0 || balX >= 88) vBalX *= -1; 
+            if (balY <= 0 || balY >= 88) vBalY *= -1; 
+
+            balloon.style.left = `${balX}vw`;
+            balloon.style.top = `${balY}vh`;
+
+            // High-Frequency Collision Detection against all elements
+            const balRect = balloon.getBoundingClientRect();
+            const balCenterX = balRect.left + balRect.width/2;
+            const balCenterY = balRect.top + balRect.height/2;
+
+            document.querySelectorAll('.collision-element').forEach(target => {
+                if (target.dataset.shaking === "true") return;
+
+                const tRect = target.getBoundingClientRect();
+                const tCenterX = tRect.left + tRect.width/2;
+                const tCenterY = tRect.top + tRect.height/2;
+
+                const dx = balCenterX - tCenterX;
+                const dy = balCenterY - tCenterY;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+                
+                // Collision Radius trigger
+                if (distance < (balRect.width/2 + tRect.width/2 - 10)) {
+                    target.dataset.shaking = "true";
+                    
+                    // Subtle Bounce reflection
+                    vBalX *= -1; 
+                    vBalY *= -1;
+
+                    // GSAP Rapid Jerk Frame Animation
+                    gsap.to(target, {
+                        x: "+=10", y: "-=10", rotation: 10, scale: 1.15,
+                        yoyo: true, repeat: 3, duration: 0.06,
+                        onComplete: () => {
+                            gsap.to(target, { x: 0, y: 0, rotation: 0, scale: 1, duration: 0.1 });
+                            // Cooldown before it can shake again
+                            setTimeout(() => { target.dataset.shaking = "false"; }, 1000);
+                        }
+                    });
+                }
+            });
+
+            requestAnimationFrame(balloonPhysics);
+        }
+        balloonPhysics();
+
+        // -----------------------------------------------------
+        // FLAG BURST / RETRACT LOGIC
+        // -----------------------------------------------------
+        const flagContainer = document.getElementById('flagContainer');
+        const flagEmojis = ['🇺🇸','🇬🇧','🇮🇳','🇨🇦','🇦🇺','🇩🇪','🇫🇷','🇯🇵','🇧🇷','🇮🇹','🇪🇸','🇿🇦','🇰🇷','🇲🇽','🇨🇳','🇷🇺','🇳🇬','🇸🇪', '🇦🇷', '🇵🇹', '🇨🇭', '🇳🇱', '🇹🇷', '🇵🇱'];
+        
+        flagEmojis.forEach(f => {
+            const el = document.createElement('div');
+            el.className = 'flag-item';
+            el.innerText = f;
+            flagContainer.appendChild(el);
+        });
+
+        let flagsBurst = false;
+
+        window.toggleFlags = function() {
+            const items = document.querySelectorAll('.flag-item');
+            if (!flagsBurst) {
+                // Outward systematic circular spiral pattern
+                items.forEach((item, i) => {
+                    const angle = i * 0.6; // Spiral offset factor
+                    const radius = 60 + (i * 8); // Grows outward linearly
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    gsap.to(item, { x: x, y: y, opacity: 1, scale: 1.2, duration: 0.8, ease: "back.out(1.5)", delay: i * 0.015 });
+                });
+            } else {
+                // Smooth retraction into Earth core
+                items.forEach((item, i) => {
+                    gsap.to(item, { x: 0, y: 0, opacity: 0, scale: 0.1, duration: 0.5, ease: "power3.inOut" });
+                });
+            }
+            flagsBurst = !flagsBurst;
+        };
+    </script>
+
+    <!-- ========================================================= -->
+    <!-- SCRIPT 3: THREE.JS LOGIC (EARTH & PSP) ------------------ -->
     <!-- ========================================================= -->
     <script type="importmap">
     {
@@ -708,7 +1069,77 @@
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-        const canvas = document.getElementById('pspCanvas');
+        // -----------------------------------------------------
+        // 3D EARTH INTEGRATION (SLIDE 3)
+        // -----------------------------------------------------
+        const earthWrap = document.getElementById('earthWrap');
+        const earthCanvas = document.getElementById('earthCanvas');
+        
+        const earthRenderer = new THREE.WebGLRenderer({ canvas: earthCanvas, alpha: true, antialias: true });
+        earthRenderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+        
+        const earthScene = new THREE.Scene();
+        const earthCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+        earthCamera.position.z = 4.5;
+
+        // Add soft lighting to Earth
+        const eAmbient = new THREE.AmbientLight(0xffffff, 0.6);
+        earthScene.add(eAmbient);
+        const eDir = new THREE.DirectionalLight(0xffffff, 1.5);
+        eDir.position.set(5, 3, 5);
+        earthScene.add(eDir);
+
+        // Load Earth Texture (Safe external URL, cached by preloader)
+        const textureLoader = new THREE.TextureLoader();
+        const earthGeometry = new THREE.SphereGeometry(1.4, 64, 64);
+        
+        // Fallback material setup securely handles cross-origin loads
+        const earthMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0xcccccc,
+            roughness: 0.6
+        });
+        
+        textureLoader.load('https://unpkg.com/three@0.160.0/examples/textures/planets/earth_atmos_2048.jpg', (texture) => {
+            earthMaterial.map = texture;
+            earthMaterial.needsUpdate = true;
+        });
+
+        const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
+        earthScene.add(earthMesh);
+
+        // Earth Resize
+        function resizeEarth() {
+            const w = earthWrap.clientWidth;
+            const h = earthWrap.clientHeight;
+            earthRenderer.setSize(w, h, false);
+            earthCamera.aspect = w / h;
+            earthCamera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', resizeEarth);
+        resizeEarth();
+
+        // Earth Raycaster (Click Detection)
+        const eRaycaster = new THREE.Raycaster();
+        const ePointer = new THREE.Vector2();
+
+        earthWrap.addEventListener('click', (e) => {
+            const rect = earthWrap.getBoundingClientRect();
+            ePointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            ePointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+            eRaycaster.setFromCamera(ePointer, earthCamera);
+            const intersects = eRaycaster.intersectObject(earthMesh);
+            
+            if(intersects.length > 0) {
+                // Call global GSAP Flag logic defined in Script 2
+                window.toggleFlags();
+            }
+        });
+
+        // -----------------------------------------------------
+        // 3D PSP INTEGRATION (SLIDE 4)
+        // -----------------------------------------------------
+        const pspCanvas = document.getElementById('pspCanvas');
         const stageContainer = document.getElementById('stageContainer');
         const muteBtn = document.getElementById('muteBtn');
         const scrollContainer = document.getElementById('scrollContainer');
@@ -739,7 +1170,7 @@
             audioEnabled = !isMuted; 
         });
 
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+        const renderer = new THREE.WebGLRenderer({ canvas: pspCanvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
         renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.05;
@@ -747,8 +1178,6 @@
         renderer.setClearColor(0xffffff, 0); 
 
         const scene = new THREE.Scene();
-        scene.background = null; 
-
         const camera = new THREE.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 0.1, 400);
         camera.position.set(0, 0, 30);
 
@@ -762,19 +1191,15 @@
 
         const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 1.5);
         scene.add(hemi);
-
         const keyLight = new THREE.DirectionalLight(0xbcd4e8, 1.2);
         keyLight.position.set(-8, 9, 12);
         scene.add(keyLight);
-
         const rimIce = new THREE.DirectionalLight(0x7fe3ff, 1.5);
         rimIce.position.set(11, 4, -9);
         scene.add(rimIce);
-
         const rimHot = new THREE.DirectionalLight(0xff2e7e, 1.0);
         rimHot.position.set(-12, -5, -7);
         scene.add(rimHot);
-
         const pressLight = new THREE.PointLight(0x7fe3ff, 0, 9, 2);
         scene.add(pressLight);
         let pressLightLife = 0;
@@ -859,7 +1284,6 @@
         videoTex1.colorSpace = THREE.SRGBColorSpace;
         const videoTex2 = new THREE.VideoTexture(video2);
         videoTex2.colorSpace = THREE.SRGBColorSpace;
-        
         let activeVideoTexture = videoTex1;
 
         const crtMat = new THREE.ShaderMaterial({
@@ -890,11 +1314,9 @@
 
                 void main(){
                     vec2 uv = vUv;
-                    
                     vec2 c = uv - 0.5;
                     float r2 = dot(c, c);
                     uv = 0.5 + c * (1.0 + 0.032 * r2);
-
                     float band = step(0.5, hash(vec2(floor(uv.y * 26.0), floor(uTime * 22.0))));
                     uv.x += uWarp * (band - 0.5) * 0.09;
 
@@ -902,26 +1324,21 @@
                         gl_FragColor = vec4(0.005, 0.008, 0.013, 1.0);
                         return;
                     }
-
                     vec2 g = uGrid;
                     vec2 quv = (floor(uv * g) + 0.5) / g;
-
                     float ab = (0.0005 + 0.0035 * r2) * (1.0 + uWarp * 6.0);
                     float rr = texture2D(uTex, vec2(quv.x + ab, quv.y)).r;
                     float gg = texture2D(uTex, quv).g;
                     float bb = texture2D(uTex, vec2(quv.x - ab, quv.y)).b;
                     vec3 col = vec3(rr, gg, bb);
-
                     float sub = mod(floor(uv.x * g.x * 3.0), 3.0);
                     vec3 mask = vec3(sub < 1.0 ? 1.0 : 0.90, (sub >= 1.0 && sub < 2.0) ? 1.0 : 0.90, sub >= 2.0 ? 1.0 : 0.90);
                     col *= mask;
                     float scan = 0.93 + 0.07 * cos(uv.y * g.y * 6.28318);
                     col *= scan;
-
                     col += vec3(0.05, 0.075, 0.10) * pow(1.0 - uv.y, 3.0) * 0.45;
                     col *= 1.0 - 0.30 * pow(r2 * 1.55, 1.6);
                     col += (hash(quv * 620.0) - 0.5) * 0.012;
-
                     float open = smoothstep(0.0, 1.0, uPower);
                     float slit = smoothstep(open * 0.62 + 0.002, 0.0, abs(uv.y - 0.5));
                     col = mix(vec3(0.55, 0.85, 1.0) * slit * 2.4, col, open);
@@ -942,7 +1359,6 @@
                 gltf.scene.updateWorldMatrix(true, true);
 
                 const bin = [];
-
                 gltf.scene.traverse((o) => {
                     if (!o.isMesh) return;
                     const n = o.name.toLowerCase();
@@ -951,12 +1367,10 @@
                         bin.push(o);
                         return;
                     }
-                    
                     if (n.includes('screen') || n.includes('display')) {
                         screenMesh = o;
                         o.material = crtMat;
                     }
-                    
                     const m = n.match(/^button(\d+)/);
                     if (m || n.includes('button')) {
                         let role = n;
@@ -964,7 +1378,6 @@
                         if(n.includes('right') || n.includes('dpad_r')) role = 'right';
                         if(n.includes('cross') || n.includes('x')) role = 'cross';
                         if(n.includes('circle') || n.includes('o')) role = 'circle';
-                        
                         mapButton(role, o);
                     }
                 });
@@ -1015,15 +1428,15 @@
         let dragTargetY = 0;
         let previousMousePosition = { x: 0, y: 0 };
 
-        canvas.addEventListener('pointerdown', (e) => {
+        pspCanvas.addEventListener('pointerdown', (e) => {
             isDragging = true;
             startTouchX = e.clientX;
             startTouchY = e.clientY;
             previousMousePosition = { x: e.clientX, y: e.clientY };
-            canvas.setPointerCapture(e.pointerId);
+            pspCanvas.setPointerCapture(e.pointerId);
         });
 
-        canvas.addEventListener('pointermove', (e) => {
+        pspCanvas.addEventListener('pointermove', (e) => {
             if (isDragging) {
                 const deltaX = e.clientX - previousMousePosition.x;
                 const deltaY = e.clientY - previousMousePosition.y;
@@ -1063,11 +1476,11 @@
             crtMat.uniforms.uWarp.value = 1.0; 
         }
 
-        canvas.addEventListener('click', (e) => {
+        pspCanvas.addEventListener('click', (e) => {
             const dragDistance = Math.abs(e.clientX - startTouchX) + Math.abs(e.clientY - startTouchY);
             
             if (dragDistance < 10) {
-                const r = canvas.getBoundingClientRect();
+                const r = pspCanvas.getBoundingClientRect();
                 ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
                 ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
 
@@ -1080,9 +1493,9 @@
             }
         });
 
-        canvas.addEventListener('pointerup', (e) => {
+        pspCanvas.addEventListener('pointerup', (e) => {
             isDragging = false;
-            canvas.releasePointerCapture(e.pointerId);
+            pspCanvas.releasePointerCapture(e.pointerId);
         });
 
         const videoObserver = new IntersectionObserver((es) => {
@@ -1092,25 +1505,21 @@
                 currentVideo.pause();
             }
         }, { root: scrollContainer, threshold: 0.1 });
-        videoObserver.observe(canvas);
+        videoObserver.observe(pspCanvas);
 
         const composer = new EffectComposer(renderer);
-        
         const renderPass = new RenderPass(scene, camera);
         renderPass.clearColor = new THREE.Color(0xffffff);
         renderPass.clearAlpha = 0; 
         composer.addPass(renderPass);
-        
         composer.addPass(new OutputPass());
 
         function fitToView() {
             if (!model.children.length) return;
             const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
-            
             if (size.x === 0 || size.y === 0) return;
             
             const fill = 0.7; 
-            
             const vFov = THREE.MathUtils.degToRad(camera.fov);
             const distH = (size.y / 2) / Math.tan(vFov / 2);
             const distW = (size.x / 2) / (Math.tan(vFov / 2) * camera.aspect);
@@ -1137,6 +1546,11 @@
             const dt = Math.min(0.05, clock.getDelta());
             const t = clock.elapsedTime;
             
+            // Earth Rotation Logic
+            earthMesh.rotation.y += 0.01;
+            earthRenderer.render(earthScene, earthCamera);
+
+            // PSP Logic
             root.rotation.y += (dragTargetX - root.rotation.y) * 0.1;
             root.rotation.x += (dragTargetY - root.rotation.x) * 0.1;
 
