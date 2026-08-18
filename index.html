@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>Interactive Scrolling Motion Graphic</title>
-    <!-- GSAP for Advanced Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         * {
@@ -294,12 +294,10 @@
         .collision-img {
             position: absolute;
             object-fit: contain;
-            /* Will be set dynamically, but default fallback */
-            width: clamp(60px, 10vw, 120px);
             will-change: transform;
         }
 
-        /* Fixed positions for Specific Elements */
+        /* --- INCREASED SIZES FOR DYNAMIC ELEMENTS --- */
         #drumGroup {
             position: absolute;
             top: 5vh;
@@ -308,27 +306,27 @@
             flex-direction: column;
             align-items: flex-end;
         }
-        #drumImg { width: clamp(80px, 12vw, 150px); }
-        #rImg { width: clamp(40px, 6vw, 80px); margin-top: -10px; }
+        #drumImg { width: clamp(100px, 16vw, 180px); }
+        #rImg { width: clamp(50px, 8vw, 100px); margin-top: -10px; }
 
         #benImg {
             position: absolute;
             top: 5vh;
             right: 5vw;
-            width: clamp(80px, 12vw, 150px);
+            width: clamp(100px, 16vw, 180px);
         }
 
         #sixtyImg {
             position: absolute;
             left: 2vw;
-            width: clamp(50px, 8vw, 100px);
-            bottom: -20vh; /* Starting point */
+            width: clamp(70px, 12vw, 130px);
+            bottom: -20vh; 
         }
 
         #balloonImg {
             position: absolute;
-            width: clamp(70px, 12vw, 140px);
-            z-index: 50; /* Topmost dynamic element */
+            width: clamp(90px, 16vw, 180px);
+            z-index: 50; 
         }
 
         /* Race Track */
@@ -337,7 +335,7 @@
             bottom: 5vh;
             left: 0;
             width: 100vw;
-            height: clamp(80px, 15vw, 180px);
+            height: clamp(100px, 18vw, 220px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -345,7 +343,7 @@
 
         .runner {
             position: absolute;
-            height: clamp(40px, 7vw, 80px);
+            height: clamp(60px, 10vw, 110px);
             object-fit: contain;
             left: -15vw;
             will-change: transform, left;
@@ -513,7 +511,6 @@
             '20.jpg', '21.jpg', '22.jpg', '23.jpg', '24.jpeg'
         ];
         
-        // Include new interactive slide static/dynamic images
         const newSectionImages = [
             'crboy.png', 'crmeet.png', 'ksi.png', 'kai.png', 'face.png', 'messi.png', 
             'ney.png', 'prime.png', 'eat.png', 'boom.png', 'bal.png', 'i1.png', 
@@ -524,7 +521,7 @@
 
         const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages, ...newSectionImages];
         
-        const totalAssets = allImages.length + 1; // +1 for PSP GLB
+        const totalAssets = allImages.length + 1; 
         let loadedAssets = 0;
 
         const loaderOverlay = document.getElementById('loaderOverlay');
@@ -549,7 +546,6 @@
             const img = new Image();
             img.onload = window.UPDATE_REAL_PROGRESS;
             img.onerror = window.UPDATE_REAL_PROGRESS; 
-            // Apply crossorigin for the external Earth texture to cache cleanly
             if(src.includes('http')) img.crossOrigin = 'anonymous'; 
             img.src = src;
             hardwareCache.appendChild(img); 
@@ -587,7 +583,6 @@
                 
                 init2DAnimation(); 
                 
-                // Exactly 9 SECONDS after entering site, trigger sound effect
                 setTimeout(triggerBEffect, 9000);
             }, 800);
         }
@@ -857,25 +852,25 @@
             const vh = window.innerHeight;
             const isMobile = vw < 768;
 
-            // Define Global Exclusion Zones to protect UI and dynamic components
-            placedBoxes.push({ x: vw/2 - (vw*0.2), y: vh/2 - (vw*0.2), w: vw*0.4, h: vw*0.4 }); // Center Earth
-            placedBoxes.push({ x: 0, y: 0, w: vw*0.3, h: vh*0.3 }); // Top Left Drum/R
-            placedBoxes.push({ x: vw*0.7, y: 0, w: vw*0.3, h: vh*0.3 }); // Top Right Ben
-            placedBoxes.push({ x: 0, y: vh*0.75, w: vw, h: vh*0.25 }); // Bottom Race Track
-            placedBoxes.push({ x: 0, y: 0, w: vw*0.15, h: vh }); // Left 60m Column
+            // Define Expanded Global Exclusion Zones to protect UI and larger dynamic components
+            placedBoxes.push({ x: vw/2 - (vw*0.25), y: vh/2 - (vw*0.25), w: vw*0.5, h: vw*0.5 }); // Center Earth
+            placedBoxes.push({ x: 0, y: 0, w: vw*0.35, h: vh*0.3 }); // Top Left Drum/R
+            placedBoxes.push({ x: vw*0.65, y: 0, w: vw*0.35, h: vh*0.3 }); // Top Right Ben
+            placedBoxes.push({ x: 0, y: vh*0.72, w: vw, h: vh*0.28 }); // Bottom Race Track
+            placedBoxes.push({ x: 0, y: 0, w: vw*0.18, h: vh }); // Left 60m Column
 
             staticImgs.forEach(src => {
                 const img = document.createElement('img');
                 img.src = src;
-                img.className = 'collision-img collision-element'; // Tag for balloon interaction
+                img.className = 'collision-img collision-element'; 
                 
                 let placed = false;
                 let attempts = 0;
-                // Base size scales per device safely
-                const size = isMobile ? (vw * 0.15) : (vw * 0.08); 
+                // INCREASED SIZES: 22vw for mobile, 11vw for desktop
+                const size = isMobile ? (vw * 0.22) : (vw * 0.11); 
                 
-                while (!placed && attempts < 500) {
-                    // Restrict spawn area to keep inside boundaries
+                // Allow up to 1000 attempts to safely pack the larger images without overlapping
+                while (!placed && attempts < 1000) {
                     let testX = Math.random() * (vw - size);
                     let testY = Math.random() * (vh - size);
                     
@@ -885,8 +880,8 @@
                     });
 
                     if (!overlap) {
-                        // Increase bounds slightly to ensure margin between pictures
-                        placedBoxes.push({ x: testX - 10, y: testY - 10, w: size + 20, h: size + 20 }); 
+                        // Apply a 5px margin box around images
+                        placedBoxes.push({ x: testX - 5, y: testY - 5, w: size + 10, h: size + 10 }); 
                         img.style.left = `${testX}px`;
                         img.style.top = `${testY}px`;
                         img.style.width = `${size}px`;
@@ -897,7 +892,7 @@
                 }
             });
         }
-        // Build layout safely on startup and adjust strictly if screen rotates
+        
         window.addEventListener('resize', () => {
             clearTimeout(window.resizeTimer);
             window.resizeTimer = setTimeout(layoutStaticImages, 300);
@@ -925,11 +920,10 @@
             benImg.src = bState ? 'ben2.png' : 'ben1.png';
         }, 500);
 
-        // 60m Rising 
         let sixtyY = -20;
         setInterval(() => {
             sixtyY += 0.3;
-            if (sixtyY > 120) sixtyY = -20; // reset below screen
+            if (sixtyY > 120) sixtyY = -20; 
             sixtyImg.style.bottom = `${sixtyY}vh`;
         }, 16);
 
@@ -943,8 +937,8 @@
         setInterval(() => { rbState = !rbState; runBottom.src = rbState ? 'run2a.png' : 'run1a.png'; }, 150);
 
         function raceLoop() {
-            rTopX += 0.3;  // Top runs faster
-            rBotX += 0.22; // Bottom runs slower
+            rTopX += 0.3;  
+            rBotX += 0.22; 
             
             if (rTopX > 110) rTopX = -15;
             if (rBotX > 110) rBotX = -15;
@@ -959,21 +953,19 @@
         // BALLOON COLLISION PHYSICS
         // -----------------------------------------------------
         const balloon = document.getElementById('balloonImg');
-        let balX = 40, balY = 40; // vw/vh
+        let balX = 40, balY = 40; 
         let vBalX = 0.25, vBalY = 0.2; 
         
         function balloonPhysics() {
             balX += vBalX;
             balY += vBalY;
 
-            // Bounce off boundaries
             if (balX <= 0 || balX >= 88) vBalX *= -1; 
             if (balY <= 0 || balY >= 88) vBalY *= -1; 
 
             balloon.style.left = `${balX}vw`;
             balloon.style.top = `${balY}vh`;
 
-            // High-Frequency Collision Detection against all elements
             const balRect = balloon.getBoundingClientRect();
             const balCenterX = balRect.left + balRect.width/2;
             const balCenterY = balRect.top + balRect.height/2;
@@ -989,21 +981,17 @@
                 const dy = balCenterY - tCenterY;
                 const distance = Math.sqrt(dx*dx + dy*dy);
                 
-                // Collision Radius trigger
                 if (distance < (balRect.width/2 + tRect.width/2 - 10)) {
                     target.dataset.shaking = "true";
                     
-                    // Subtle Bounce reflection
                     vBalX *= -1; 
                     vBalY *= -1;
 
-                    // GSAP Rapid Jerk Frame Animation
                     gsap.to(target, {
                         x: "+=10", y: "-=10", rotation: 10, scale: 1.15,
                         yoyo: true, repeat: 3, duration: 0.06,
                         onComplete: () => {
                             gsap.to(target, { x: 0, y: 0, rotation: 0, scale: 1, duration: 0.1 });
-                            // Cooldown before it can shake again
                             setTimeout(() => { target.dataset.shaking = "false"; }, 1000);
                         }
                     });
@@ -1032,16 +1020,14 @@
         window.toggleFlags = function() {
             const items = document.querySelectorAll('.flag-item');
             if (!flagsBurst) {
-                // Outward systematic circular spiral pattern
                 items.forEach((item, i) => {
-                    const angle = i * 0.6; // Spiral offset factor
-                    const radius = 60 + (i * 8); // Grows outward linearly
+                    const angle = i * 0.6; 
+                    const radius = 60 + (i * 8); 
                     const x = Math.cos(angle) * radius;
                     const y = Math.sin(angle) * radius;
                     gsap.to(item, { x: x, y: y, opacity: 1, scale: 1.2, duration: 0.8, ease: "back.out(1.5)", delay: i * 0.015 });
                 });
             } else {
-                // Smooth retraction into Earth core
                 items.forEach((item, i) => {
                     gsap.to(item, { x: 0, y: 0, opacity: 0, scale: 0.1, duration: 0.5, ease: "power3.inOut" });
                 });
@@ -1082,18 +1068,15 @@
         const earthCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
         earthCamera.position.z = 4.5;
 
-        // Add soft lighting to Earth
         const eAmbient = new THREE.AmbientLight(0xffffff, 0.6);
         earthScene.add(eAmbient);
         const eDir = new THREE.DirectionalLight(0xffffff, 1.5);
         eDir.position.set(5, 3, 5);
         earthScene.add(eDir);
 
-        // Load Earth Texture (Safe external URL, cached by preloader)
         const textureLoader = new THREE.TextureLoader();
         const earthGeometry = new THREE.SphereGeometry(1.4, 64, 64);
         
-        // Fallback material setup securely handles cross-origin loads
         const earthMaterial = new THREE.MeshStandardMaterial({ 
             color: 0xcccccc,
             roughness: 0.6
@@ -1107,7 +1090,6 @@
         const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
         earthScene.add(earthMesh);
 
-        // Earth Resize
         function resizeEarth() {
             const w = earthWrap.clientWidth;
             const h = earthWrap.clientHeight;
@@ -1118,7 +1100,6 @@
         window.addEventListener('resize', resizeEarth);
         resizeEarth();
 
-        // Earth Raycaster (Click Detection)
         const eRaycaster = new THREE.Raycaster();
         const ePointer = new THREE.Vector2();
 
@@ -1131,7 +1112,6 @@
             const intersects = eRaycaster.intersectObject(earthMesh);
             
             if(intersects.length > 0) {
-                // Call global GSAP Flag logic defined in Script 2
                 window.toggleFlags();
             }
         });
