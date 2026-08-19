@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>Interactive Scrolling Motion Graphic</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -42,7 +43,7 @@
         }
 
         /* ========================================= */
-        /* --- HARDWARE ASSET CACHE (PREVENTS BLANKING) - */
+        /* --- HARDWARE ASSET CACHE ---------------- */
         /* ========================================= */
         #hardware-cache {
             position: absolute;
@@ -85,7 +86,6 @@
         .progress-ring {
             stroke-dasharray: 339.29; 
             stroke-dashoffset: 339.29;
-            /* Smoothly animates as real assets load */
             transition: stroke-dashoffset 0.4s ease-out; 
         }
 
@@ -132,8 +132,16 @@
             transform-origin: center;
         }
 
+        @keyframes spin-cd {
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinning {
+            animation: spin-cd 3s linear infinite;
+        }
+
         /* ========================================= */
-        /* --- SLIDE 1: 2D ANIMATION STYLES --- */
+        /* --- SLIDE 1: 2D ANIMATION STYLES -------- */
         /* ========================================= */
         .brand-text {
             position: absolute;
@@ -175,7 +183,7 @@
         }
 
         /* ========================================= */
-        /* --- SLIDE 2: FAST PHOTO STICKER STYLES -- */
+        /* --- SLIDE 2: FAST PHOTO STICKERS -------- */
         /* ========================================= */
         .marquee-container {
             position: absolute;
@@ -192,12 +200,14 @@
         .marquee-track {
             display: flex;
             width: max-content;
-            animation: marquee 12s linear infinite;
+            /* Slowed down to 40s to account for the much wider trail of images */
+            animation: marquee 40s linear infinite;
             will-change: transform;
         }
 
         .marquee-half {
             display: flex;
+            align-items: center;
             gap: 5vw;
             padding-right: 5vw; 
         }
@@ -205,6 +215,7 @@
         .marquee-half img {
             height: 15vw; 
             object-fit: contain;
+            will-change: transform;
         }
 
         @keyframes marquee {
@@ -244,7 +255,7 @@
         }
 
         /* ========================================= */
-        /* --- SLIDE 3: 3D PSP CANVAS STYLES --- */
+        /* --- SLIDE 3: 3D PSP CANVAS STYLES ------- */
         /* ========================================= */
         .machine__stage {
             position: absolute;
@@ -296,7 +307,7 @@
 </head>
 <body>
 
-    <!-- Hardware Asset Cache (Forces GPU to decode images BEFORE user scrolls) -->
+    <!-- Hardware Asset Cache -->
     <div id="hardware-cache"></div>
 
     <!-- Audio / Video Assets -->
@@ -336,19 +347,59 @@
             <div class="marquee-container">
                 <div class="marquee-track">
                     <div class="marquee-half">
-                        <img src="p.png" alt="trail"><img src="p.png" alt="trail"><img src="p.png" alt="trail"><img src="p.png" alt="trail">
-                        <img src="p.png" alt="trail"><img src="p.png" alt="trail"><img src="p.png" alt="trail"><img src="p.png" alt="trail">
+                        <img src="p.png" alt="trail">
+                        <img src="crboy.png" alt="trail">
+                        <img src="ksi.png" alt="trail">
+                        <img src="drum1.png" class="anim-drum" alt="trail">
+                        <img src="r1.png" class="anim-r" alt="trail">
+                        <img src="face.png" alt="trail">
+                        <img src="messi.png" alt="trail">
+                        <img src="run1s.png" class="anim-run1" alt="trail">
+                        <img src="run1a.png" class="anim-run2" alt="trail">
+                        <img src="ney.png" alt="trail">
+                        <img src="prime.png" alt="trail">
+                        <img src="eat.png" alt="trail">
+                        <img src="boom.png" alt="trail">
+                        <img src="bal.png" alt="trail">
+                        <img src="ben1.png" class="anim-ben" alt="trail">
+                        <img src="crmeet.png" alt="trail">
+                        <img src="i1.png" alt="trail">
+                        <img src="kunfu.png" alt="trail">
+                        <img src="goal.png" alt="trail">
+                        <img src="ballon.png" alt="trail">
+                        <img src="60m.png" alt="trail">
+                        <img src="kai.png" alt="trail">
                     </div>
                     <div class="marquee-half">
-                        <img src="p.png" alt="trail"><img src="p.png" alt="trail"><img src="p.png" alt="trail"><img src="p.png" alt="trail">
-                        <img src="p.png" alt="trail"><img src="p.png" alt="trail"><img src="p.png" alt="trail"><img src="p.png" alt="trail">
+                        <img src="p.png" alt="trail">
+                        <img src="crboy.png" alt="trail">
+                        <img src="ksi.png" alt="trail">
+                        <img src="drum1.png" class="anim-drum" alt="trail">
+                        <img src="r1.png" class="anim-r" alt="trail">
+                        <img src="face.png" alt="trail">
+                        <img src="messi.png" alt="trail">
+                        <img src="run1s.png" class="anim-run1" alt="trail">
+                        <img src="run1a.png" class="anim-run2" alt="trail">
+                        <img src="ney.png" alt="trail">
+                        <img src="prime.png" alt="trail">
+                        <img src="eat.png" alt="trail">
+                        <img src="boom.png" alt="trail">
+                        <img src="bal.png" alt="trail">
+                        <img src="ben1.png" class="anim-ben" alt="trail">
+                        <img src="crmeet.png" alt="trail">
+                        <img src="i1.png" alt="trail">
+                        <img src="kunfu.png" alt="trail">
+                        <img src="goal.png" alt="trail">
+                        <img src="ballon.png" alt="trail">
+                        <img src="60m.png" alt="trail">
+                        <img src="kai.png" alt="trail">
                     </div>
                 </div>
             </div>
             <div class="sticker-container" id="stickerContainer"></div>
         </section>
 
-        <!-- SLIDE 3 -->
+        <!-- SLIDE 3 (PSP) -->
         <section class="slide" id="slide-3">
             <div class="machine__stage" id="stageContainer">
                 <canvas id="pspCanvas"></canvas>
@@ -361,10 +412,11 @@
                 </button>
             </div>
         </section>
+
     </main>
 
     <!-- ========================================================= -->
-    <!-- SCRIPT 1: REAL ASSET LOADER (Images & 3D Model Integration) -->
+    <!-- SCRIPT 1: REAL ASSET LOADER -->
     <!-- ========================================================= -->
     <script>
         const stickerImages = [
@@ -372,7 +424,16 @@
             '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', 
             '20.jpg', '21.jpg', '22.jpg', '23.jpg', '24.jpeg'
         ];
-        const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages];
+        
+        const marqueeImages = [
+            'crboy.png', 'crmeet.png', 'ksi.png', 'kai.png', 'face.png', 'messi.png', 
+            'ney.png', 'prime.png', 'eat.png', 'boom.png', 'bal.png', 'i1.png', 
+            'kunfu.png', 'goal.png', 'drum1.png', 'drum2.png', 'r1.png', 'r2.png', 
+            'run1s.png', 'run2s.png', 'run1a.png', 'run2a.png', 'ben1.png', 'ben2.png', 
+            'ballon.png', '60m.png'
+        ];
+
+        const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages, ...marqueeImages];
         
         const totalAssets = allImages.length + 1; 
         let loadedAssets = 0;
@@ -435,6 +496,7 @@
                 
                 init2DAnimation(); 
                 
+                // Exactly 9 SECONDS after entering site, trigger sound effect
                 setTimeout(triggerBEffect, 9000);
             }, 800);
         }
@@ -506,6 +568,34 @@
         uiPhysicsLoop();
 
         // -----------------------------------------------------
+        // MARQUEE DYNAMIC IMAGE ANIMATIONS
+        // -----------------------------------------------------
+        let dState = false;
+        setInterval(() => {
+            dState = !dState;
+            document.querySelectorAll('.anim-drum').forEach(el => el.src = dState ? 'drum2.png' : 'drum1.png');
+            document.querySelectorAll('.anim-r').forEach(el => el.src = dState ? 'r2.png' : 'r1.png');
+        }, 300);
+
+        let bState = false;
+        setInterval(() => {
+            bState = !bState;
+            document.querySelectorAll('.anim-ben').forEach(el => el.src = bState ? 'ben2.png' : 'ben1.png');
+        }, 500);
+
+        let rtState = false;
+        setInterval(() => { 
+            rtState = !rtState; 
+            document.querySelectorAll('.anim-run1').forEach(el => el.src = rtState ? 'run2s.png' : 'run1s.png'); 
+        }, 120);
+
+        let rbState = false;
+        setInterval(() => { 
+            rbState = !rbState; 
+            document.querySelectorAll('.anim-run2').forEach(el => el.src = rbState ? 'run2a.png' : 'run1a.png'); 
+        }, 150);
+
+        // -----------------------------------------------------
         // SLIDE 2: FAST PHOTO STICKER SEQUENCE
         // -----------------------------------------------------
         const slide2El = document.getElementById('slide-2');
@@ -564,7 +654,6 @@
                         stickers[i].classList.remove('show');
                         stickers[i].style.transform = 'scale(1.8) rotate(0deg)';
                     }, delay);
-                    // Match the spawn speed interval
                     delay += 150; 
                 }
                 setTimeout(() => isSequenceRunning = false, delay + 200);
@@ -575,7 +664,6 @@
                         stickers[i].classList.add('show');
                         stickers[i].style.transform = stickers[i].dataset.targetTransform;
                     }, delay);
-                    // Match the spawn speed interval
                     delay += 150; 
                 }
                 setTimeout(() => isSequenceRunning = false, delay + 200);
@@ -942,7 +1030,6 @@
                 gltf.scene.updateWorldMatrix(true, true);
 
                 const bin = [];
-
                 gltf.scene.traverse((o) => {
                     if (!o.isMesh) return;
                     const n = o.name.toLowerCase();
@@ -951,12 +1038,10 @@
                         bin.push(o);
                         return;
                     }
-                    
                     if (n.includes('screen') || n.includes('display')) {
                         screenMesh = o;
                         o.material = crtMat;
                     }
-                    
                     const m = n.match(/^button(\d+)/);
                     if (m || n.includes('button')) {
                         let role = n;
@@ -964,7 +1049,6 @@
                         if(n.includes('right') || n.includes('dpad_r')) role = 'right';
                         if(n.includes('cross') || n.includes('x')) role = 'cross';
                         if(n.includes('circle') || n.includes('o')) role = 'circle';
-                        
                         mapButton(role, o);
                     }
                 });
@@ -1095,22 +1179,18 @@
         videoObserver.observe(canvas);
 
         const composer = new EffectComposer(renderer);
-        
         const renderPass = new RenderPass(scene, camera);
         renderPass.clearColor = new THREE.Color(0xffffff);
         renderPass.clearAlpha = 0; 
         composer.addPass(renderPass);
-        
         composer.addPass(new OutputPass());
 
         function fitToView() {
             if (!model.children.length) return;
             const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
-            
             if (size.x === 0 || size.y === 0) return;
             
             const fill = 0.7; 
-            
             const vFov = THREE.MathUtils.degToRad(camera.fov);
             const distH = (size.y / 2) / Math.tan(vFov / 2);
             const distW = (size.x / 2) / (Math.tan(vFov / 2) * camera.aspect);
@@ -1172,4 +1252,3 @@
     </script>
 </body>
 </html>
-
