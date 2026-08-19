@@ -97,7 +97,7 @@
         }
 
         /* ========================================= */
-        /* --- GLOBAL UI LAYER (ICONS) ------------- */
+        /* --- GLOBAL UI LAYER --------------------- */
         /* ========================================= */
         #ui-layer {
             position: fixed;
@@ -132,12 +132,19 @@
             transform-origin: center;
         }
 
-        @keyframes spin-cd {
-            100% { transform: rotate(360deg); }
-        }
-
-        .spinning {
-            animation: spin-cd 3s linear infinite;
+        /* Faint scroll hint styling */
+        .scroll-hint {
+            position: absolute;
+            bottom: clamp(20px, 4vw, 30px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: sans-serif;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.15);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 10;
         }
 
         /* ========================================= */
@@ -183,7 +190,7 @@
         }
 
         /* ========================================= */
-        /* --- SLIDE 2: FAST PHOTO STICKERS -------- */
+        /* --- SLIDE 2: INTERACTIVE MARQUEE & STICKERS - */
         /* ========================================= */
         .marquee-container {
             position: absolute;
@@ -191,16 +198,20 @@
             display: flex;
             align-items: center;
             overflow: hidden;
-            pointer-events: none;
+            /* Re-enabled pointer events so we can drag the background */
+            pointer-events: auto;
+            cursor: grab;
             z-index: 1;
             opacity: 1; 
-            will-change: transform;
+        }
+
+        .marquee-container:active {
+            cursor: grabbing;
         }
 
         .marquee-track {
             display: flex;
             width: max-content;
-            animation: marquee 40s linear infinite;
             will-change: transform;
         }
 
@@ -212,21 +223,11 @@
         }
 
         .marquee-half img {
-            /* GLITCH FIX: Strict height AND width prevents dynamic reflow jitter during src swaps */
             height: 15vw; 
             width: 15vw; 
             object-fit: contain;
             will-change: transform;
-        }
-
-        /* Pushes the top runner visually ahead of the bottom runner in the flex track */
-        .anim-run1 {
-            transform: translateX(-4vw) scale(1.1);
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            pointer-events: none; /* Prevents dragging ghost images */
         }
 
         .sticker-container {
@@ -346,13 +347,15 @@
             <div class="brand-text" id="brandText">ISHOWSPEED</div>
             <img src="5.png" alt="Red Sports Car" class="car" id="carImg">
             <img src="1.png" alt="Character" class="character" id="charImg">
+            <div class="scroll-hint">Scroll &darr;</div>
         </section>
 
         <!-- SLIDE 2 -->
         <section class="slide" id="slide-2">
-            <div class="marquee-container">
-                <div class="marquee-track">
-                    <div class="marquee-half">
+            <div class="marquee-container" id="marqueeDrag">
+                <div class="marquee-track" id="marqueeTrack">
+                    <!-- Set 1 -->
+                    <div class="marquee-half" id="marqueeHalf">
                         <img src="p.png" alt="trail">
                         <img src="crboy.png" alt="trail">
                         <img src="ksi.png" alt="trail">
@@ -360,9 +363,7 @@
                         <img src="r1.png" class="anim-r" alt="trail">
                         <img src="face.png" alt="trail">
                         <img src="messi.png" alt="trail">
-                        <!-- Runner 1 physically sits ahead of Runner 2 -->
-                        <img src="run1s.png" class="anim-run1" alt="trail">
-                        <img src="run1a.png" class="anim-run2" alt="trail">
+                        <img src="run1s.png" class="anim-run" alt="trail"> <!-- run1a/2a completely removed -->
                         <img src="ney.png" alt="trail">
                         <img src="prime.png" alt="trail">
                         <img src="eat.png" alt="trail">
@@ -377,7 +378,7 @@
                         <img src="60m.png" alt="trail">
                         <img src="kai.png" alt="trail">
                     </div>
-                    <!-- Duplicate for infinite seamless scrolling -->
+                    <!-- Duplicate for infinite looping -->
                     <div class="marquee-half">
                         <img src="p.png" alt="trail">
                         <img src="crboy.png" alt="trail">
@@ -386,8 +387,7 @@
                         <img src="r1.png" class="anim-r" alt="trail">
                         <img src="face.png" alt="trail">
                         <img src="messi.png" alt="trail">
-                        <img src="run1s.png" class="anim-run1" alt="trail">
-                        <img src="run1a.png" class="anim-run2" alt="trail">
+                        <img src="run1s.png" class="anim-run" alt="trail"> 
                         <img src="ney.png" alt="trail">
                         <img src="prime.png" alt="trail">
                         <img src="eat.png" alt="trail">
@@ -405,6 +405,7 @@
                 </div>
             </div>
             <div class="sticker-container" id="stickerContainer"></div>
+            <div class="scroll-hint">Scroll &darr;</div>
         </section>
 
         <!-- SLIDE 3 (PSP) -->
@@ -419,6 +420,7 @@
                     </svg>
                 </button>
             </div>
+            <div class="scroll-hint">Scroll &darr;</div>
         </section>
 
     </main>
@@ -437,9 +439,8 @@
             'crboy.png', 'crmeet.png', 'ksi.png', 'kai.png', 'face.png', 'messi.png', 
             'ney.png', 'prime.png', 'eat.png', 'boom.png', 'bal.png', 'i1.png', 
             'kunfu.png', 'goal.png', 'drum1.png', 'drum2.png', 'r1.png', 'r2.png', 
-            'run1s.png', 'run2s.png', 'run1a.png', 'run2a.png', 'ben1.png', 'ben2.png', 
-            'ballon.png', '60m.png'
-        ];
+            'run1s.png', 'run2s.png', 'ben1.png', 'ben2.png', 'ballon.png', '60m.png'
+        ]; // run1a.png and run2a.png have been completely removed.
 
         const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages, ...marqueeImages];
         
@@ -575,7 +576,7 @@
         uiPhysicsLoop();
 
         // -----------------------------------------------------
-        // MARQUEE DYNAMIC IMAGE ANIMATIONS
+        // MARQUEE DYNAMIC IMAGE ANIMATIONS & DRAG LOGIC
         // -----------------------------------------------------
         let dState = false;
         setInterval(() => {
@@ -590,17 +591,54 @@
             document.querySelectorAll('.anim-ben').forEach(el => el.src = bState ? 'ben2.png' : 'ben1.png');
         }, 500);
 
-        let rtState = false;
+        let rState = false;
         setInterval(() => { 
-            rtState = !rtState; 
-            document.querySelectorAll('.anim-run1').forEach(el => el.src = rtState ? 'run2s.png' : 'run1s.png'); 
+            rState = !rState; 
+            // Now only swaps run1s and run2s
+            document.querySelectorAll('.anim-run').forEach(el => el.src = rState ? 'run2s.png' : 'run1s.png'); 
         }, 120);
 
-        let rbState = false;
-        setInterval(() => { 
-            rbState = !rbState; 
-            document.querySelectorAll('.anim-run2').forEach(el => el.src = rbState ? 'run2a.png' : 'run1a.png'); 
-        }, 150);
+        // --- NEW DRAGGABLE MARQUEE ENGINE ---
+        const marqueeDragBox = document.getElementById('marqueeDrag');
+        const marqueeTrack = document.getElementById('marqueeTrack');
+        const marqueeHalf = document.getElementById('marqueeHalf');
+        
+        let mX = 0;
+        let isMDragging = false;
+        let mStartX = 0;
+
+        marqueeDragBox.addEventListener('pointerdown', (e) => {
+            // Only drag if we clicked the background, not the sticker container
+            if(e.target.closest('#stickerContainer')) return;
+            isMDragging = true;
+            mStartX = e.clientX;
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!isMDragging) return;
+            let delta = e.clientX - mStartX;
+            mX += delta;
+            mStartX = e.clientX;
+        });
+
+        window.addEventListener('pointerup', () => {
+            isMDragging = false;
+        });
+
+        function animateMarquee() {
+            if (!isMDragging) {
+                mX -= 1; // Default Auto-scroll Speed
+            }
+            
+            let halfWidth = marqueeHalf.offsetWidth;
+            if (halfWidth > 0) {
+                if (mX <= -halfWidth) mX += halfWidth;
+                if (mX > 0) mX -= halfWidth;
+                marqueeTrack.style.transform = `translateX(${mX}px)`;
+            }
+            requestAnimationFrame(animateMarquee);
+        }
+        animateMarquee();
 
         // -----------------------------------------------------
         // SLIDE 2: FAST PHOTO STICKER SEQUENCE
@@ -646,7 +684,8 @@
             }, 150); 
         }
 
-        stickerContainer.addEventListener('click', () => {
+        stickerContainer.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevents background marquee from dragging
             if (isSequenceRunning) return;
             const stickers = Array.from(document.querySelectorAll('.sticker-img'));
             if (stickers.length < 2) return; 
@@ -691,11 +730,12 @@
         observer.observe(slide2El);
 
         // -----------------------------------------------------
-        // SLIDE 1: 2D JUMP ANIMATION LOGIC
+        // SLIDE 1: 2D JUMP ANIMATION LOGIC (GLITCH FIXED)
         // -----------------------------------------------------
         const carEl = document.getElementById('carImg');
         const charEl = document.getElementById('charImg');
         const textEl = document.getElementById('brandText');
+        const slide1El = document.getElementById('slide-1');
 
         function init2DAnimation() {
             carEl.style.display = 'block';
@@ -704,24 +744,30 @@
             let startTime = performance.now();
             const totalDuration = 5000; 
 
+            // FIX: We cache the measurements OUTSIDE the physics loop to eliminate rendering lag!
+            let vw, textRect, sceneRect, baselineBottom, impactPoint, maxJumpHeight, charRestX, charTargetX, jumpDistance, carWidth, carStartX;
+
+            function calculateDimensions() {
+                vw = window.innerWidth;
+                textRect = textEl.getBoundingClientRect();
+                sceneRect = slide1El.getBoundingClientRect();
+                baselineBottom = (sceneRect.bottom - textRect.bottom) + (vw * 0.025); 
+                impactPoint = (vw / 2) + (textRect.width / 2) - (vw * 0.01); 
+                maxJumpHeight = textRect.height * 1.15; 
+                charRestX = vw * 0.05; 
+                charTargetX = vw * 0.70; 
+                jumpDistance = charTargetX - charRestX;
+                carWidth = carEl.getBoundingClientRect().width || (vw * 0.2);
+                carStartX = vw + carWidth + (vw * 0.05);
+            }
+            
+            // Calculate once on init, and only again if the window resizes
+            calculateDimensions();
+            window.addEventListener('resize', calculateDimensions);
+
             function updateAnimation(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / totalDuration, 1.0);
-                const vw = window.innerWidth;
-
-                const textRect = textEl.getBoundingClientRect();
-                const sceneRect = document.getElementById('slide-1').getBoundingClientRect();
-                const baselineBottom = (sceneRect.bottom - textRect.bottom) + (vw * 0.025); 
-                
-                const impactPoint = (vw / 2) + (textRect.width / 2) - (vw * 0.01); 
-                
-                const maxJumpHeight = textRect.height * 1.15; 
-                const charRestX = vw * 0.05; 
-                const charTargetX = vw * 0.70; 
-                const jumpDistance = charTargetX - charRestX;
-
-                const carWidth = carEl.getBoundingClientRect().width || (vw * 0.2);
-                const carStartX = vw + carWidth + (vw * 0.05);
 
                 let carX = carStartX;
                 let textTranslateX = 0;
