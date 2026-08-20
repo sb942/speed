@@ -1,9 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>Interactive Scrolling Motion Graphic</title>
+    
+    <!-- Tab Icon / Favicon -->
+    <link rel="icon" type="image/png" href="b1.png">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         * {
@@ -132,7 +137,6 @@
             transform-origin: center;
         }
 
-        /* Faint scroll hint styling */
         .scroll-hint {
             position: absolute;
             bottom: clamp(20px, 4vw, 30px);
@@ -174,7 +178,10 @@
             height: 8vw; 
             object-fit: contain;
             z-index: 20;
-            will-change: transform, left, bottom;
+            /* GLITCH FIX: Base positions set to 0, hardware acceleration enabled */
+            left: 0;
+            bottom: 0;
+            will-change: transform;
             display: none; 
             pointer-events: none;
         }
@@ -184,7 +191,10 @@
             height: 12vw; 
             object-fit: contain;
             z-index: 30;
-            will-change: transform, bottom, left;
+            /* GLITCH FIX: Base positions set to 0, hardware acceleration enabled */
+            left: 0;
+            bottom: 0;
+            will-change: transform;
             display: none; 
             pointer-events: none;
         }
@@ -198,7 +208,6 @@
             display: flex;
             align-items: center;
             overflow: hidden;
-            /* Re-enabled pointer events so we can drag the background */
             pointer-events: auto;
             cursor: grab;
             z-index: 1;
@@ -227,7 +236,11 @@
             width: 15vw; 
             object-fit: contain;
             will-change: transform;
-            pointer-events: none; /* Prevents dragging ghost images */
+            pointer-events: none; 
+        }
+
+        .anim-run1 {
+            transform: translateX(-4vw) scale(1.1);
         }
 
         .sticker-container {
@@ -363,7 +376,7 @@
                         <img src="r1.png" class="anim-r" alt="trail">
                         <img src="face.png" alt="trail">
                         <img src="messi.png" alt="trail">
-                        <img src="run1s.png" class="anim-run" alt="trail"> <!-- run1a/2a completely removed -->
+                        <img src="run1s.png" class="anim-run" alt="trail"> 
                         <img src="ney.png" alt="trail">
                         <img src="prime.png" alt="trail">
                         <img src="eat.png" alt="trail">
@@ -440,7 +453,7 @@
             'ney.png', 'prime.png', 'eat.png', 'boom.png', 'bal.png', 'i1.png', 
             'kunfu.png', 'goal.png', 'drum1.png', 'drum2.png', 'r1.png', 'r2.png', 
             'run1s.png', 'run2s.png', 'ben1.png', 'ben2.png', 'ballon.png', '60m.png'
-        ]; // run1a.png and run2a.png have been completely removed.
+        ]; 
 
         const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages, ...marqueeImages];
         
@@ -594,11 +607,9 @@
         let rState = false;
         setInterval(() => { 
             rState = !rState; 
-            // Now only swaps run1s and run2s
             document.querySelectorAll('.anim-run').forEach(el => el.src = rState ? 'run2s.png' : 'run1s.png'); 
         }, 120);
 
-        // --- NEW DRAGGABLE MARQUEE ENGINE ---
         const marqueeDragBox = document.getElementById('marqueeDrag');
         const marqueeTrack = document.getElementById('marqueeTrack');
         const marqueeHalf = document.getElementById('marqueeHalf');
@@ -608,7 +619,6 @@
         let mStartX = 0;
 
         marqueeDragBox.addEventListener('pointerdown', (e) => {
-            // Only drag if we clicked the background, not the sticker container
             if(e.target.closest('#stickerContainer')) return;
             isMDragging = true;
             mStartX = e.clientX;
@@ -627,7 +637,7 @@
 
         function animateMarquee() {
             if (!isMDragging) {
-                mX -= 1; // Default Auto-scroll Speed
+                mX -= 1; 
             }
             
             let halfWidth = marqueeHalf.offsetWidth;
@@ -685,7 +695,7 @@
         }
 
         stickerContainer.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents background marquee from dragging
+            e.stopPropagation(); 
             if (isSequenceRunning) return;
             const stickers = Array.from(document.querySelectorAll('.sticker-img'));
             if (stickers.length < 2) return; 
@@ -744,7 +754,7 @@
             let startTime = performance.now();
             const totalDuration = 5000; 
 
-            // FIX: We cache the measurements OUTSIDE the physics loop to eliminate rendering lag!
+            // FIX: Measure outside loop to utilize GPU translation properly
             let vw, textRect, sceneRect, baselineBottom, impactPoint, maxJumpHeight, charRestX, charTargetX, jumpDistance, carWidth, carStartX;
 
             function calculateDimensions() {
@@ -761,7 +771,6 @@
                 carStartX = vw + carWidth + (vw * 0.05);
             }
             
-            // Calculate once on init, and only again if the window resizes
             calculateDimensions();
             window.addEventListener('resize', calculateDimensions);
 
@@ -807,11 +816,10 @@
                     currentPose = '4.png';
                 }
 
+                // Smooth GPU translation instead of layout thrashing
                 textEl.style.transform = `translate(calc(-50% + ${textTranslateX}px), -50%) scaleX(0.75)`;
-                carEl.style.left = `${carX}px`;
-                carEl.style.bottom = `${baselineBottom}px`;
-                charEl.style.left = `${charX}px`;
-                charEl.style.bottom = `${charBottomOffset}px`;
+                carEl.style.transform = `translate3d(${carX}px, -${baselineBottom}px, 0)`;
+                charEl.style.transform = `translate3d(${charX}px, -${charBottomOffset}px, 0)`;
                 
                 if (charEl.getAttribute('src') !== currentPose) charEl.src = currentPose;
 
