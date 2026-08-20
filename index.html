@@ -469,7 +469,7 @@
     <!-- ========================================================= -->
     <script>
         const stickerImages = [
-            '8.jpeg', '9.jpg', '10.jpg', '11.jpg', '12.jpg', '13.jpg', 
+            '8.jpeg', '9.jpg', '11.jpg', '12.jpg', '13.jpg', 
             '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', 
             '20.jpg', '21.jpg', '22.jpg', '23.jpg', '24.jpeg'
         ];
@@ -803,10 +803,7 @@
                 sceneRect = slide1El.getBoundingClientRect();
                 baselineBottom = (sceneRect.bottom - textRect.bottom) + (vw * 0.025); 
                 impactPoint = (vw / 2) + (textRect.width / 2) - (vw * 0.01); 
-                
-                // RESTORED ORIGINAL JUMP HEIGHT 
                 maxJumpHeight = textRect.height * 1.15; 
-                
                 charRestX = vw * 0.05; 
                 charTargetX = vw * 0.70; 
                 jumpDistance = charTargetX - charRestX;
@@ -843,8 +840,6 @@
                 
                 if (progress >= jumpStart && progress <= jumpEnd) {
                     const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
-                    
-                    // RESTORED ORIGINAL MATH CURVE FOR THE CORRECT TRAJECTORY
                     const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
                     
                     charBottomOffset = baselineBottom + (arc * maxJumpHeight);
