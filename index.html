@@ -167,8 +167,6 @@
             z-index: 10;
             left: 50%;
             top: 50%;
-            
-            /* HARDWARE ACCELERATION FIXES TO PREVENT JITTER */
             will-change: transform;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
@@ -183,33 +181,42 @@
             z-index: 20;
             left: 0;
             bottom: 0;
-            
-            /* HARDWARE ACCELERATION FIXES */
             will-change: transform;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             transform-style: preserve-3d;
-            
             display: none; 
             pointer-events: none;
         }
 
-        .character {
+        /* GPU OVERLAY WRAPPER FOR SMOOTH JUMP FRAMES */
+        .character-wrapper {
             position: absolute;
             height: 12vw; 
-            object-fit: contain;
+            width: 12vw; 
             z-index: 30;
             left: 0;
             bottom: 0;
-            
-            /* HARDWARE ACCELERATION FIXES */
             will-change: transform;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             transform-style: preserve-3d;
-            
             display: none; 
             pointer-events: none;
+        }
+
+        .character-wrapper img {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0; /* Hidden by default */
+        }
+
+        .character-wrapper img.active {
+            opacity: 1; /* Instantly toggles visibility via GPU without layout thrashing */
         }
 
         /* ========================================= */
@@ -372,7 +379,15 @@
         <section class="slide" id="slide-1">
             <div class="brand-text" id="brandText">ISHOWSPEED</div>
             <img src="5.png" alt="Red Sports Car" class="car" id="carImg">
-            <img src="1.png" alt="Character" class="character" id="charImg">
+            
+            <!-- STACKED GPU ACCELERATED FRAMES FOR 100% SMOOTH JUMP -->
+            <div class="character-wrapper" id="charWrap">
+                <img src="1.png" id="pose-1" class="active">
+                <img src="2.png" id="pose-2">
+                <img src="3.png" id="pose-3">
+                <img src="4.png" id="pose-4">
+            </div>
+
             <div class="scroll-hint">Scroll &darr;</div>
         </section>
 
@@ -605,23 +620,31 @@
         // MARQUEE DYNAMIC IMAGE ANIMATIONS & DRAG LOGIC
         // -----------------------------------------------------
         let dState = false;
-        setInterval(() => {
-            dState = !dState;
-            document.querySelectorAll('.anim-drum').forEach(el => el.src = dState ? 'drum2.png' : 'drum1.png');
-            document.querySelectorAll('.anim-r').forEach(el => el.src = dState ? 'r2.png' : 'r1.png');
-        }, 300);
-
         let bState = false;
-        setInterval(() => {
-            bState = !bState;
-            document.querySelectorAll('.anim-ben').forEach(el => el.src = bState ? 'ben2.png' : 'ben1.png');
-        }, 500);
-
         let rState = false;
-        setInterval(() => { 
-            rState = !rState; 
-            document.querySelectorAll('.anim-run').forEach(el => el.src = rState ? 'run2s.png' : 'run1s.png'); 
-        }, 120);
+        let marqueeTimers = [];
+
+        function startMarqueeAnims() {
+            if(marqueeTimers.length > 0) return;
+            marqueeTimers.push(setInterval(() => {
+                dState = !dState;
+                document.querySelectorAll('.anim-drum').forEach(el => el.src = dState ? 'drum2.png' : 'drum1.png');
+                document.querySelectorAll('.anim-r').forEach(el => el.src = dState ? 'r2.png' : 'r1.png');
+            }, 300));
+            marqueeTimers.push(setInterval(() => {
+                bState = !bState;
+                document.querySelectorAll('.anim-ben').forEach(el => el.src = bState ? 'ben2.png' : 'ben1.png');
+            }, 500));
+            marqueeTimers.push(setInterval(() => { 
+                rState = !rState; 
+                document.querySelectorAll('.anim-run').forEach(el => el.src = rState ? 'run2s.png' : 'run1s.png'); 
+            }, 120));
+        }
+
+        function stopMarqueeAnims() {
+            marqueeTimers.forEach(t => clearInterval(t));
+            marqueeTimers = [];
+        }
 
         const marqueeDragBox = document.getElementById('marqueeDrag');
         const marqueeTrack = document.getElementById('marqueeTrack');
@@ -630,6 +653,7 @@
         let mX = 0;
         let isMDragging = false;
         let mStartX = 0;
+        let isSlide2Visible = false;
 
         marqueeDragBox.addEventListener('pointerdown', (e) => {
             if(e.target.closest('#stickerContainer')) return;
@@ -649,15 +673,17 @@
         });
 
         function animateMarquee() {
-            if (!isMDragging) {
-                mX -= 1.5; // SPEED INCREASED FOR AUTO-SCROLL
-            }
-            
-            let halfWidth = marqueeHalf.offsetWidth;
-            if (halfWidth > 0) {
-                if (mX <= -halfWidth) mX += halfWidth;
-                if (mX > 0) mX -= halfWidth;
-                marqueeTrack.style.transform = `translate3d(${mX}px, 0, 0)`; // GPU Hardware Accelerated
+            if (isSlide2Visible) { 
+                if (!isMDragging) {
+                    mX -= 2.5; 
+                }
+                
+                let halfWidth = marqueeHalf.offsetWidth;
+                if (halfWidth > 0) {
+                    if (mX <= -halfWidth) mX += halfWidth;
+                    if (mX > 0) mX -= halfWidth;
+                    marqueeTrack.style.transform = `translate3d(${mX}px, 0, 0)`; 
+                }
             }
             requestAnimationFrame(animateMarquee);
         }
@@ -694,7 +720,7 @@
                 const offX = (Math.random() - 0.5) * 30;
                 const offY = (Math.random() - 0.5) * 30;
                 
-                const targetTransform = `translate(${offX}px, ${offY}px) scale(1) rotate(${rot}deg)`;
+                const targetTransform = `translate3d(${offX}px, ${offY}px, 0) scale(1) rotate(${rot}deg)`;
                 img.dataset.targetTransform = targetTransform;
 
                 stickerContainer.appendChild(img);
@@ -721,7 +747,7 @@
                 for (let i = stickers.length - 1; i >= 1; i--) {
                     setTimeout(() => {
                         stickers[i].classList.remove('show');
-                        stickers[i].style.transform = 'scale(1.8) rotate(0deg)';
+                        stickers[i].style.transform = 'translate3d(0,0,0) scale(1.8) rotate(0deg)';
                     }, delay);
                     delay += 150; 
                 }
@@ -741,35 +767,37 @@
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+                isSlide2Visible = entry.isIntersecting;
+                if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
                     playStickerSequence();
+                    startMarqueeAnims(); 
                 } else if (!entry.isIntersecting) {
                     clearInterval(stickerInterval);
                     isStickerPlaying = false; 
+                    stopMarqueeAnims(); 
                 }
             });
-        }, { root: scrollContainer, threshold: [0, 0.5] }); 
+        }, { root: scrollContainer, threshold: [0, 0.1] }); 
         
         observer.observe(slide2El);
 
         // -----------------------------------------------------
-        // SLIDE 1: 2D JUMP ANIMATION LOGIC (HARDWARE ACCELERATED & CACHED)
+        // SLIDE 1: 2D JUMP ANIMATION LOGIC (NO LAYOUT THRASHING)
         // -----------------------------------------------------
         const carEl = document.getElementById('carImg');
-        const charEl = document.getElementById('charImg');
+        const charWrap = document.getElementById('charWrap');
         const textEl = document.getElementById('brandText');
         const slide1El = document.getElementById('slide-1');
 
         function init2DAnimation() {
             carEl.style.display = 'block';
-            charEl.style.display = 'block';
+            charWrap.style.display = 'block';
             
             let startTime = performance.now();
             const totalDuration = 5000; 
 
-            // Caching DOM measurements prevents browser "Layout Thrashing" and lag
             let vw, textRect, sceneRect, baselineBottom, impactPoint, maxJumpHeight, charRestX, charTargetX, jumpDistance, carWidth, carStartX;
-            let lastPose = '';
+            let lastPose = 1;
 
             function calculateDimensions() {
                 vw = window.innerWidth;
@@ -777,7 +805,8 @@
                 sceneRect = slide1El.getBoundingClientRect();
                 baselineBottom = (sceneRect.bottom - textRect.bottom) + (vw * 0.025); 
                 impactPoint = (vw / 2) + (textRect.width / 2) - (vw * 0.01); 
-                maxJumpHeight = textRect.height * 1.15; 
+                // Slightly increased to clear the text elegantly with the smooth Sine wave
+                maxJumpHeight = textRect.height * 1.35; 
                 charRestX = vw * 0.05; 
                 charTargetX = vw * 0.70; 
                 jumpDistance = charTargetX - charRestX;
@@ -796,7 +825,7 @@
                 let textTranslateX = 0;
                 let charBottomOffset = baselineBottom;
                 let charX = charRestX;
-                let currentPose = '1.png';
+                let currentPose = 1;
 
                 if (progress > 0.15) {
                     const carProgress = Math.min((progress - 0.15) / 0.75, 1.0); 
@@ -814,30 +843,33 @@
                 
                 if (progress >= jumpStart && progress <= jumpEnd) {
                     const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
-                    const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
+                    
+                    // JUMP GLITCH FIXED: Pure Sine curve replaces the aggressive Math.pow curve
+                    const arc = Math.sin(jumpP * Math.PI);
                     
                     charBottomOffset = baselineBottom + (arc * maxJumpHeight);
                     charX = charRestX + (jumpP * jumpDistance);
 
-                    if (jumpP < 0.2) currentPose = '1.png';
-                    else if (jumpP < 0.5) currentPose = '2.png';
-                    else if (jumpP < 0.8) currentPose = '3.png';
-                    else currentPose = '4.png';
+                    if (jumpP < 0.2) currentPose = 1;
+                    else if (jumpP < 0.5) currentPose = 2;
+                    else if (jumpP < 0.8) currentPose = 3;
+                    else currentPose = 4;
                     
                 } else if (progress > jumpEnd) {
                     charBottomOffset = baselineBottom;
                     charX = charTargetX;
-                    currentPose = '4.png';
+                    currentPose = 4;
                 }
 
-                // 100% GPU Accelerated 3D Translation to guarantee 60/120fps smoothness
-                textEl.style.transform = `translate3d(calc(-50% + ${textTranslateX}px), -50%, 0) scaleX(0.75)`;
+                // Smooth GPU translation without triggering browser layout thrashing
+                textEl.style.transform = `translate(-50%, -50%) translateX(${textTranslateX}px) scaleX(0.75) translateZ(0)`;
                 carEl.style.transform = `translate3d(${carX}px, -${baselineBottom}px, 0)`;
-                charEl.style.transform = `translate3d(${charX}px, -${charBottomOffset}px, 0)`;
+                charWrap.style.transform = `translate3d(${charX}px, -${charBottomOffset}px, 0)`;
                 
-                // Fast caching to prevent repeated DOM queries causing jitter
+                // Opacity frame swap completely prevents image decoding lag
                 if (lastPose !== currentPose) {
-                    charEl.src = currentPose;
+                    document.getElementById(`pose-${lastPose}`).classList.remove('active');
+                    document.getElementById(`pose-${currentPose}`).classList.add('active');
                     lastPose = currentPose;
                 }
 
@@ -1234,13 +1266,15 @@
             pspCanvas.releasePointerCapture(e.pointerId);
         });
 
+        let pspInView = false;
         const videoObserver = new IntersectionObserver((es) => {
+            pspInView = es[0].isIntersecting;
             if (es[0].isIntersecting) {
                 currentVideo.play().catch(e => {});
             } else {
                 currentVideo.pause();
             }
-        }, { root: scrollContainer, threshold: 0.1 });
+        }, { root: scrollContainer, threshold: 0.01 });
         videoObserver.observe(pspCanvas);
 
         const composer = new EffectComposer(renderer);
@@ -1278,6 +1312,8 @@
 
         function animate() {
             requestAnimationFrame(animate);
+
+            if (!pspInView) return; 
 
             const dt = Math.min(0.05, clock.getDelta());
             const t = clock.elapsedTime;
