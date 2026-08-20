@@ -189,7 +189,6 @@
             pointer-events: none;
         }
 
-        /* GPU OVERLAY WRAPPER FOR SMOOTH JUMP FRAMES */
         .character-wrapper {
             position: absolute;
             height: 12vw; 
@@ -212,11 +211,11 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            opacity: 0; /* Hidden by default */
+            opacity: 0; 
         }
 
         .character-wrapper img.active {
-            opacity: 1; /* Instantly toggles visibility via GPU without layout thrashing */
+            opacity: 1; 
         }
 
         /* ========================================= */
@@ -380,7 +379,6 @@
             <div class="brand-text" id="brandText">ISHOWSPEED</div>
             <img src="5.png" alt="Red Sports Car" class="car" id="carImg">
             
-            <!-- STACKED GPU ACCELERATED FRAMES FOR 100% SMOOTH JUMP -->
             <div class="character-wrapper" id="charWrap">
                 <img src="1.png" id="pose-1" class="active">
                 <img src="2.png" id="pose-2">
@@ -782,7 +780,7 @@
         observer.observe(slide2El);
 
         // -----------------------------------------------------
-        // SLIDE 1: 2D JUMP ANIMATION LOGIC (NO LAYOUT THRASHING)
+        // SLIDE 1: 2D JUMP ANIMATION LOGIC
         // -----------------------------------------------------
         const carEl = document.getElementById('carImg');
         const charWrap = document.getElementById('charWrap');
@@ -805,8 +803,10 @@
                 sceneRect = slide1El.getBoundingClientRect();
                 baselineBottom = (sceneRect.bottom - textRect.bottom) + (vw * 0.025); 
                 impactPoint = (vw / 2) + (textRect.width / 2) - (vw * 0.01); 
-                // Slightly increased to clear the text elegantly with the smooth Sine wave
-                maxJumpHeight = textRect.height * 1.35; 
+                
+                // RESTORED ORIGINAL JUMP HEIGHT 
+                maxJumpHeight = textRect.height * 1.15; 
+                
                 charRestX = vw * 0.05; 
                 charTargetX = vw * 0.70; 
                 jumpDistance = charTargetX - charRestX;
@@ -844,8 +844,8 @@
                 if (progress >= jumpStart && progress <= jumpEnd) {
                     const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
                     
-                    // JUMP GLITCH FIXED: Pure Sine curve replaces the aggressive Math.pow curve
-                    const arc = Math.sin(jumpP * Math.PI);
+                    // RESTORED ORIGINAL MATH CURVE FOR THE CORRECT TRAJECTORY
+                    const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
                     
                     charBottomOffset = baselineBottom + (arc * maxJumpHeight);
                     charX = charRestX + (jumpP * jumpDistance);
@@ -861,12 +861,10 @@
                     currentPose = 4;
                 }
 
-                // Smooth GPU translation without triggering browser layout thrashing
                 textEl.style.transform = `translate(-50%, -50%) translateX(${textTranslateX}px) scaleX(0.75) translateZ(0)`;
                 carEl.style.transform = `translate3d(${carX}px, -${baselineBottom}px, 0)`;
                 charWrap.style.transform = `translate3d(${charX}px, -${charBottomOffset}px, 0)`;
                 
-                // Opacity frame swap completely prevents image decoding lag
                 if (lastPose !== currentPose) {
                     document.getElementById(`pose-${lastPose}`).classList.remove('active');
                     document.getElementById(`pose-${currentPose}`).classList.add('active');
