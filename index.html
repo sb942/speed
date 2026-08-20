@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -163,14 +162,18 @@
             text-transform: uppercase;
             font-size: 13vw; 
             letter-spacing: 0.05em; 
-            transform: scaleX(0.75);
             white-space: nowrap;
             user-select: none;
             z-index: 10;
-            will-change: transform;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%) scaleX(0.75);
+            
+            /* HARDWARE ACCELERATION FIXES TO PREVENT JITTER */
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translate3d(-50%, -50%, 0) scaleX(0.75);
+            transform-style: preserve-3d;
         }
 
         .car {
@@ -178,10 +181,15 @@
             height: 8vw; 
             object-fit: contain;
             z-index: 20;
-            /* GLITCH FIX: Base positions set to 0, hardware acceleration enabled */
             left: 0;
             bottom: 0;
+            
+            /* HARDWARE ACCELERATION FIXES */
             will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            
             display: none; 
             pointer-events: none;
         }
@@ -191,10 +199,15 @@
             height: 12vw; 
             object-fit: contain;
             z-index: 30;
-            /* GLITCH FIX: Base positions set to 0, hardware acceleration enabled */
             left: 0;
             bottom: 0;
+            
+            /* HARDWARE ACCELERATION FIXES */
             will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            
             display: none; 
             pointer-events: none;
         }
@@ -455,7 +468,7 @@
             'run1s.png', 'run2s.png', 'ben1.png', 'ben2.png', 'ballon.png', '60m.png'
         ]; 
 
-        const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', ...stickerImages, ...marqueeImages];
+        const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', 'b1.png', ...stickerImages, ...marqueeImages];
         
         const totalAssets = allImages.length + 1; 
         let loadedAssets = 0;
@@ -637,14 +650,14 @@
 
         function animateMarquee() {
             if (!isMDragging) {
-                mX -= 1; 
+                mX -= 1.5; // SPEED INCREASED FOR AUTO-SCROLL
             }
             
             let halfWidth = marqueeHalf.offsetWidth;
             if (halfWidth > 0) {
                 if (mX <= -halfWidth) mX += halfWidth;
                 if (mX > 0) mX -= halfWidth;
-                marqueeTrack.style.transform = `translateX(${mX}px)`;
+                marqueeTrack.style.transform = `translate3d(${mX}px, 0, 0)`; // GPU Hardware Accelerated
             }
             requestAnimationFrame(animateMarquee);
         }
@@ -740,7 +753,7 @@
         observer.observe(slide2El);
 
         // -----------------------------------------------------
-        // SLIDE 1: 2D JUMP ANIMATION LOGIC (GLITCH FIXED)
+        // SLIDE 1: 2D JUMP ANIMATION LOGIC (HARDWARE ACCELERATED & CACHED)
         // -----------------------------------------------------
         const carEl = document.getElementById('carImg');
         const charEl = document.getElementById('charImg');
@@ -754,8 +767,9 @@
             let startTime = performance.now();
             const totalDuration = 5000; 
 
-            // FIX: Measure outside loop to utilize GPU translation properly
+            // Caching DOM measurements prevents browser "Layout Thrashing" and lag
             let vw, textRect, sceneRect, baselineBottom, impactPoint, maxJumpHeight, charRestX, charTargetX, jumpDistance, carWidth, carStartX;
+            let lastPose = '';
 
             function calculateDimensions() {
                 vw = window.innerWidth;
@@ -816,12 +830,16 @@
                     currentPose = '4.png';
                 }
 
-                // Smooth GPU translation instead of layout thrashing
-                textEl.style.transform = `translate(calc(-50% + ${textTranslateX}px), -50%) scaleX(0.75)`;
+                // 100% GPU Accelerated 3D Translation to guarantee 60/120fps smoothness
+                textEl.style.transform = `translate3d(calc(-50% + ${textTranslateX}px), -50%, 0) scaleX(0.75)`;
                 carEl.style.transform = `translate3d(${carX}px, -${baselineBottom}px, 0)`;
                 charEl.style.transform = `translate3d(${charX}px, -${charBottomOffset}px, 0)`;
                 
-                if (charEl.getAttribute('src') !== currentPose) charEl.src = currentPose;
+                // Fast caching to prevent repeated DOM queries causing jitter
+                if (lastPose !== currentPose) {
+                    charEl.src = currentPose;
+                    lastPose = currentPose;
+                }
 
                 if (progress < 1.0) {
                     requestAnimationFrame(updateAnimation);
