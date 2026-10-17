@@ -137,40 +137,6 @@
         filter: brightness(0.7);
       }
 
-      .chat-badge {
-        position: absolute;
-        left: clamp(20px, 5vw, 40px);
-        bottom: clamp(20px, 5vw, 40px);
-        width: 15vw;
-        max-width: 110px;
-        aspect-ratio: 1;
-        border: 2px solid #ffffff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 5px;
-        background: rgba(0, 0, 0, 0.78);
-        color: #ffffff;
-        font:
-          900 clamp(9px, 1.25vw, 13px)/1 Arial,
-          sans-serif;
-        text-align: center;
-        letter-spacing: 0.04em;
-        opacity: 0;
-        transform: scale(0.7);
-        transition:
-          opacity 180ms ease,
-          transform 180ms ease;
-        pointer-events: none;
-        z-index: 2;
-      }
-
-      .chat-badge.show {
-        opacity: 1;
-        transform: scale(1);
-      }
-
       #b-icon {
         left: clamp(20px, 5vw, 40px);
         transform-origin: center;
@@ -244,6 +210,21 @@
         border-radius: 6px;
         border-right: 4px solid #000000;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      /* Keep the subscriber number clear of the centered ISHOWSPEED title on phones. */
+      @media (max-width: 600px) {
+        #live-sub-widget {
+          top: max(12px, env(safe-area-inset-top));
+          right: 10px;
+          transform: none;
+        }
+
+        .sub-odometer {
+          font-size: clamp(1.05rem, 5vw, 1.5rem);
+          padding: 3px 7px;
+          border-right-width: 3px;
+        }
       }
 
       .odo-digit-window {
@@ -664,9 +645,6 @@
     <!-- Global Fixed UI Overlay -->
     <div id="ui-layer">
       <img src="6.png" id="b-icon" class="corner-icon" alt="Effect Icon" />
-      <div id="chatBadge" class="chat-badge" aria-hidden="true">
-        W IN THE CHAT
-      </div>
       <img src="cd.png" id="cd-icon" class="corner-icon" alt="CD Icon" />
 
       <!-- Live IShowSpeed YouTube Subscriber Stream Counter -->
@@ -1050,16 +1028,8 @@
         }, 300);
       }
 
-      const chatBadge = document.getElementById("chatBadge");
-      let chatBadgeTimer;
       bIcon.addEventListener("click", () => {
         triggerBEffect();
-        chatBadge.classList.add("show");
-        clearTimeout(chatBadgeTimer);
-        chatBadgeTimer = setTimeout(
-          () => chatBadge.classList.remove("show"),
-          1400,
-        );
       });
 
       cdIcon.addEventListener("click", () => {
@@ -2255,7 +2225,9 @@
         } else {
           // Apple stays centered in the middle and scales up huge out of the screen at the end
           appleX = 0;
-          const steadyScale = 2.15 * sceneZoomInMultiplier;
+          // On phones, leave more breathing room between the apple and the GIF ribbon.
+          const mobileAppleScale = vw <= 600 ? 1.45 : 2.15;
+          const steadyScale = mobileAppleScale * sceneZoomInMultiplier;
           appleScaleX = steadyScale;
           appleScaleY = steadyScale;
           appleScaleZ = steadyScale;
@@ -2299,7 +2271,7 @@
         // -----------------------------------------------------------
         // Begin showing the GIF ribbon earlier and give it enough scroll distance
         // to complete the wrap, rather than leaving it hidden until late in the slide.
-        const ringEntryProgress = Math.max(0, Math.min(1, (p - 0.34) / 0.3));
+        const ringEntryProgress = Math.max(0, Math.min(1, (p - 0.34) / 0.30));
         const isFullyWrapped = ringEntryProgress >= 0.995;
 
         if (ringEntryProgress > 0.01 && sceneFadeOut > 0.05) {
