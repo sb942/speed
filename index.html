@@ -1,76 +1,51 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>Interactive Scrolling Motion Graphic</title>
-<<<<<<< HEAD
-
-    <!-- Tab Icon / Favicon -->
-    <link rel="icon" type="image/png" href="b1.png" />
-
-=======
     
     <!-- Tab Icon / Favicon -->
     <link rel="icon" type="image/png" href="b1.png">
     
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        background-color: #ffffff;
-        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-        overflow: hidden;
-      }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            overflow: hidden; 
+        }
 
-      .scroll-container {
-        width: 100vw;
-        height: 100dvh;
-        overflow-y: scroll;
-        overflow-x: hidden;
-        scroll-snap-type: y mandatory;
-        scroll-behavior: smooth;
-      }
+        .scroll-container {
+            width: 100vw;
+            height: 100dvh;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
 
-      .slide {
-        position: relative;
-        width: 100vw;
-        height: 100dvh;
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #ffffff;
-      }
+        .slide {
+            position: relative;
+            width: 100vw;
+            height: 100dvh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always; 
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+        }
 
-<<<<<<< HEAD
-      /* ========================================= */
-      /* --- HARDWARE ASSET CACHE ---------------- */
-      /* ========================================= */
-      #hardware-cache {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        opacity: 0;
-        pointer-events: none;
-        z-index: -9999;
-      }
-=======
         /* ========================================= */
         /* --- HARDWARE ASSET CACHE ---------------- */
         /* ========================================= */
@@ -83,68 +58,48 @@
             pointer-events: none;
             z-index: -9999;
         }
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-      /* ========================================= */
-      /* --- CUSTOM LOADER OVERLAY --------------- */
-      /* ========================================= */
-      #loaderOverlay {
-        position: fixed;
-        inset: 0;
-        background: #ffffff;
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+        /* ========================================= */
+        /* --- CUSTOM LOADER OVERLAY --------------- */
+        /* ========================================= */
+        #loaderOverlay {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-      .loader-content {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 120px;
-        height: 120px;
-      }
+        .loader-content {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 120px;
+            height: 120px;
+        }
 
-      .loader-ring {
-        position: absolute;
-        transform: rotate(-90deg);
-        transition: opacity 0.3s ease;
-      }
+        .loader-ring {
+            position: absolute;
+            transform: rotate(-90deg);
+            transition: opacity 0.3s ease;
+        }
 
-<<<<<<< HEAD
-      .progress-ring {
-        stroke-dasharray: 339.29;
-        stroke-dashoffset: 339.29;
-        transition: stroke-dashoffset 0.4s ease-out;
-      }
-=======
         .progress-ring {
             stroke-dasharray: 339.29; 
             stroke-dashoffset: 339.29;
             transition: stroke-dashoffset 0.4s ease-out; 
         }
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-      #loader-icon {
-        width: 65px;
-        height: 65px;
-        object-fit: contain;
-        z-index: 10000;
-      }
+        #loader-icon {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+            z-index: 10000;
+        }
 
-<<<<<<< HEAD
-      /* ========================================= */
-      /* --- GLOBAL UI LAYER --------------------- */
-      /* ========================================= */
-      #ui-layer {
-        position: fixed;
-        inset: 0;
-        z-index: 1000;
-        pointer-events: none;
-      }
-=======
         /* ========================================= */
         /* --- GLOBAL UI LAYER --------------------- */
         /* ========================================= */
@@ -154,136 +109,33 @@
             z-index: 1000;
             pointer-events: none; 
         }
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-      .corner-icon {
-        position: absolute;
-        bottom: clamp(20px, 5vw, 40px);
-        width: 15vw;
-        max-width: 110px;
-        pointer-events: auto;
-        cursor: pointer;
-        object-fit: contain;
-        transition: filter 0.1s ease;
-      }
+        .corner-icon {
+            position: absolute;
+            bottom: clamp(20px, 5vw, 40px);
+            width: 15vw; 
+            max-width: 110px; 
+            pointer-events: auto; 
+            cursor: pointer;
+            object-fit: contain;
+            transition: filter 0.1s ease; 
+        }
 
-      .corner-icon:active {
-        filter: brightness(0.7);
-      }
+        .corner-icon:active {
+            filter: brightness(0.7); 
+        }
 
-      #b-icon {
-        left: clamp(20px, 5vw, 40px);
-        transform-origin: center;
-        opacity: 0;
-      }
+        #b-icon {
+            left: clamp(20px, 5vw, 40px);
+            transform-origin: center;
+            opacity: 0; 
+        }
 
-      #cd-icon {
-        right: clamp(20px, 5vw, 40px);
-        transform-origin: center;
-      }
+        #cd-icon {
+            right: clamp(20px, 5vw, 40px);
+            transform-origin: center;
+        }
 
-<<<<<<< HEAD
-      .scroll-hint {
-        position: absolute;
-        bottom: clamp(20px, 4vw, 30px);
-        left: 50%;
-        transform: translateX(-50%);
-        font-family: sans-serif;
-        font-size: 14px;
-        color: rgba(0, 0, 0, 0.15);
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        pointer-events: none;
-        z-index: 10;
-      }
-
-      /* ========================================= */
-      /* --- SLIDE 1: 2D ANIMATION STYLES -------- */
-      /* ========================================= */
-      .brand-text {
-        position: absolute;
-        font-family: Impact, "Arial Black", sans-serif;
-        font-weight: 900;
-        font-stretch: ultra-condensed;
-        color: #ff0000;
-        text-transform: uppercase;
-        font-size: 13vw;
-        letter-spacing: 0.05em;
-        white-space: nowrap;
-        user-select: none;
-        z-index: 10;
-        left: 50%;
-        top: 50%;
-        will-change: transform;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        transform: translate3d(-50%, -50%, 0) scaleX(0.75);
-        transform-style: preserve-3d;
-      }
-
-      .car {
-        position: absolute;
-        height: 8vw;
-        object-fit: contain;
-        z-index: 20;
-        left: 0;
-        bottom: 0;
-        will-change: transform;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        transform-style: preserve-3d;
-        display: none;
-        pointer-events: none;
-      }
-
-      .character-wrapper {
-        position: absolute;
-        height: 12vw;
-        width: 12vw;
-        z-index: 30;
-        left: 0;
-        bottom: 0;
-        will-change: transform;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        transform-style: preserve-3d;
-        display: none;
-        pointer-events: none;
-      }
-
-      .character-wrapper img {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        opacity: 0;
-      }
-
-      .character-wrapper img.active {
-        opacity: 1;
-      }
-
-      /* ========================================= */
-      /* --- SLIDE 2: INTERACTIVE MARQUEE & STICKERS - */
-      /* ========================================= */
-      .marquee-container {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        pointer-events: auto;
-        cursor: grab;
-        z-index: 1;
-        opacity: 1;
-      }
-
-      .marquee-container:active {
-        cursor: grabbing;
-      }
-=======
         .scroll-hint {
             position: absolute;
             bottom: clamp(20px, 4vw, 30px);
@@ -409,34 +261,38 @@
         .anim-run1 {
             transform: translateX(-4vw) scale(1.1);
         }
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-      .marquee-track {
-        display: flex;
-        width: max-content;
-        will-change: transform;
-      }
+        .sticker-container {
+            position: relative;
+            z-index: 5;
+            width: 60vw;
+            height: 60vw;
+            max-width: 450px;
+            max-height: 450px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
 
-      .marquee-half {
-        display: flex;
-        align-items: center;
-        gap: 5vw;
-        padding-right: 5vw;
-      }
+        .sticker-img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-color: #f0f0f0; 
+            border: clamp(8px, 2vw, 15px) solid #ffffff; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.35); 
+            opacity: 0;
+            transform: scale(1.8) rotate(0deg); 
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.1s ease-out; 
+            pointer-events: none; 
+        }
 
-      .marquee-half img {
-        height: 15vw;
-        width: 15vw;
-        object-fit: contain;
-        will-change: transform;
-        pointer-events: none;
-      }
+        .sticker-img.show {
+            opacity: 1;
+        }
 
-<<<<<<< HEAD
-      .anim-run1 {
-        transform: translateX(-4vw) scale(1.1);
-      }
-=======
         /* ========================================= */
         /* --- SLIDE 3: 3D PSP CANVAS STYLES ------- */
         /* ========================================= */
@@ -447,322 +303,132 @@
             height: 100%;
             z-index: 2;
         }
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-      .sticker-container {
-        position: relative;
-        z-index: 5;
-        width: 60vw;
-        height: 60vw;
-        max-width: 450px;
-        max-height: 450px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-      }
+        #pspCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: pan-y; 
+            cursor: grab;
+        }
 
-      .sticker-img {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        background-color: #f0f0f0;
-        border: clamp(8px, 2vw, 15px) solid #ffffff;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
-        opacity: 0;
-        transform: scale(1.8) rotate(0deg);
-        transition:
-          transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-          opacity 0.1s ease-out;
-        pointer-events: none;
-      }
+        #pspCanvas:active {
+            cursor: grabbing;
+        }
 
-      .sticker-img.show {
-        opacity: 1;
-      }
+        .hidden-audio-video {
+            display: none;
+        }
 
-      /* ========================================= */
-      /* --- SLIDE 3: 3D PSP CANVAS STYLES ------- */
-      /* ========================================= */
-      .machine__stage {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 2;
-      }
+        .mute-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            z-index: 50;
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.25);
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-      #pspCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-        touch-action: pan-y;
-        cursor: grab;
-      }
+        .mute-btn:hover {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.4);
+        }
+    
+        /* ========================================= */
+        /* --- SLIDE 4: GREEN APPLES & 3D GAP.GLB -- */
+        /* ========================================= */
+        #slide-4-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 380dvh;
+            scroll-snap-align: start;
+            background-color: #ffffff;
+        }
 
-      #pspCanvas:active {
-        cursor: grabbing;
-      }
+        #slide-4-sticky {
+            position: sticky;
+            top: 0;
+            width: 100vw;
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+        }
 
-      .hidden-audio-video {
-        display: none;
-      }
+        .green-apple-text {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: clamp(7rem, 26vw, 12cm);
+            font-weight: 400;
+            line-height: 0.84;
+            letter-spacing: -0.025em;
+            white-space: nowrap;
+            text-transform: uppercase;
+            color: #000000;
+            -webkit-text-stroke: 0px transparent;
+            text-shadow: none;
+            user-select: none;
+            pointer-events: none;
+            z-index: 10;
+            will-change: transform, opacity;
+            transform: translate3d(110vw, -50%, 0);
+        }
 
-      .mute-btn {
-        position: absolute;
-        top: 30px;
-        right: 30px;
-        z-index: 50;
-        background: transparent;
-        border: 1px solid rgba(0, 0, 0, 0.25);
-        padding: 10px;
-        cursor: pointer;
-        border-radius: 8px;
-        transition:
-          background 0.2s ease,
-          border-color 0.2s ease;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+        #appleCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+            z-index: 20;
+            will-change: opacity;
+        }
 
-      .mute-btn:hover {
-        background: rgba(0, 0, 0, 0.04);
-        border-color: rgba(0, 0, 0, 0.4);
-      }
-
-      /* ========================================= */
-      /* --- SLIDE 4: GREEN APPLES & 3D GAP.GLB -- */
-      /* ========================================= */
-      #slide-4-wrapper {
-        position: relative;
-        width: 100vw;
-        height: 380dvh;
-        scroll-snap-align: start;
-        background-color: #ffffff;
-      }
-
-      #slide-4-sticky {
-        position: sticky;
-        top: 0;
-        width: 100vw;
-        height: 100dvh;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #ffffff;
-      }
-
-      .green-apple-text {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-        font-size: clamp(7rem, 26vw, 12cm);
-        font-weight: 400;
-        line-height: 0.84;
-        letter-spacing: -0.025em;
-        white-space: nowrap;
-        text-transform: uppercase;
-        color: #000000;
-        -webkit-text-stroke: 0px transparent;
-        text-shadow: none;
-        user-select: none;
-        pointer-events: none;
-        z-index: 10;
-        will-change: transform, opacity;
-        transform: translate3d(110vw, -50%, 0);
-      }
-
-      #appleCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-        pointer-events: none;
-        z-index: 20;
-        will-change: opacity;
-      }
     </style>
-<<<<<<< HEAD
-  </head>
-  <body>
-=======
 </head>
 <body>
 
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
     <!-- Hardware Asset Cache -->
     <div id="hardware-cache"></div>
 
     <!-- Audio / Video Assets -->
-    <video
-      id="video1"
-      class="hidden-audio-video"
-      src="video1.mp4"
-      loop
-      muted
-      playsinline
-      crossorigin="anonymous"
-    ></video>
-    <video
-      id="video2"
-      class="hidden-audio-video"
-      src="video2.mp4"
-      loop
-      muted
-      playsinline
-      crossorigin="anonymous"
-    ></video>
+    <video id="video1" class="hidden-audio-video" src="video1.mp4" loop muted playsinline crossorigin="anonymous"></video>
+    <video id="video2" class="hidden-audio-video" src="video2.mp4" loop muted playsinline crossorigin="anonymous"></video>
     <audio id="b-audio" class="hidden-audio-video" src="b.mp3"></audio>
     <audio id="wc-audio" class="hidden-audio-video" src="wc.mp3" loop></audio>
 
     <!-- Custom Loading Overlay -->
     <div id="loaderOverlay">
-      <div class="loader-content">
-        <svg class="loader-ring" width="120" height="120" viewBox="0 0 120 120">
-          <circle
-            cx="60"
-            cy="60"
-            r="54"
-            fill="none"
-            stroke="#eeeeee"
-            stroke-width="6"
-          />
-          <circle
-            class="progress-ring"
-            id="progressRing"
-            cx="60"
-            cy="60"
-            r="54"
-            fill="none"
-            stroke="#ff0000"
-            stroke-width="6"
-            stroke-linecap="round"
-          />
-        </svg>
-        <img src="6.png" id="loader-icon" alt="loading" />
-      </div>
+        <div class="loader-content">
+            <svg class="loader-ring" width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="54" fill="none" stroke="#eeeeee" stroke-width="6" />
+                <circle class="progress-ring" id="progressRing" cx="60" cy="60" r="54" fill="none" stroke="#ff0000" stroke-width="6" stroke-linecap="round" />
+            </svg>
+            <img src="6.png" id="loader-icon" alt="loading">
+        </div>
     </div>
 
     <!-- Global Fixed UI Overlay -->
     <div id="ui-layer">
-      <img src="6.png" id="b-icon" class="corner-icon" alt="Effect Icon" />
-      <img src="cd.png" id="cd-icon" class="corner-icon" alt="CD Icon" />
+        <img src="6.png" id="b-icon" class="corner-icon" alt="Effect Icon">
+        <img src="cd.png" id="cd-icon" class="corner-icon" alt="CD Icon">
     </div>
 
     <main class="scroll-container" id="scrollContainer">
-<<<<<<< HEAD
-      <!-- SLIDE 1 -->
-      <section class="slide" id="slide-1">
-        <div class="brand-text" id="brandText">ISHOWSPEED</div>
-        <img src="5.png" alt="Red Sports Car" class="car" id="carImg" />
-
-        <div class="character-wrapper" id="charWrap">
-          <img src="1.png" id="pose-1" class="active" />
-          <img src="2.png" id="pose-2" />
-          <img src="3.png" id="pose-3" />
-          <img src="4.png" id="pose-4" />
-        </div>
-
-        <div class="scroll-hint">Scroll &darr;</div>
-      </section>
-
-      <!-- SLIDE 2 -->
-      <section class="slide" id="slide-2">
-        <div class="marquee-container" id="marqueeDrag">
-          <div class="marquee-track" id="marqueeTrack">
-            <!-- Set 1 -->
-            <div class="marquee-half" id="marqueeHalf">
-              <img src="p.png" alt="trail" />
-              <img src="crboy.png" alt="trail" />
-              <img src="ksi.png" alt="trail" />
-              <img src="drum1.png" class="anim-drum" alt="trail" />
-              <img src="r1.png" class="anim-r" alt="trail" />
-              <img src="face.png" alt="trail" />
-              <img src="messi.png" alt="trail" />
-              <img src="run1s.png" class="anim-run" alt="trail" />
-              <img src="ney.png" alt="trail" />
-              <img src="prime.png" alt="trail" />
-              <img src="eat.png" alt="trail" />
-              <img src="boom.png" alt="trail" />
-              <img src="bal.png" alt="trail" />
-              <img src="ben1.png" class="anim-ben" alt="trail" />
-              <img src="crmeet.png" alt="trail" />
-              <img src="i1.png" alt="trail" />
-              <img src="kunfu.png" alt="trail" />
-              <img src="goal.png" alt="trail" />
-              <img src="ballon.png" alt="trail" />
-              <img src="60m.png" alt="trail" />
-              <img src="kai.png" alt="trail" />
-            </div>
-            <!-- Duplicate for infinite looping -->
-            <div class="marquee-half">
-              <img src="p.png" alt="trail" />
-              <img src="crboy.png" alt="trail" />
-              <img src="ksi.png" alt="trail" />
-              <img src="drum1.png" class="anim-drum" alt="trail" />
-              <img src="r1.png" class="anim-r" alt="trail" />
-              <img src="face.png" alt="trail" />
-              <img src="messi.png" alt="trail" />
-              <img src="run1s.png" class="anim-run" alt="trail" />
-              <img src="ney.png" alt="trail" />
-              <img src="prime.png" alt="trail" />
-              <img src="eat.png" alt="trail" />
-              <img src="boom.png" alt="trail" />
-              <img src="bal.png" alt="trail" />
-              <img src="ben1.png" class="anim-ben" alt="trail" />
-              <img src="crmeet.png" alt="trail" />
-              <img src="i1.png" alt="trail" />
-              <img src="kunfu.png" alt="trail" />
-              <img src="goal.png" alt="trail" />
-              <img src="ballon.png" alt="trail" />
-              <img src="60m.png" alt="trail" />
-              <img src="kai.png" alt="trail" />
-            </div>
-          </div>
-        </div>
-        <div class="sticker-container" id="stickerContainer"></div>
-        <div class="scroll-hint">Scroll &darr;</div>
-      </section>
-
-      <!-- SLIDE 3 (PSP) -->
-      <section class="slide" id="slide-3">
-        <div class="machine__stage" id="stageContainer">
-          <canvas id="pspCanvas"></canvas>
-          <button id="muteBtn" class="mute-btn">
-            <svg
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-              stroke="rgba(0,0,0,0.6)"
-              stroke-width="2"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-              <line x1="23" y1="9" x2="17" y2="15"></line>
-              <line x1="17" y1="9" x2="23" y2="15"></line>
-            </svg>
-          </button>
-        </div>
-        <div class="scroll-hint">Scroll &darr;</div>
-      </section>
-
-      <!-- SLIDE 4: Green Apples + 3D gap.glb -->
-      <section id="slide-4-wrapper">
-        <div id="slide-4-sticky">
-          <div class="green-apple-text" id="greenAppleText">GREEN APPLES</div>
-          <canvas id="appleCanvas"></canvas>
-        </div>
-      </section>
-=======
         
         <!-- SLIDE 1 -->
         <section class="slide" id="slide-1">
@@ -852,33 +518,21 @@
             <div class="scroll-hint">Scroll &darr;</div>
         </section>
 
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
+
+        <!-- SLIDE 4: Green Apples + 3D gap.glb -->
+        <section id="slide-4-wrapper">
+            <div id="slide-4-sticky">
+                <div class="green-apple-text" id="greenAppleText">GREEN APPLES</div>
+                <canvas id="appleCanvas"></canvas>
+            </div>
+        </section>
+
     </main>
 
     <!-- ========================================================= -->
     <!-- SCRIPT 1: REAL ASSET LOADER -->
     <!-- ========================================================= -->
     <script>
-<<<<<<< HEAD
-      const stickerImages = [
-        "8.jpeg",
-        "9.jpg",
-        "11.jpg",
-        "12.jpg",
-        "13.jpg",
-        "14.jpg",
-        "15.jpg",
-        "16.jpg",
-        "17.jpg",
-        "18.jpg",
-        "19.jpg",
-        "20.jpg",
-        "21.jpg",
-        "22.jpg",
-        "23.jpg",
-        "24.jpeg",
-      ];
-=======
         const stickerImages = [
             '8.jpeg', '9.jpg', '11.jpg', '12.jpg', '13.jpg', 
             '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', 
@@ -896,440 +550,135 @@
         
         const totalAssets = allImages.length + 1; 
         let loadedAssets = 0;
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-      const marqueeImages = [
-        "crboy.png",
-        "crmeet.png",
-        "ksi.png",
-        "kai.png",
-        "face.png",
-        "messi.png",
-        "ney.png",
-        "prime.png",
-        "eat.png",
-        "boom.png",
-        "bal.png",
-        "i1.png",
-        "kunfu.png",
-        "goal.png",
-        "drum1.png",
-        "drum2.png",
-        "r1.png",
-        "r2.png",
-        "run1s.png",
-        "run2s.png",
-        "ben1.png",
-        "ben2.png",
-        "ballon.png",
-        "60m.png",
-      ];
+        const loaderOverlay = document.getElementById('loaderOverlay');
+        const loaderIcon = document.getElementById('loader-icon');
+        const progressRing = document.getElementById('progressRing');
+        const loaderRingSvg = document.querySelector('.loader-ring');
+        const realBIcon = document.getElementById('b-icon');
+        const hardwareCache = document.getElementById('hardware-cache');
+        const circ = 339.29; 
 
-      const allImages = [
-        "1.png",
-        "2.png",
-        "3.png",
-        "4.png",
-        "5.png",
-        "p.png",
-        "6.png",
-        "7.png",
-        "cd.png",
-        "b1.png",
-        ...stickerImages,
-        ...marqueeImages,
-      ];
+        window.UPDATE_REAL_PROGRESS = function() {
+            loadedAssets++;
+            let percent = (loadedAssets / totalAssets) * 100;
+            progressRing.style.strokeDashoffset = circ - (circ * percent / 100);
 
-      const totalAssets = allImages.length + 1;
-      let loadedAssets = 0;
-
-      const loaderOverlay = document.getElementById("loaderOverlay");
-      const loaderIcon = document.getElementById("loader-icon");
-      const progressRing = document.getElementById("progressRing");
-      const loaderRingSvg = document.querySelector(".loader-ring");
-      const realBIcon = document.getElementById("b-icon");
-      const hardwareCache = document.getElementById("hardware-cache");
-      const circ = 339.29;
-
-      window.UPDATE_REAL_PROGRESS = function () {
-        loadedAssets++;
-        let percent = (loadedAssets / totalAssets) * 100;
-        progressRing.style.strokeDashoffset = circ - (circ * percent) / 100;
-
-        if (loadedAssets >= totalAssets) {
-          finalizeLoading();
-        }
-      };
-
-      allImages.forEach((src) => {
-        const img = new Image();
-        img.onload = window.UPDATE_REAL_PROGRESS;
-        img.onerror = window.UPDATE_REAL_PROGRESS;
-        img.src = src;
-        hardwareCache.appendChild(img);
-      });
-
-      let isSix = true;
-      const toggleInt = setInterval(() => {
-        isSix = !isSix;
-        loaderIcon.src = isSix ? "6.png" : "7.png";
-      }, 200);
-
-      function finalizeLoading() {
-        clearInterval(toggleInt);
-
-        loaderIcon.src = "6.png";
-        loaderRingSvg.style.opacity = "0";
-        loaderIcon.style.transformOrigin = "top left";
-
-        const targetRect = realBIcon.getBoundingClientRect();
-        const startRect = loaderIcon.getBoundingClientRect();
-
-        const dx = targetRect.left - startRect.left;
-        const dy = targetRect.top - startRect.top;
-        const scale = targetRect.width / startRect.width;
-
-        loaderOverlay.style.transition = "background-color 0.8s ease";
-        loaderOverlay.style.backgroundColor = "transparent";
-
-        loaderIcon.style.transition =
-          "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
-        loaderIcon.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
-
-        setTimeout(() => {
-          realBIcon.style.opacity = "1";
-          loaderOverlay.remove();
-
-          init2DAnimation();
-
-          setTimeout(triggerBEffect, 9000);
-        }, 800);
-      }
-
-      // -----------------------------------------------------
-      // CORNER ICON INTERACTIVITY & PHYSICS
-      // -----------------------------------------------------
-      const bIcon = document.getElementById("b-icon");
-      const bAudio = document.getElementById("b-audio");
-      const cdIcon = document.getElementById("cd-icon");
-      const wcAudio = document.getElementById("wc-audio");
-      const scrollContainer = document.getElementById("scrollContainer");
-
-      let isCdPlaying = false;
-      let cdRotation = 0;
-      let cdVelocity = 0;
-      let targetCdRotation = 0;
-      let bRotation = 0;
-
-      function triggerBEffect() {
-        bIcon.src = "7.png";
-        bAudio.currentTime = 0;
-        const playPromise = bAudio.play();
-        if (playPromise !== undefined) playPromise.catch((e) => {});
-
-        setTimeout(() => {
-          bIcon.src = "6.png";
-          bAudio.pause();
-        }, 300);
-      }
-
-      bIcon.addEventListener("click", triggerBEffect);
-
-      cdIcon.addEventListener("click", () => {
-        isCdPlaying = !isCdPlaying;
-        if (isCdPlaying) {
-          wcAudio.play().catch((e) => {});
-        } else {
-          wcAudio.pause();
-        }
-      });
-
-      scrollContainer.addEventListener("scroll", () => {
-        bRotation = Math.sin(scrollContainer.scrollTop * 0.005) * 20;
-      });
-
-      function uiPhysicsLoop() {
-        if (isCdPlaying) {
-          cdVelocity = Math.min(cdVelocity + 0.05, 3.5);
-          cdRotation += cdVelocity;
-        } else {
-          if (cdVelocity > 0) {
-            cdVelocity -= 0.03;
-            cdRotation += cdVelocity;
-            if (cdVelocity <= 0) {
-              cdVelocity = 0;
-              targetCdRotation = Math.round(cdRotation / 360) * 360;
+            if (loadedAssets >= totalAssets) {
+                finalizeLoading();
             }
-          } else {
-            cdRotation += (targetCdRotation - cdRotation) * 0.08;
-          }
-        }
+        };
 
-        cdIcon.style.transform = `rotate(${cdRotation}deg)`;
-        bIcon.style.transform = `rotate(${bRotation}deg)`;
+        allImages.forEach(src => {
+            const img = new Image();
+            img.onload = window.UPDATE_REAL_PROGRESS;
+            img.onerror = window.UPDATE_REAL_PROGRESS; 
+            img.src = src;
+            hardwareCache.appendChild(img); 
+        });
 
-        requestAnimationFrame(uiPhysicsLoop);
-      }
-      uiPhysicsLoop();
+        let isSix = true;
+        const toggleInt = setInterval(() => {
+            isSix = !isSix;
+            loaderIcon.src = isSix ? '6.png' : '7.png';
+        }, 200);
 
-      // -----------------------------------------------------
-      // MARQUEE DYNAMIC IMAGE ANIMATIONS & DRAG LOGIC
-      // -----------------------------------------------------
-      let dState = false;
-      let bState = false;
-      let rState = false;
-      let marqueeTimers = [];
+        function finalizeLoading() {
+            clearInterval(toggleInt);
+            
+            loaderIcon.src = '6.png'; 
+            loaderRingSvg.style.opacity = '0'; 
+            loaderIcon.style.transformOrigin = 'top left'; 
 
-      function startMarqueeAnims() {
-        if (marqueeTimers.length > 0) return;
-        marqueeTimers.push(
-          setInterval(() => {
-            dState = !dState;
-            document
-              .querySelectorAll(".anim-drum")
-              .forEach((el) => (el.src = dState ? "drum2.png" : "drum1.png"));
-            document
-              .querySelectorAll(".anim-r")
-              .forEach((el) => (el.src = dState ? "r2.png" : "r1.png"));
-          }, 300),
-        );
-        marqueeTimers.push(
-          setInterval(() => {
-            bState = !bState;
-            document
-              .querySelectorAll(".anim-ben")
-              .forEach((el) => (el.src = bState ? "ben2.png" : "ben1.png"));
-          }, 500),
-        );
-        marqueeTimers.push(
-          setInterval(() => {
-            rState = !rState;
-            document
-              .querySelectorAll(".anim-run")
-              .forEach((el) => (el.src = rState ? "run2s.png" : "run1s.png"));
-          }, 120),
-        );
-      }
+            const targetRect = realBIcon.getBoundingClientRect();
+            const startRect = loaderIcon.getBoundingClientRect();
+            
+            const dx = targetRect.left - startRect.left;
+            const dy = targetRect.top - startRect.top;
+            const scale = targetRect.width / startRect.width;
 
-      function stopMarqueeAnims() {
-        marqueeTimers.forEach((t) => clearInterval(t));
-        marqueeTimers = [];
-      }
+            loaderOverlay.style.transition = 'background-color 0.8s ease';
+            loaderOverlay.style.backgroundColor = 'transparent';
 
-      const marqueeDragBox = document.getElementById("marqueeDrag");
-      const marqueeTrack = document.getElementById("marqueeTrack");
-      const marqueeHalf = document.getElementById("marqueeHalf");
+            loaderIcon.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+            loaderIcon.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
 
-      let mX = 0;
-      let isMDragging = false;
-      let mStartX = 0;
-      let isSlide2Visible = false;
-
-      marqueeDragBox.addEventListener("pointerdown", (e) => {
-        if (e.target.closest("#stickerContainer")) return;
-        isMDragging = true;
-        mStartX = e.clientX;
-      });
-
-      window.addEventListener("pointermove", (e) => {
-        if (!isMDragging) return;
-        let delta = e.clientX - mStartX;
-        mX += delta;
-        mStartX = e.clientX;
-      });
-
-      window.addEventListener("pointerup", () => {
-        isMDragging = false;
-      });
-
-      function animateMarquee() {
-        if (isSlide2Visible) {
-          if (!isMDragging) {
-            mX -= 2.5;
-          }
-
-          let halfWidth = marqueeHalf.offsetWidth;
-          if (halfWidth > 0) {
-            if (mX <= -halfWidth) mX += halfWidth;
-            if (mX > 0) mX -= halfWidth;
-            marqueeTrack.style.transform = `translate3d(${mX}px, 0, 0)`;
-          }
-        }
-        requestAnimationFrame(animateMarquee);
-      }
-      animateMarquee();
-
-      // -----------------------------------------------------
-      // SLIDE 2: FAST PHOTO STICKER SEQUENCE
-      // -----------------------------------------------------
-      const slide2El = document.getElementById("slide-2");
-      const stickerContainer = document.getElementById("stickerContainer");
-      let stickerInterval;
-      let isStickerPlaying = false;
-      let isSequenceRunning = false;
-
-      function playStickerSequence() {
-        if (isStickerPlaying) return;
-        isStickerPlaying = true;
-        isSequenceRunning = false;
-
-        stickerContainer.innerHTML = "";
-        let currentIndex = 0;
-
-        stickerInterval = setInterval(() => {
-          if (currentIndex >= stickerImages.length) {
-            clearInterval(stickerInterval);
-            return;
-          }
-
-          const img = document.createElement("img");
-          img.src = stickerImages[currentIndex];
-          img.className = "sticker-img";
-
-          const rot = (Math.random() - 0.5) * 20;
-          const offX = (Math.random() - 0.5) * 30;
-          const offY = (Math.random() - 0.5) * 30;
-
-          const targetTransform = `translate3d(${offX}px, ${offY}px, 0) scale(1) rotate(${rot}deg)`;
-          img.dataset.targetTransform = targetTransform;
-
-          stickerContainer.appendChild(img);
-          void img.offsetWidth;
-
-          img.classList.add("show");
-          img.style.transform = targetTransform;
-
-          currentIndex++;
-        }, 150);
-      }
-
-      stickerContainer.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (isSequenceRunning) return;
-        const stickers = Array.from(document.querySelectorAll(".sticker-img"));
-        if (stickers.length < 2) return;
-
-        const isExpanded = stickers[1].classList.contains("show");
-        isSequenceRunning = true;
-
-        if (isExpanded) {
-          let delay = 0;
-          for (let i = stickers.length - 1; i >= 1; i--) {
             setTimeout(() => {
-              stickers[i].classList.remove("show");
-              stickers[i].style.transform =
-                "translate3d(0,0,0) scale(1.8) rotate(0deg)";
-            }, delay);
-            delay += 150;
-          }
-          setTimeout(() => (isSequenceRunning = false), delay + 200);
-        } else {
-          let delay = 0;
-          for (let i = 1; i < stickers.length; i++) {
-            setTimeout(() => {
-              stickers[i].classList.add("show");
-              stickers[i].style.transform = stickers[i].dataset.targetTransform;
-            }, delay);
-            delay += 150;
-          }
-          setTimeout(() => (isSequenceRunning = false), delay + 200);
+                realBIcon.style.opacity = '1'; 
+                loaderOverlay.remove(); 
+                
+                init2DAnimation(); 
+                
+                setTimeout(triggerBEffect, 9000);
+            }, 800);
         }
-      });
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            isSlide2Visible = entry.isIntersecting;
-            if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
-              playStickerSequence();
-              startMarqueeAnims();
-            } else if (!entry.isIntersecting) {
-              clearInterval(stickerInterval);
-              isStickerPlaying = false;
-              stopMarqueeAnims();
+        // -----------------------------------------------------
+        // CORNER ICON INTERACTIVITY & PHYSICS
+        // -----------------------------------------------------
+        const bIcon = document.getElementById('b-icon');
+        const bAudio = document.getElementById('b-audio');
+        const cdIcon = document.getElementById('cd-icon');
+        const wcAudio = document.getElementById('wc-audio');
+        const scrollContainer = document.getElementById('scrollContainer');
+
+        let isCdPlaying = false;
+        let cdRotation = 0;
+        let cdVelocity = 0;
+        let targetCdRotation = 0;
+        let bRotation = 0;
+
+        function triggerBEffect() {
+            bIcon.src = '7.png';
+            bAudio.currentTime = 0;
+            const playPromise = bAudio.play();
+            if(playPromise !== undefined) playPromise.catch(e => {});
+
+            setTimeout(() => {
+                bIcon.src = '6.png';
+                bAudio.pause();
+            }, 300); 
+        }
+
+        bIcon.addEventListener('click', triggerBEffect);
+
+        cdIcon.addEventListener('click', () => {
+            isCdPlaying = !isCdPlaying;
+            if (isCdPlaying) {
+                wcAudio.play().catch(e => {});
+            } else {
+                wcAudio.pause();
             }
-          });
-        },
-        { root: scrollContainer, threshold: [0, 0.1] },
-      );
+        });
 
-      observer.observe(slide2El);
+        scrollContainer.addEventListener('scroll', () => {
+            bRotation = Math.sin(scrollContainer.scrollTop * 0.005) * 20;
+        });
 
-      // -----------------------------------------------------
-      // SLIDE 1: 2D JUMP ANIMATION LOGIC
-      // -----------------------------------------------------
-      const carEl = document.getElementById("carImg");
-      const charWrap = document.getElementById("charWrap");
-      const textEl = document.getElementById("brandText");
-      const slide1El = document.getElementById("slide-1");
+        function uiPhysicsLoop() {
+            if (isCdPlaying) {
+                cdVelocity = Math.min(cdVelocity + 0.05, 3.5); 
+                cdRotation += cdVelocity;
+            } else {
+                if (cdVelocity > 0) {
+                    cdVelocity -= 0.03; 
+                    cdRotation += cdVelocity;
+                    if (cdVelocity <= 0) {
+                        cdVelocity = 0;
+                        targetCdRotation = Math.round(cdRotation / 360) * 360; 
+                    }
+                } else {
+                    cdRotation += (targetCdRotation - cdRotation) * 0.08;
+                }
+            }
 
-      function init2DAnimation() {
-        carEl.style.display = "block";
-        charWrap.style.display = "block";
+            cdIcon.style.transform = `rotate(${cdRotation}deg)`;
+            bIcon.style.transform = `rotate(${bRotation}deg)`;
 
-        let startTime = performance.now();
-        const totalDuration = 5000;
-
-        let vw,
-          textRect,
-          sceneRect,
-          baselineBottom,
-          impactPoint,
-          maxJumpHeight,
-          charRestX,
-          charTargetX,
-          jumpDistance,
-          carWidth,
-          carStartX;
-        let lastPose = 1;
-
-        function calculateDimensions() {
-          vw = window.innerWidth;
-          textRect = textEl.getBoundingClientRect();
-          sceneRect = slide1El.getBoundingClientRect();
-          baselineBottom = sceneRect.bottom - textRect.bottom + vw * 0.025;
-          impactPoint = vw / 2 + textRect.width / 2 - vw * 0.01;
-          maxJumpHeight = textRect.height * 1.15;
-          charRestX = vw * 0.05;
-          charTargetX = vw * 0.7;
-          jumpDistance = charTargetX - charRestX;
-          carWidth = carEl.getBoundingClientRect().width || vw * 0.2;
-          carStartX = vw + carWidth + vw * 0.05;
+            requestAnimationFrame(uiPhysicsLoop);
         }
+        uiPhysicsLoop();
 
-        calculateDimensions();
-        window.addEventListener("resize", calculateDimensions);
-
-        function updateAnimation(currentTime) {
-          const elapsed = currentTime - startTime;
-          const progress = Math.min(elapsed / totalDuration, 1.0);
-
-          let carX = carStartX;
-          let textTranslateX = 0;
-          let charBottomOffset = baselineBottom;
-          let charX = charRestX;
-          let currentPose = 1;
-
-          if (progress > 0.15) {
-            const carProgress = Math.min((progress - 0.15) / 0.75, 1.0);
-            const endCarX = -carWidth - vw * 0.1;
-            const easeP = (x) =>
-              x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
-            carX = carStartX - (carStartX - endCarX) * easeP(carProgress);
-          }
-
-          if (carX <= impactPoint) {
-            textTranslateX = carX - impactPoint;
-          }
-
-          const jumpStart = 0.3;
-          const jumpEnd = 0.65;
-
-<<<<<<< HEAD
-          if (progress >= jumpStart && progress <= jumpEnd) {
-            const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
-            const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
-=======
         // -----------------------------------------------------
         // MARQUEE DYNAMIC IMAGE ANIMATIONS & DRAG LOGIC
         // -----------------------------------------------------
@@ -1411,26 +760,21 @@
         let stickerInterval;
         let isStickerPlaying = false;
         let isSequenceRunning = false; 
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-            charBottomOffset = baselineBottom + arc * maxJumpHeight;
-            charX = charRestX + jumpP * jumpDistance;
+        function playStickerSequence() {
+            if (isStickerPlaying) return;
+            isStickerPlaying = true;
+            isSequenceRunning = false;
+            
+            stickerContainer.innerHTML = '';
+            let currentIndex = 0;
 
-            if (jumpP < 0.2) currentPose = 1;
-            else if (jumpP < 0.5) currentPose = 2;
-            else if (jumpP < 0.8) currentPose = 3;
-            else currentPose = 4;
-          } else if (progress > jumpEnd) {
-            charBottomOffset = baselineBottom;
-            charX = charTargetX;
-            currentPose = 4;
-          }
+            stickerInterval = setInterval(() => {
+                if (currentIndex >= stickerImages.length) {
+                    clearInterval(stickerInterval);
+                    return;
+                }
 
-<<<<<<< HEAD
-          textEl.style.transform = `translate(-50%, -50%) translateX(${textTranslateX}px) scaleX(0.75) translateZ(0)`;
-          carEl.style.transform = `translate3d(${carX}px, -${baselineBottom}px, 0)`;
-          charWrap.style.transform = `translate3d(${charX}px, -${charBottomOffset}px, 0)`;
-=======
                 const img = document.createElement('img');
                 img.src = stickerImages[currentIndex];
                 img.className = 'sticker-img';
@@ -1441,21 +785,10 @@
                 
                 const targetTransform = `translate3d(${offX}px, ${offY}px, 0) scale(1) rotate(${rot}deg)`;
                 img.dataset.targetTransform = targetTransform;
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-          if (lastPose !== currentPose) {
-            document
-              .getElementById(`pose-${lastPose}`)
-              .classList.remove("active");
-            document
-              .getElementById(`pose-${currentPose}`)
-              .classList.add("active");
-            lastPose = currentPose;
-          }
+                stickerContainer.appendChild(img);
+                void img.offsetWidth; 
 
-<<<<<<< HEAD
-          if (progress < 1.0) {
-=======
                 img.classList.add('show');
                 img.style.transform = targetTransform;
 
@@ -1609,97 +942,60 @@
                     }, 1000);
                 }
             }
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
             requestAnimationFrame(updateAnimation);
-          } else {
-            setTimeout(() => {
-              requestAnimationFrame((t) => {
-                startTime = t;
-                requestAnimationFrame(updateAnimation);
-              });
-            }, 1000);
-          }
         }
-        requestAnimationFrame(updateAnimation);
-      }
     </script>
 
     <!-- ========================================================= -->
     <!-- SCRIPT 3: 3D PSP LOGIC (Three.js WebGL Engine) -->
     <!-- ========================================================= -->
     <script type="importmap">
-      {
+    {
         "imports": {
-          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
         }
-      }
+    }
     </script>
 
     <script type="module">
-      import * as THREE from "three";
-      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-      import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-      import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-      import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-      const canvas = document.getElementById("pspCanvas");
-      const stageContainer = document.getElementById("stageContainer");
-      const muteBtn = document.getElementById("muteBtn");
-      const scrollContainer = document.getElementById("scrollContainer");
+        const canvas = document.getElementById('pspCanvas');
+        const stageContainer = document.getElementById('stageContainer');
+        const muteBtn = document.getElementById('muteBtn');
+        const scrollContainer = document.getElementById('scrollContainer');
+        
+        const svgMuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+        const svgUnmuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
 
-      const svgMuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
-      const svgUnmuted = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+        const video1 = document.getElementById('video1');
+        const video2 = document.getElementById('video2');
+        let currentVideo = video1;
 
-      const video1 = document.getElementById("video1");
-      const video2 = document.getElementById("video2");
-      let currentVideo = video1;
+        let audioEnabled = false;
+        document.addEventListener('click', () => {
+            if (!audioEnabled) {
+                video1.muted = false;
+                video2.muted = false;
+                audioEnabled = true;
+                muteBtn.innerHTML = svgUnmuted; 
+            }
+        }, { once: true });
 
-      let audioEnabled = false;
-      document.addEventListener(
-        "click",
-        () => {
-          if (!audioEnabled) {
-            video1.muted = false;
-            video2.muted = false;
-            audioEnabled = true;
-            muteBtn.innerHTML = svgUnmuted;
-          }
-        },
-        { once: true },
-      );
+        muteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            const isMuted = !currentVideo.muted;
+            video1.muted = isMuted;
+            video2.muted = isMuted;
+            muteBtn.innerHTML = isMuted ? svgMuted : svgUnmuted;
+            audioEnabled = !isMuted; 
+        });
 
-<<<<<<< HEAD
-      muteBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const isMuted = !currentVideo.muted;
-        video1.muted = isMuted;
-        video2.muted = isMuted;
-        muteBtn.innerHTML = isMuted ? svgMuted : svgUnmuted;
-        audioEnabled = !isMuted;
-      });
-
-      const renderer = new THREE.WebGLRenderer({
-        canvas: pspCanvas,
-        antialias: true,
-        alpha: true,
-        powerPreference: "high-performance",
-      });
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.05;
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.setClearColor(0xffffff, 0);
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(
-        34,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        400,
-      );
-      camera.position.set(0, 0, 30);
-=======
         const renderer = new THREE.WebGLRenderer({ canvas: pspCanvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
         renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1710,76 +1006,15 @@
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 0.1, 400);
         camera.position.set(0, 0, 30);
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-      const root = new THREE.Group();
-      const idleGroup = new THREE.Group();
-      const model = new THREE.Group();
+        const root = new THREE.Group(); 
+        const idleGroup = new THREE.Group(); 
+        const model = new THREE.Group(); 
+        
+        idleGroup.add(model);
+        root.add(idleGroup);
+        scene.add(root);
 
-<<<<<<< HEAD
-      idleGroup.add(model);
-      root.add(idleGroup);
-      scene.add(root);
-
-      const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 1.5);
-      scene.add(hemi);
-      const keyLight = new THREE.DirectionalLight(0xbcd4e8, 1.2);
-      keyLight.position.set(-8, 9, 12);
-      scene.add(keyLight);
-      const rimIce = new THREE.DirectionalLight(0x7fe3ff, 1.5);
-      rimIce.position.set(11, 4, -9);
-      scene.add(rimIce);
-      const rimHot = new THREE.DirectionalLight(0xff2e7e, 1.0);
-      rimHot.position.set(-12, -5, -7);
-      scene.add(rimHot);
-      const pressLight = new THREE.PointLight(0x7fe3ff, 0, 9, 2);
-      scene.add(pressLight);
-      let pressLightLife = 0;
-
-      function largestFaceNormal(mesh) {
-        const geo = mesh.geometry;
-        const pos = geo.getAttribute("position");
-        const idx = geo.getIndex();
-        const count = idx ? idx.count : pos.count;
-        const a = new THREE.Vector3(),
-          b = new THREE.Vector3(),
-          c = new THREE.Vector3();
-        const ab = new THREE.Vector3(),
-          ac = new THREE.Vector3(),
-          cr = new THREE.Vector3();
-        let best = -1;
-        const out = new THREE.Vector3(0, 0, 1);
-        for (let i = 0; i < count; i += 3) {
-          const i0 = idx ? idx.getX(i) : i;
-          const i1 = idx ? idx.getX(i + 1) : i + 1;
-          const i2 = idx ? idx.getX(i + 2) : i + 2;
-          a.fromBufferAttribute(pos, i0);
-          b.fromBufferAttribute(pos, i1);
-          c.fromBufferAttribute(pos, i2);
-          ab.subVectors(b, a);
-          ac.subVectors(c, a);
-          cr.crossVectors(ab, ac);
-          const area = cr.lengthSq();
-          if (area > best) {
-            best = area;
-            out.copy(cr).normalize();
-          }
-        }
-        return out
-          .applyMatrix3(new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld))
-          .normalize();
-      }
-
-      function buildScreenUVs(mesh, nrm, right, up) {
-        const geo = mesh.geometry;
-        const p = geo.getAttribute("position");
-        const mw = mesh.matrixWorld;
-        const wp = [];
-        const v = new THREE.Vector3();
-        for (let i = 0; i < p.count; i++) {
-          v.fromBufferAttribute(p, i).applyMatrix4(mw);
-          wp.push(v.clone());
-=======
         const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 1.5);
         scene.add(hemi);
         const keyLight = new THREE.DirectionalLight(0xbcd4e8, 1.2);
@@ -1817,112 +1052,84 @@
                 if (area > best) { best = area; out.copy(cr).normalize(); }
             }
             return out.applyMatrix3(new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld)).normalize();
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
         }
 
-        const e1 = right.clone().projectOnPlane(nrm).normalize();
-        const e2 = new THREE.Vector3().crossVectors(nrm, e1).normalize();
+        function buildScreenUVs(mesh, nrm, right, up) {
+            const geo = mesh.geometry;
+            const p = geo.getAttribute('position');
+            const mw = mesh.matrixWorld;
+            const wp = [];
+            const v = new THREE.Vector3();
+            for (let i = 0; i < p.count; i++) {
+                v.fromBufferAttribute(p, i).applyMatrix4(mw);
+                wp.push(v.clone());
+            }
 
-        const a = [],
-          b = [];
-        let ma = 0,
-          mb = 0;
-        for (let i = 0; i < wp.length; i++) {
-          const x = wp[i].dot(e1),
-            y = wp[i].dot(e2);
-          a.push(x);
-          b.push(y);
-          ma += x;
-          mb += y;
-        }
-        ma /= a.length;
-        mb /= b.length;
+            const e1 = right.clone().projectOnPlane(nrm).normalize();
+            const e2 = new THREE.Vector3().crossVectors(nrm, e1).normalize();
 
-<<<<<<< HEAD
-        let Saa = 0,
-          Sbb = 0,
-          Sab = 0;
-        for (let i = 0; i < a.length; i++) {
-          const da = a[i] - ma,
-            db = b[i] - mb;
-          Saa += da * da;
-          Sbb += db * db;
-          Sab += da * db;
+            const a = [], b = [];
+            let ma = 0, mb = 0;
+            for (let i = 0; i < wp.length; i++) {
+                const x = wp[i].dot(e1), y = wp[i].dot(e2);
+                a.push(x); b.push(y); ma += x; mb += y;
+            }
+            ma /= a.length; mb /= b.length;
+
+            let Saa = 0, Sbb = 0, Sab = 0;
+            for (let i = 0; i < a.length; i++) {
+                const da = a[i] - ma, db = b[i] - mb;
+                Saa += da * da; Sbb += db * db; Sab += da * db;
+            }
+            const th = 0.5 * Math.atan2(2 * Sab, Saa - Sbb);
+            const cs = Math.cos(th), sn = Math.sin(th);
+
+            const U = e1.clone().multiplyScalar(cs).addScaledVector(e2, sn).normalize();
+            const V = e1.clone().multiplyScalar(-sn).addScaledVector(e2, cs).normalize();
+            if (U.dot(right) < 0) U.negate();
+            if (V.dot(up) < 0) V.negate();
+
+            let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
+            const us = [], vs = [];
+            for (let i = 0; i < wp.length; i++) {
+                const u = wp[i].dot(U), w = wp[i].dot(V);
+                us.push(u); vs.push(w);
+                if (u < minU) minU = u; if (u > maxU) maxU = u;
+                if (w < minV) minV = w; if (w > maxV) maxV = w;
+            }
+            const du = (maxU - minU) || 1, dv = (maxV - minV) || 1;
+            const uv = new Float32Array(p.count * 2);
+            for (let i = 0; i < p.count; i++) {
+                uv[i * 2] = (us[i] - minU) / du;
+                uv[i * 2 + 1] = (vs[i] - minV) / dv;
+            }
+            geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
         }
-        const th = 0.5 * Math.atan2(2 * Sab, Saa - Sbb);
-        const cs = Math.cos(th),
-          sn = Math.sin(th);
-=======
+
         const videoTex1 = new THREE.VideoTexture(video1);
         videoTex1.colorSpace = THREE.SRGBColorSpace;
         const videoTex2 = new THREE.VideoTexture(video2);
         videoTex2.colorSpace = THREE.SRGBColorSpace;
         let activeVideoTexture = videoTex1;
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-        const U = e1
-          .clone()
-          .multiplyScalar(cs)
-          .addScaledVector(e2, sn)
-          .normalize();
-        const V = e1
-          .clone()
-          .multiplyScalar(-sn)
-          .addScaledVector(e2, cs)
-          .normalize();
-        if (U.dot(right) < 0) U.negate();
-        if (V.dot(up) < 0) V.negate();
-
-        let minU = Infinity,
-          maxU = -Infinity,
-          minV = Infinity,
-          maxV = -Infinity;
-        const us = [],
-          vs = [];
-        for (let i = 0; i < wp.length; i++) {
-          const u = wp[i].dot(U),
-            w = wp[i].dot(V);
-          us.push(u);
-          vs.push(w);
-          if (u < minU) minU = u;
-          if (u > maxU) maxU = u;
-          if (w < minV) minV = w;
-          if (w > maxV) maxV = w;
-        }
-        const du = maxU - minU || 1,
-          dv = maxV - minV || 1;
-        const uv = new Float32Array(p.count * 2);
-        for (let i = 0; i < p.count; i++) {
-          uv[i * 2] = (us[i] - minU) / du;
-          uv[i * 2 + 1] = (vs[i] - minV) / dv;
-        }
-        geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
-      }
-
-      const videoTex1 = new THREE.VideoTexture(video1);
-      videoTex1.colorSpace = THREE.SRGBColorSpace;
-      const videoTex2 = new THREE.VideoTexture(video2);
-      videoTex2.colorSpace = THREE.SRGBColorSpace;
-      let activeVideoTexture = videoTex1;
-
-      const crtMat = new THREE.ShaderMaterial({
-        uniforms: {
-          uTex: { value: activeVideoTexture },
-          uTime: { value: 0 },
-          uPower: { value: 1.0 },
-          uWarp: { value: 0 },
-          uGrid: { value: new THREE.Vector2(240, 136) },
-          uBright: { value: 0.92 },
-        },
-        transparent: false,
-        toneMapped: false,
-        vertexShader: `
+        const crtMat = new THREE.ShaderMaterial({
+            uniforms: {
+                uTex:    { value: activeVideoTexture },
+                uTime:   { value: 0 },
+                uPower:  { value: 1.0 }, 
+                uWarp:   { value: 0 },   
+                uGrid:   { value: new THREE.Vector2(240, 136) },
+                uBright: { value: 0.92 }
+            },
+            transparent: false,
+            toneMapped: false,
+            vertexShader: `
                 varying vec2 vUv;
                 void main(){
                     vUv = uv;
                     gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
                 }`,
-        fragmentShader: `
+            fragmentShader: `
                 precision highp float;
                 uniform sampler2D uTex;
                 uniform float uTime, uPower, uWarp, uBright;
@@ -1964,29 +1171,19 @@
                     col *= open;
 
                     gl_FragColor = vec4(col * uBright, 1.0);
-                }`,
-      });
+                }`
+        });
 
-      let screenMesh = null;
-      const buttons = {};
-      const pressable = [];
+        let screenMesh = null;
+        const buttons = {}; 
+        const pressable = [];
 
-      new GLTFLoader().load(
-        "psp.glb",
-        (gltf) => {
-          model.add(gltf.scene);
-          gltf.scene.updateWorldMatrix(true, true);
+        new GLTFLoader().load(
+            'psp.glb',
+            (gltf) => {
+                model.add(gltf.scene);
+                gltf.scene.updateWorldMatrix(true, true);
 
-<<<<<<< HEAD
-          const bin = [];
-          gltf.scene.traverse((o) => {
-            if (!o.isMesh) return;
-            const n = o.name.toLowerCase();
-
-            if (n.includes("ground")) {
-              bin.push(o);
-              return;
-=======
                 const bin = [];
                 gltf.scene.traverse((o) => {
                     if (!o.isMesh) return;
@@ -2032,139 +1229,21 @@
             (err) => {
                 console.error('Failed to load psp.glb', err);
                 if (window.UPDATE_REAL_PROGRESS) window.UPDATE_REAL_PROGRESS();
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
             }
-            if (n.includes("screen") || n.includes("display")) {
-              screenMesh = o;
-              o.material = crtMat;
-            }
-            const m = n.match(/^button(\d+)/);
-            if (m || n.includes("button")) {
-              let role = n;
-              if (n.includes("left") || n.includes("dpad_l")) role = "left";
-              if (n.includes("right") || n.includes("dpad_r")) role = "right";
-              if (n.includes("cross") || n.includes("x")) role = "cross";
-              if (n.includes("circle") || n.includes("o")) role = "circle";
-              mapButton(role, o);
-            }
-          });
-
-          bin.forEach((o) => {
-            o.parent && o.parent.remove(o);
-          });
-
-          if (screenMesh) {
-            const sNrm = largestFaceNormal(screenMesh);
-            if (sNrm.z < 0) sNrm.negate();
-            buildScreenUVs(
-              screenMesh,
-              sNrm,
-              new THREE.Vector3(1, 0, 0),
-              new THREE.Vector3(0, 1, 0),
-            );
-          }
-
-          const size = new THREE.Box3()
-            .setFromObject(model)
-            .getSize(new THREE.Vector3());
-          model.scale.setScalar(10 / Math.max(size.x, size.y, size.z));
-          model.updateWorldMatrix(true, true);
-          model.position.sub(
-            new THREE.Box3()
-              .setFromObject(model)
-              .getCenter(new THREE.Vector3()),
-          );
-
-          fitToView();
-
-          if (window.UPDATE_REAL_PROGRESS) window.UPDATE_REAL_PROGRESS();
-        },
-        undefined,
-        (err) => {
-          console.error("Failed to load psp.glb", err);
-          if (window.UPDATE_REAL_PROGRESS) window.UPDATE_REAL_PROGRESS();
-        },
-      );
-
-      function mapButton(role, mesh) {
-        const parent = mesh.parent || model;
-        const pq = new THREE.Quaternion();
-        parent.getWorldQuaternion(pq);
-        const ps = new THREE.Vector3();
-        parent.getWorldScale(ps);
-        const axis = new THREE.Vector3(0, 0, 1).applyQuaternion(pq.invert());
-        axis.set(
-          axis.x / (ps.x || 1),
-          axis.y / (ps.y || 1),
-          axis.z / (ps.z || 1),
         );
 
-        buttons[role] = { role, mesh, home: mesh.position.clone(), axis, t: 0 };
-        mesh.userData.role = role;
-        pressable.push(mesh);
-      }
-
-      const raycaster = new THREE.Raycaster();
-      const ptr = new THREE.Vector2();
-
-      let isDragging = false;
-      let startTouchX = 0;
-      let startTouchY = 0;
-      let dragTargetX = 0;
-      let dragTargetY = 0;
-      let previousMousePosition = { x: 0, y: 0 };
-
-      pspCanvas.addEventListener("pointerdown", (e) => {
-        isDragging = true;
-        startTouchX = e.clientX;
-        startTouchY = e.clientY;
-        previousMousePosition = { x: e.clientX, y: e.clientY };
-        pspCanvas.setPointerCapture(e.pointerId);
-      });
-
-      pspCanvas.addEventListener("pointermove", (e) => {
-        if (isDragging) {
-          const deltaX = e.clientX - previousMousePosition.x;
-          const deltaY = e.clientY - previousMousePosition.y;
-
-          dragTargetX += deltaX * 0.006;
-          dragTargetY += deltaY * 0.006;
-          dragTargetY = Math.max(-0.6, Math.min(0.6, dragTargetY));
-
-          previousMousePosition = { x: e.clientX, y: e.clientY };
-        }
-      });
-
-      function pressButton(role) {
-        const b = buttons[role];
-        if (b) {
-          b.t = 1;
-          const wp = new THREE.Box3()
-            .setFromObject(b.mesh)
-            .getCenter(new THREE.Vector3());
-          pressLight.position.copy(wp).add(new THREE.Vector3(0, 0, 1.4));
-          pressLight.color.set(0x7fe3ff);
-          pressLightLife = 1;
+        function mapButton(role, mesh) {
+            const parent = mesh.parent || model;
+            const pq = new THREE.Quaternion(); parent.getWorldQuaternion(pq);
+            const ps = new THREE.Vector3(); parent.getWorldScale(ps);
+            const axis = new THREE.Vector3(0, 0, 1).applyQuaternion(pq.invert());
+            axis.set(axis.x / (ps.x || 1), axis.y / (ps.y || 1), axis.z / (ps.z || 1));
+            
+            buttons[role] = { role, mesh, home: mesh.position.clone(), axis, t: 0 };
+            mesh.userData.role = role;
+            pressable.push(mesh);
         }
 
-<<<<<<< HEAD
-        if (currentVideo === video1) {
-          video1.pause();
-          video2.currentTime = 0;
-          video2.play();
-          currentVideo = video2;
-          crtMat.uniforms.uTex.value = videoTex2;
-        } else {
-          video2.pause();
-          video1.currentTime = 0;
-          video1.play();
-          currentVideo = video1;
-          crtMat.uniforms.uTex.value = videoTex1;
-        }
-
-        crtMat.uniforms.uWarp.value = 1.0;
-      }
-=======
         const raycaster = new THREE.Raycaster();
         const ptr = new THREE.Vector2();
         
@@ -2230,118 +1309,16 @@
                 const r = pspCanvas.getBoundingClientRect();
                 ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
                 ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
->>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
-      pspCanvas.addEventListener("click", (e) => {
-        const dragDistance =
-          Math.abs(e.clientX - startTouchX) + Math.abs(e.clientY - startTouchY);
+                raycaster.setFromCamera(ptr, camera);
+                const hits = raycaster.intersectObjects(pressable, false);
+                
+                if (hits.length > 0 && hits[0].object.userData.role) {
+                    pressButton(hits[0].object.userData.role);
+                }
+            }
+        });
 
-<<<<<<< HEAD
-        if (dragDistance < 10) {
-          const r = pspCanvas.getBoundingClientRect();
-          ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
-          ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
-
-          raycaster.setFromCamera(ptr, camera);
-          const hits = raycaster.intersectObjects(pressable, false);
-
-          if (hits.length > 0 && hits[0].object.userData.role) {
-            pressButton(hits[0].object.userData.role);
-          }
-        }
-      });
-
-      pspCanvas.addEventListener("pointerup", (e) => {
-        isDragging = false;
-        pspCanvas.releasePointerCapture(e.pointerId);
-      });
-
-      let pspInView = false;
-      const videoObserver = new IntersectionObserver(
-        (es) => {
-          pspInView = es[0].isIntersecting;
-          if (es[0].isIntersecting) {
-            currentVideo.play().catch((e) => {});
-          } else {
-            currentVideo.pause();
-          }
-        },
-        { root: scrollContainer, threshold: 0.01 },
-      );
-      videoObserver.observe(pspCanvas);
-
-      const composer = new EffectComposer(renderer);
-      const renderPass = new RenderPass(scene, camera);
-      renderPass.clearColor = new THREE.Color(0xffffff);
-      renderPass.clearAlpha = 0;
-      composer.addPass(renderPass);
-      composer.addPass(new OutputPass());
-
-      function fitToView() {
-        if (!model.children.length) return;
-        const size = new THREE.Box3()
-          .setFromObject(model)
-          .getSize(new THREE.Vector3());
-        if (size.x === 0 || size.y === 0) return;
-
-        const fill = 0.7;
-        const vFov = THREE.MathUtils.degToRad(camera.fov);
-        const distH = size.y / 2 / Math.tan(vFov / 2);
-        const distW = size.x / 2 / (Math.tan(vFov / 2) * camera.aspect);
-        camera.position.set(0, 0, Math.max(distH, distW) / fill + size.z);
-        camera.lookAt(0, 0, 0);
-        camera.updateProjectionMatrix();
-      }
-
-      window.addEventListener("resize", () => {
-        const w = stageContainer.clientWidth,
-          h = stageContainer.clientHeight;
-        if (w === 0 || h === 0) return;
-        renderer.setSize(w, h, false);
-        composer.setSize(w, h);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        fitToView();
-      });
-
-      const clock = new THREE.Clock();
-
-      function animate() {
-        requestAnimationFrame(animate);
-
-        if (!pspInView) return;
-
-        const dt = Math.min(0.05, clock.getDelta());
-        const t = clock.elapsedTime;
-
-        root.rotation.y += (dragTargetX - root.rotation.y) * 0.1;
-        root.rotation.x += (dragTargetY - root.rotation.x) * 0.1;
-
-        idleGroup.rotation.y = Math.sin(t * 1.5) * 0.05;
-        idleGroup.rotation.x = Math.cos(t * 1.2) * 0.03;
-        idleGroup.position.y = Math.sin(t * 2.0) * 0.08;
-
-        crtMat.uniforms.uTime.value = t;
-        crtMat.uniforms.uWarp.value *= Math.pow(0.0025, dt);
-        if (crtMat.uniforms.uWarp.value < 0.001)
-          crtMat.uniforms.uWarp.value = 0;
-
-        const PRESS_DEPTH = 0.17;
-        for (const k in buttons) {
-          const b = buttons[k];
-          if (b.t <= 0.0005) continue;
-          b.t *= Math.pow(0.004, dt);
-          if (b.t < 0.0005) b.t = 0;
-          const d = b.axis.clone().multiplyScalar(-PRESS_DEPTH * b.t);
-          b.mesh.position.copy(b.home).add(d);
-        }
-
-        if (pressLightLife > 0) {
-          pressLightLife -= dt * 3.4;
-          pressLight.intensity = Math.max(0, pressLightLife) * 26;
-        } else {
-          pressLight.intensity = 0;
-=======
         pspCanvas.addEventListener('pointerup', (e) => {
             isDragging = false;
             pspCanvas.releasePointerCapture(e.pointerId);
@@ -2428,200 +1405,189 @@
             }
 
             composer.render();
+        }
+        animate();
+        window.dispatchEvent(new Event('resize'));
+    
+        // =====================================================
+        // SLIDE 4: GREEN APPLES (R->L) + 3D GAP.GLB STRIKE & ZOOM
+        // =====================================================
+        const slide4Wrapper = document.getElementById('slide-4-wrapper');
+        const slide4Sticky = document.getElementById('slide-4-sticky');
+        const greenAppleText = document.getElementById('greenAppleText');
+        const appleCanvas = document.getElementById('appleCanvas');
+        const scrollContainerEl = document.getElementById('scrollContainer');
 
+        const appleRenderer = new THREE.WebGLRenderer({
+            canvas: appleCanvas,
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance'
+        });
+        appleRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        appleRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+        appleRenderer.toneMappingExposure = 1.15;
+        appleRenderer.outputColorSpace = THREE.SRGBColorSpace;
+        appleRenderer.setClearColor(0xffffff, 0);
+
+        const appleScene = new THREE.Scene();
+        const appleCamera = new THREE.PerspectiveCamera(
+            35, window.innerWidth / window.innerHeight, 0.1, 500
+        );
+        appleCamera.position.set(0, 0, 26);
+
+        const appleHemi = new THREE.HemisphereLight(0xffffff, 0x223322, 1.9);
+        appleScene.add(appleHemi);
+
+        const appleDirLight = new THREE.DirectionalLight(0xffffff, 2.4);
+        appleDirLight.position.set(10, 15, 18);
+        appleScene.add(appleDirLight);
+
+        const appleRimLight = new THREE.DirectionalLight(0x76ff03, 2.0);
+        appleRimLight.position.set(-14, -8, 10);
+        appleScene.add(appleRimLight);
+
+        const appleRoot = new THREE.Group();
+        const appleModelHolder = new THREE.Group();
+        appleRoot.add(appleModelHolder);
+        appleScene.add(appleRoot);
+
+        const appleGltfLoader = new GLTFLoader();
+        appleGltfLoader.load(
+            'gap.glb',
+            (gltf) => {
+                appleModelHolder.add(gltf.scene);
+                gltf.scene.updateWorldMatrix(true, true);
+
+                const box = new THREE.Box3().setFromObject(appleModelHolder);
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z) || 1;
+                appleModelHolder.scale.setScalar(5.5 / maxDim);
+                appleModelHolder.updateWorldMatrix(true, true);
+
+                const centeredBox = new THREE.Box3().setFromObject(appleModelHolder);
+                const center = centeredBox.getCenter(new THREE.Vector3());
+                appleModelHolder.position.sub(center);
+            },
+            undefined,
+            (err) => console.error('Failed to load gap.glb', err)
+        );
+
+        let slide4InView = false;
+        new IntersectionObserver((entries) => {
+            slide4InView = entries[0].isIntersecting;
+        }, { root: scrollContainerEl, threshold: 0.01 }).observe(slide4Wrapper);
+
+        let targetAppleProgress = 0;
+        let smoothAppleProgress = 0;
+
+        function computeSlide4ScrollProgress() {
+            const wrapperTop = slide4Wrapper.offsetTop;
+            const scrollableDistance = slide4Wrapper.offsetHeight - scrollContainerEl.clientHeight;
+            const currentScroll = scrollContainerEl.scrollTop;
+            if (scrollableDistance <= 0) return 0;
+
+            const entryBuffer = scrollContainerEl.clientHeight * 0.3;
+            const rawProgress =
+                (currentScroll - (wrapperTop - entryBuffer)) /
+                (scrollableDistance + entryBuffer);
+            return Math.max(0, Math.min(1, rawProgress));
         }
 
-        composer.render();
-      }
-      animate();
-      window.dispatchEvent(new Event("resize"));
+        scrollContainerEl.addEventListener('scroll', () => {
+            targetAppleProgress = computeSlide4ScrollProgress();
+        });
 
-      // =====================================================
-      // SLIDE 4: GREEN APPLES (R->L) + 3D GAP.GLB STRIKE & ZOOM
-      // =====================================================
-      const slide4Wrapper = document.getElementById("slide-4-wrapper");
-      const slide4Sticky = document.getElementById("slide-4-sticky");
-      const greenAppleText = document.getElementById("greenAppleText");
-      const appleCanvas = document.getElementById("appleCanvas");
-      const scrollContainerEl = document.getElementById("scrollContainer");
+        function updateSlide4Animation(p, elapsedTime) {
+            const vw = window.innerWidth;
+            const textWidth = greenAppleText.offsetWidth || vw * 1.5;
 
-      const appleRenderer = new THREE.WebGLRenderer({
-        canvas: appleCanvas,
-        antialias: true,
-        alpha: true,
-        powerPreference: "high-performance",
-      });
-      appleRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      appleRenderer.toneMapping = THREE.ACESFilmicToneMapping;
-      appleRenderer.toneMappingExposure = 1.15;
-      appleRenderer.outputColorSpace = THREE.SRGBColorSpace;
-      appleRenderer.setClearColor(0xffffff, 0);
+            const vFov = THREE.MathUtils.degToRad(appleCamera.fov);
+            const visibleHeight = 2 * Math.tan(vFov / 2) * appleCamera.position.z;
+            const visibleWidth = visibleHeight * appleCamera.aspect;
 
-      const appleScene = new THREE.Scene();
-      const appleCamera = new THREE.PerspectiveCamera(
-        35,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        500,
-      );
-      appleCamera.position.set(0, 0, 26);
+            const textPhase = Math.min(p / 0.56, 1.0);
+            const startTextX = vw + vw * 0.08;
+            const endTextX = -textWidth - vw * 0.15;
+            const currentTextX = startTextX + (endTextX - startTextX) * textPhase;
 
-      const appleHemi = new THREE.HemisphereLight(0xffffff, 0x223322, 1.9);
-      appleScene.add(appleHemi);
+            greenAppleText.style.transform = `translate3d(${currentTextX}px, -50%, 0)`;
+            greenAppleText.style.opacity =
+                p > 0.62 ? Math.max(0, 1 - (p - 0.62) / 0.12) : 1;
 
-      const appleDirLight = new THREE.DirectionalLight(0xffffff, 2.4);
-      appleDirLight.position.set(10, 15, 18);
-      appleScene.add(appleDirLight);
+            const leftWallX = -visibleWidth * 0.41;
+            const rightStartX = visibleWidth * 0.72;
 
-      const appleRimLight = new THREE.DirectionalLight(0x76ff03, 2.0);
-      appleRimLight.position.set(-14, -8, 10);
-      appleScene.add(appleRimLight);
+            let appleX = rightStartX;
+            let appleScaleX = 0.85;
+            let appleScaleY = 0.85;
+            let appleScaleZ = 0.85;
+            let appleOpacity = 1.0;
 
-      const appleRoot = new THREE.Group();
-      const appleModelHolder = new THREE.Group();
-      appleRoot.add(appleModelHolder);
-      appleScene.add(appleRoot);
+            if (p <= 0.42) {
+                const followP = Math.max(0, (p - 0.04) / (0.42 - 0.04));
+                const moveEase = 1 - Math.pow(1 - followP, 1.65);
+                appleX = rightStartX + (leftWallX - rightStartX) * moveEase;
 
-      const appleGltfLoader = new GLTFLoader();
-      appleGltfLoader.load(
-        "gap.glb",
-        (gltf) => {
-          appleModelHolder.add(gltf.scene);
-          gltf.scene.updateWorldMatrix(true, true);
+                const baseScale = 0.55 + 0.45 * moveEase;
+                const strikeImpact = Math.exp(-Math.pow((p - 0.42) / 0.028, 2));
+                appleScaleX = baseScale * (1 - 0.24 * strikeImpact);
+                appleScaleY = baseScale * (1 + 0.18 * strikeImpact);
+                appleScaleZ = baseScale * (1 + 0.12 * strikeImpact);
+                appleOpacity = Math.min(1, followP * 4.0);
+            } else if (p <= 0.66) {
+                const reboundP = (p - 0.42) / (0.66 - 0.42);
+                const easeOutBack = 1 - Math.pow(1 - reboundP, 2.4);
+                appleX = leftWallX * (1 - easeOutBack);
+                const midScale = 1.0 + 1.85 * easeOutBack;
+                const strikeImpact = Math.exp(-Math.pow((p - 0.42) / 0.03, 2));
+                appleScaleX = midScale * (1 - 0.24 * strikeImpact);
+                appleScaleY = midScale * (1 + 0.18 * strikeImpact);
+                appleScaleZ = midScale * (1 + 0.12 * strikeImpact);
+                appleOpacity = 1.0;
+            } else {
+                const zoomP = (p - 0.66) / (1.0 - 0.66);
+                const easeZoom = Math.pow(zoomP, 1.85);
+                appleX = 0;
+                const zoomScale = 2.85 + 15.5 * easeZoom;
+                appleScaleX = zoomScale;
+                appleScaleY = zoomScale;
+                appleScaleZ = zoomScale;
+                appleOpacity = Math.max(0, 1 - Math.pow(zoomP, 1.35));
+            }
 
-          const box = new THREE.Box3().setFromObject(appleModelHolder);
-          const size = box.getSize(new THREE.Vector3());
-          const maxDim = Math.max(size.x, size.y, size.z) || 1;
-          appleModelHolder.scale.setScalar(5.5 / maxDim);
-          appleModelHolder.updateWorldMatrix(true, true);
-
-          const centeredBox = new THREE.Box3().setFromObject(appleModelHolder);
-          const center = centeredBox.getCenter(new THREE.Vector3());
-          appleModelHolder.position.sub(center);
-        },
-        undefined,
-        (err) => console.error("Failed to load gap.glb", err),
-      );
-
-      let slide4InView = false;
-      new IntersectionObserver(
-        (entries) => {
-          slide4InView = entries[0].isIntersecting;
-        },
-        { root: scrollContainerEl, threshold: 0.01 },
-      ).observe(slide4Wrapper);
-
-      let targetAppleProgress = 0;
-      let smoothAppleProgress = 0;
-
-      function computeSlide4ScrollProgress() {
-        const wrapperTop = slide4Wrapper.offsetTop;
-        const scrollableDistance =
-          slide4Wrapper.offsetHeight - scrollContainerEl.clientHeight;
-        const currentScroll = scrollContainerEl.scrollTop;
-        if (scrollableDistance <= 0) return 0;
-
-        const entryBuffer = scrollContainerEl.clientHeight * 0.3;
-        const rawProgress =
-          (currentScroll - (wrapperTop - entryBuffer)) /
-          (scrollableDistance + entryBuffer);
-        return Math.max(0, Math.min(1, rawProgress));
-      }
-
-      scrollContainerEl.addEventListener("scroll", () => {
-        targetAppleProgress = computeSlide4ScrollProgress();
-      });
-
-      function updateSlide4Animation(p, elapsedTime) {
-        const vw = window.innerWidth;
-        const textWidth = greenAppleText.offsetWidth || vw * 1.5;
-
-        const vFov = THREE.MathUtils.degToRad(appleCamera.fov);
-        const visibleHeight = 2 * Math.tan(vFov / 2) * appleCamera.position.z;
-        const visibleWidth = visibleHeight * appleCamera.aspect;
-
-        const textPhase = Math.min(p / 0.56, 1.0);
-        const startTextX = vw + vw * 0.08;
-        const endTextX = -textWidth - vw * 0.15;
-        const currentTextX = startTextX + (endTextX - startTextX) * textPhase;
-
-        greenAppleText.style.transform = `translate3d(${currentTextX}px, -50%, 0)`;
-        greenAppleText.style.opacity =
-          p > 0.62 ? Math.max(0, 1 - (p - 0.62) / 0.12) : 1;
-
-        const leftWallX = -visibleWidth * 0.41;
-        const rightStartX = visibleWidth * 0.72;
-
-        let appleX = rightStartX;
-        let appleScaleX = 0.85;
-        let appleScaleY = 0.85;
-        let appleScaleZ = 0.85;
-        let appleOpacity = 1.0;
-
-        if (p <= 0.42) {
-          const followP = Math.max(0, (p - 0.04) / (0.42 - 0.04));
-          const moveEase = 1 - Math.pow(1 - followP, 1.65);
-          appleX = rightStartX + (leftWallX - rightStartX) * moveEase;
-
-          const baseScale = 0.55 + 0.45 * moveEase;
-          const strikeImpact = Math.exp(-Math.pow((p - 0.42) / 0.028, 2));
-          appleScaleX = baseScale * (1 - 0.24 * strikeImpact);
-          appleScaleY = baseScale * (1 + 0.18 * strikeImpact);
-          appleScaleZ = baseScale * (1 + 0.12 * strikeImpact);
-          appleOpacity = Math.min(1, followP * 4.0);
-        } else if (p <= 0.66) {
-          const reboundP = (p - 0.42) / (0.66 - 0.42);
-          const easeOutBack = 1 - Math.pow(1 - reboundP, 2.4);
-          appleX = leftWallX * (1 - easeOutBack);
-          const midScale = 1.0 + 1.85 * easeOutBack;
-          const strikeImpact = Math.exp(-Math.pow((p - 0.42) / 0.03, 2));
-          appleScaleX = midScale * (1 - 0.24 * strikeImpact);
-          appleScaleY = midScale * (1 + 0.18 * strikeImpact);
-          appleScaleZ = midScale * (1 + 0.12 * strikeImpact);
-          appleOpacity = 1.0;
-        } else {
-          const zoomP = (p - 0.66) / (1.0 - 0.66);
-          const easeZoom = Math.pow(zoomP, 1.85);
-          appleX = 0;
-          const zoomScale = 2.85 + 15.5 * easeZoom;
-          appleScaleX = zoomScale;
-          appleScaleY = zoomScale;
-          appleScaleZ = zoomScale;
-          appleOpacity = Math.max(0, 1 - Math.pow(zoomP, 1.35));
+            appleRoot.position.x = appleX;
+            appleRoot.position.y = Math.sin(elapsedTime * 2.2) * 0.12;
+            appleRoot.scale.set(appleScaleX, appleScaleY, appleScaleZ);
+            appleRoot.rotation.y = -p * Math.PI * 11 + elapsedTime * 1.3;
+            appleRoot.rotation.x = Math.sin(p * Math.PI * 5) * 0.38;
+            appleRoot.rotation.z = p * Math.PI * 3.0;
+            appleCanvas.style.opacity = appleOpacity;
         }
 
-        appleRoot.position.x = appleX;
-        appleRoot.position.y = Math.sin(elapsedTime * 2.2) * 0.12;
-        appleRoot.scale.set(appleScaleX, appleScaleY, appleScaleZ);
-        appleRoot.rotation.y = -p * Math.PI * 11 + elapsedTime * 1.3;
-        appleRoot.rotation.x = Math.sin(p * Math.PI * 5) * 0.38;
-        appleRoot.rotation.z = p * Math.PI * 3.0;
-        appleCanvas.style.opacity = appleOpacity;
-      }
-
-      function resizeAppleSlide() {
-        const aw = slide4Sticky.clientWidth || window.innerWidth;
-        const ah = slide4Sticky.clientHeight || window.innerHeight;
-        appleRenderer.setSize(aw, ah, false);
-        appleCamera.aspect = aw / ah;
-        appleCamera.updateProjectionMatrix();
-        targetAppleProgress = computeSlide4ScrollProgress();
-      }
-      window.addEventListener("resize", resizeAppleSlide);
-
-      const appleClock = new THREE.Clock();
-      function animateAppleSlide() {
-        requestAnimationFrame(animateAppleSlide);
-        const t = appleClock.elapsedTime;
-        if (slide4InView) {
-          smoothAppleProgress +=
-            (targetAppleProgress - smoothAppleProgress) * 0.12;
-          updateSlide4Animation(smoothAppleProgress, t);
-          appleRenderer.render(appleScene, appleCamera);
+        function resizeAppleSlide() {
+            const aw = slide4Sticky.clientWidth || window.innerWidth;
+            const ah = slide4Sticky.clientHeight || window.innerHeight;
+            appleRenderer.setSize(aw, ah, false);
+            appleCamera.aspect = aw / ah;
+            appleCamera.updateProjectionMatrix();
+            targetAppleProgress = computeSlide4ScrollProgress();
         }
-      }
-      animateAppleSlide();
-      resizeAppleSlide();
+        window.addEventListener('resize', resizeAppleSlide);
+
+        const appleClock = new THREE.Clock();
+        function animateAppleSlide() {
+            requestAnimationFrame(animateAppleSlide);
+            const t = appleClock.elapsedTime;
+            if (slide4InView) {
+                smoothAppleProgress += (targetAppleProgress - smoothAppleProgress) * 0.12;
+                updateSlide4Animation(smoothAppleProgress, t);
+                appleRenderer.render(appleScene, appleCamera);
+            }
+        }
+        animateAppleSlide();
+        resizeAppleSlide();
+
     </script>
-  </body>
+</body>
 </html>
