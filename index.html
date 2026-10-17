@@ -7,10 +7,17 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
     />
     <title>Interactive Scrolling Motion Graphic</title>
+<<<<<<< HEAD
 
     <!-- Tab Icon / Favicon -->
     <link rel="icon" type="image/png" href="b1.png" />
 
+=======
+    
+    <!-- Tab Icon / Favicon -->
+    <link rel="icon" type="image/png" href="b1.png">
+    
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
       * {
@@ -50,6 +57,7 @@
         background-color: #ffffff;
       }
 
+<<<<<<< HEAD
       /* ========================================= */
       /* --- HARDWARE ASSET CACHE ---------------- */
       /* ========================================= */
@@ -62,6 +70,20 @@
         pointer-events: none;
         z-index: -9999;
       }
+=======
+        /* ========================================= */
+        /* --- HARDWARE ASSET CACHE ---------------- */
+        /* ========================================= */
+        #hardware-cache {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -9999;
+        }
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
       /* ========================================= */
       /* --- CUSTOM LOADER OVERLAY --------------- */
@@ -91,11 +113,19 @@
         transition: opacity 0.3s ease;
       }
 
+<<<<<<< HEAD
       .progress-ring {
         stroke-dasharray: 339.29;
         stroke-dashoffset: 339.29;
         transition: stroke-dashoffset 0.4s ease-out;
       }
+=======
+        .progress-ring {
+            stroke-dasharray: 339.29; 
+            stroke-dashoffset: 339.29;
+            transition: stroke-dashoffset 0.4s ease-out; 
+        }
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
       #loader-icon {
         width: 65px;
@@ -104,6 +134,7 @@
         z-index: 10000;
       }
 
+<<<<<<< HEAD
       /* ========================================= */
       /* --- GLOBAL UI LAYER --------------------- */
       /* ========================================= */
@@ -113,6 +144,17 @@
         z-index: 1000;
         pointer-events: none;
       }
+=======
+        /* ========================================= */
+        /* --- GLOBAL UI LAYER --------------------- */
+        /* ========================================= */
+        #ui-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            pointer-events: none; 
+        }
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
       .corner-icon {
         position: absolute;
@@ -140,6 +182,7 @@
         transform-origin: center;
       }
 
+<<<<<<< HEAD
       .scroll-hint {
         position: absolute;
         bottom: clamp(20px, 4vw, 30px);
@@ -240,6 +283,133 @@
       .marquee-container:active {
         cursor: grabbing;
       }
+=======
+        .scroll-hint {
+            position: absolute;
+            bottom: clamp(20px, 4vw, 30px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: sans-serif;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.15);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* ========================================= */
+        /* --- SLIDE 1: 2D ANIMATION STYLES -------- */
+        /* ========================================= */
+        .brand-text {
+            position: absolute;
+            font-family: Impact, 'Arial Black', sans-serif;
+            font-weight: 900;
+            font-stretch: ultra-condensed;
+            color: #ff0000;
+            text-transform: uppercase;
+            font-size: 13vw; 
+            letter-spacing: 0.05em; 
+            white-space: nowrap;
+            user-select: none;
+            z-index: 10;
+            left: 50%;
+            top: 50%;
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translate3d(-50%, -50%, 0) scaleX(0.75);
+            transform-style: preserve-3d;
+        }
+
+        .car {
+            position: absolute;
+            height: 8vw; 
+            object-fit: contain;
+            z-index: 20;
+            left: 0;
+            bottom: 0;
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            display: none; 
+            pointer-events: none;
+        }
+
+        .character-wrapper {
+            position: absolute;
+            height: 12vw; 
+            width: 12vw; 
+            z-index: 30;
+            left: 0;
+            bottom: 0;
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            display: none; 
+            pointer-events: none;
+        }
+
+        .character-wrapper img {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0; 
+        }
+
+        .character-wrapper img.active {
+            opacity: 1; 
+        }
+
+        /* ========================================= */
+        /* --- SLIDE 2: INTERACTIVE MARQUEE & STICKERS - */
+        /* ========================================= */
+        .marquee-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            pointer-events: auto;
+            cursor: grab;
+            z-index: 1;
+            opacity: 1; 
+        }
+
+        .marquee-container:active {
+            cursor: grabbing;
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            will-change: transform;
+        }
+
+        .marquee-half {
+            display: flex;
+            align-items: center;
+            gap: 5vw;
+            padding-right: 5vw; 
+        }
+
+        .marquee-half img {
+            height: 15vw; 
+            width: 15vw; 
+            object-fit: contain;
+            will-change: transform;
+            pointer-events: none; 
+        }
+
+        .anim-run1 {
+            transform: translateX(-4vw) scale(1.1);
+        }
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
       .marquee-track {
         display: flex;
@@ -262,9 +432,22 @@
         pointer-events: none;
       }
 
+<<<<<<< HEAD
       .anim-run1 {
         transform: translateX(-4vw) scale(1.1);
       }
+=======
+        /* ========================================= */
+        /* --- SLIDE 3: 3D PSP CANVAS STYLES ------- */
+        /* ========================================= */
+        .machine__stage {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
       .sticker-container {
         position: relative;
@@ -406,8 +589,14 @@
         will-change: opacity;
       }
     </style>
+<<<<<<< HEAD
   </head>
   <body>
+=======
+</head>
+<body>
+
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
     <!-- Hardware Asset Cache -->
     <div id="hardware-cache"></div>
 
@@ -468,6 +657,7 @@
     </div>
 
     <main class="scroll-container" id="scrollContainer">
+<<<<<<< HEAD
       <!-- SLIDE 1 -->
       <section class="slide" id="slide-1">
         <div class="brand-text" id="brandText">ISHOWSPEED</div>
@@ -572,12 +762,104 @@
           <canvas id="appleCanvas"></canvas>
         </div>
       </section>
+=======
+        
+        <!-- SLIDE 1 -->
+        <section class="slide" id="slide-1">
+            <div class="brand-text" id="brandText">ISHOWSPEED</div>
+            <img src="5.png" alt="Red Sports Car" class="car" id="carImg">
+            
+            <div class="character-wrapper" id="charWrap">
+                <img src="1.png" id="pose-1" class="active">
+                <img src="2.png" id="pose-2">
+                <img src="3.png" id="pose-3">
+                <img src="4.png" id="pose-4">
+            </div>
+
+            <div class="scroll-hint">Scroll &darr;</div>
+        </section>
+
+        <!-- SLIDE 2 -->
+        <section class="slide" id="slide-2">
+            <div class="marquee-container" id="marqueeDrag">
+                <div class="marquee-track" id="marqueeTrack">
+                    <!-- Set 1 -->
+                    <div class="marquee-half" id="marqueeHalf">
+                        <img src="p.png" alt="trail">
+                        <img src="crboy.png" alt="trail">
+                        <img src="ksi.png" alt="trail">
+                        <img src="drum1.png" class="anim-drum" alt="trail">
+                        <img src="r1.png" class="anim-r" alt="trail">
+                        <img src="face.png" alt="trail">
+                        <img src="messi.png" alt="trail">
+                        <img src="run1s.png" class="anim-run" alt="trail"> 
+                        <img src="ney.png" alt="trail">
+                        <img src="prime.png" alt="trail">
+                        <img src="eat.png" alt="trail">
+                        <img src="boom.png" alt="trail">
+                        <img src="bal.png" alt="trail">
+                        <img src="ben1.png" class="anim-ben" alt="trail">
+                        <img src="crmeet.png" alt="trail">
+                        <img src="i1.png" alt="trail">
+                        <img src="kunfu.png" alt="trail">
+                        <img src="goal.png" alt="trail">
+                        <img src="ballon.png" alt="trail">
+                        <img src="60m.png" alt="trail">
+                        <img src="kai.png" alt="trail">
+                    </div>
+                    <!-- Duplicate for infinite looping -->
+                    <div class="marquee-half">
+                        <img src="p.png" alt="trail">
+                        <img src="crboy.png" alt="trail">
+                        <img src="ksi.png" alt="trail">
+                        <img src="drum1.png" class="anim-drum" alt="trail">
+                        <img src="r1.png" class="anim-r" alt="trail">
+                        <img src="face.png" alt="trail">
+                        <img src="messi.png" alt="trail">
+                        <img src="run1s.png" class="anim-run" alt="trail"> 
+                        <img src="ney.png" alt="trail">
+                        <img src="prime.png" alt="trail">
+                        <img src="eat.png" alt="trail">
+                        <img src="boom.png" alt="trail">
+                        <img src="bal.png" alt="trail">
+                        <img src="ben1.png" class="anim-ben" alt="trail">
+                        <img src="crmeet.png" alt="trail">
+                        <img src="i1.png" alt="trail">
+                        <img src="kunfu.png" alt="trail">
+                        <img src="goal.png" alt="trail">
+                        <img src="ballon.png" alt="trail">
+                        <img src="60m.png" alt="trail">
+                        <img src="kai.png" alt="trail">
+                    </div>
+                </div>
+            </div>
+            <div class="sticker-container" id="stickerContainer"></div>
+            <div class="scroll-hint">Scroll &darr;</div>
+        </section>
+
+        <!-- SLIDE 3 (PSP) -->
+        <section class="slide" id="slide-3">
+            <div class="machine__stage" id="stageContainer">
+                <canvas id="pspCanvas"></canvas>
+                <button id="muteBtn" class="mute-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="rgba(0,0,0,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="scroll-hint">Scroll &darr;</div>
+        </section>
+
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
     </main>
 
     <!-- ========================================================= -->
     <!-- SCRIPT 1: REAL ASSET LOADER -->
     <!-- ========================================================= -->
     <script>
+<<<<<<< HEAD
       const stickerImages = [
         "8.jpeg",
         "9.jpg",
@@ -596,6 +878,25 @@
         "23.jpg",
         "24.jpeg",
       ];
+=======
+        const stickerImages = [
+            '8.jpeg', '9.jpg', '11.jpg', '12.jpg', '13.jpg', 
+            '14.jpg', '15.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', 
+            '20.jpg', '21.jpg', '22.jpg', '23.jpg', '24.jpeg'
+        ];
+        
+        const marqueeImages = [
+            'crboy.png', 'crmeet.png', 'ksi.png', 'kai.png', 'face.png', 'messi.png', 
+            'ney.png', 'prime.png', 'eat.png', 'boom.png', 'bal.png', 'i1.png', 
+            'kunfu.png', 'goal.png', 'drum1.png', 'drum2.png', 'r1.png', 'r2.png', 
+            'run1s.png', 'run2s.png', 'ben1.png', 'ben2.png', 'ballon.png', '60m.png'
+        ]; 
+
+        const allImages = ['1.png', '2.png', '3.png', '4.png', '5.png', 'p.png', '6.png', '7.png', 'cd.png', 'b1.png', ...stickerImages, ...marqueeImages];
+        
+        const totalAssets = allImages.length + 1; 
+        let loadedAssets = 0;
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
       const marqueeImages = [
         "crboy.png",
@@ -1024,9 +1325,93 @@
           const jumpStart = 0.3;
           const jumpEnd = 0.65;
 
+<<<<<<< HEAD
           if (progress >= jumpStart && progress <= jumpEnd) {
             const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
             const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
+=======
+        // -----------------------------------------------------
+        // MARQUEE DYNAMIC IMAGE ANIMATIONS & DRAG LOGIC
+        // -----------------------------------------------------
+        let dState = false;
+        let bState = false;
+        let rState = false;
+        let marqueeTimers = [];
+
+        function startMarqueeAnims() {
+            if(marqueeTimers.length > 0) return;
+            marqueeTimers.push(setInterval(() => {
+                dState = !dState;
+                document.querySelectorAll('.anim-drum').forEach(el => el.src = dState ? 'drum2.png' : 'drum1.png');
+                document.querySelectorAll('.anim-r').forEach(el => el.src = dState ? 'r2.png' : 'r1.png');
+            }, 300));
+            marqueeTimers.push(setInterval(() => {
+                bState = !bState;
+                document.querySelectorAll('.anim-ben').forEach(el => el.src = bState ? 'ben2.png' : 'ben1.png');
+            }, 500));
+            marqueeTimers.push(setInterval(() => { 
+                rState = !rState; 
+                document.querySelectorAll('.anim-run').forEach(el => el.src = rState ? 'run2s.png' : 'run1s.png'); 
+            }, 120));
+        }
+
+        function stopMarqueeAnims() {
+            marqueeTimers.forEach(t => clearInterval(t));
+            marqueeTimers = [];
+        }
+
+        const marqueeDragBox = document.getElementById('marqueeDrag');
+        const marqueeTrack = document.getElementById('marqueeTrack');
+        const marqueeHalf = document.getElementById('marqueeHalf');
+        
+        let mX = 0;
+        let isMDragging = false;
+        let mStartX = 0;
+        let isSlide2Visible = false;
+
+        marqueeDragBox.addEventListener('pointerdown', (e) => {
+            if(e.target.closest('#stickerContainer')) return;
+            isMDragging = true;
+            mStartX = e.clientX;
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!isMDragging) return;
+            let delta = e.clientX - mStartX;
+            mX += delta;
+            mStartX = e.clientX;
+        });
+
+        window.addEventListener('pointerup', () => {
+            isMDragging = false;
+        });
+
+        function animateMarquee() {
+            if (isSlide2Visible) { 
+                if (!isMDragging) {
+                    mX -= 2.5; 
+                }
+                
+                let halfWidth = marqueeHalf.offsetWidth;
+                if (halfWidth > 0) {
+                    if (mX <= -halfWidth) mX += halfWidth;
+                    if (mX > 0) mX -= halfWidth;
+                    marqueeTrack.style.transform = `translate3d(${mX}px, 0, 0)`; 
+                }
+            }
+            requestAnimationFrame(animateMarquee);
+        }
+        animateMarquee();
+
+        // -----------------------------------------------------
+        // SLIDE 2: FAST PHOTO STICKER SEQUENCE
+        // -----------------------------------------------------
+        const slide2El = document.getElementById('slide-2');
+        const stickerContainer = document.getElementById('stickerContainer');
+        let stickerInterval;
+        let isStickerPlaying = false;
+        let isSequenceRunning = false; 
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
             charBottomOffset = baselineBottom + arc * maxJumpHeight;
             charX = charRestX + jumpP * jumpDistance;
@@ -1041,9 +1426,22 @@
             currentPose = 4;
           }
 
+<<<<<<< HEAD
           textEl.style.transform = `translate(-50%, -50%) translateX(${textTranslateX}px) scaleX(0.75) translateZ(0)`;
           carEl.style.transform = `translate3d(${carX}px, -${baselineBottom}px, 0)`;
           charWrap.style.transform = `translate3d(${charX}px, -${charBottomOffset}px, 0)`;
+=======
+                const img = document.createElement('img');
+                img.src = stickerImages[currentIndex];
+                img.className = 'sticker-img';
+                
+                const rot = (Math.random() - 0.5) * 20;
+                const offX = (Math.random() - 0.5) * 30;
+                const offY = (Math.random() - 0.5) * 30;
+                
+                const targetTransform = `translate3d(${offX}px, ${offY}px, 0) scale(1) rotate(${rot}deg)`;
+                img.dataset.targetTransform = targetTransform;
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
           if (lastPose !== currentPose) {
             document
@@ -1055,7 +1453,163 @@
             lastPose = currentPose;
           }
 
+<<<<<<< HEAD
           if (progress < 1.0) {
+=======
+                img.classList.add('show');
+                img.style.transform = targetTransform;
+
+                currentIndex++;
+            }, 150); 
+        }
+
+        stickerContainer.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            if (isSequenceRunning) return;
+            const stickers = Array.from(document.querySelectorAll('.sticker-img'));
+            if (stickers.length < 2) return; 
+
+            const isExpanded = stickers[1].classList.contains('show');
+            isSequenceRunning = true;
+
+            if (isExpanded) {
+                let delay = 0;
+                for (let i = stickers.length - 1; i >= 1; i--) {
+                    setTimeout(() => {
+                        stickers[i].classList.remove('show');
+                        stickers[i].style.transform = 'translate3d(0,0,0) scale(1.8) rotate(0deg)';
+                    }, delay);
+                    delay += 150; 
+                }
+                setTimeout(() => isSequenceRunning = false, delay + 200);
+            } else {
+                let delay = 0;
+                for (let i = 1; i < stickers.length; i++) {
+                    setTimeout(() => {
+                        stickers[i].classList.add('show');
+                        stickers[i].style.transform = stickers[i].dataset.targetTransform;
+                    }, delay);
+                    delay += 150; 
+                }
+                setTimeout(() => isSequenceRunning = false, delay + 200);
+            }
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                isSlide2Visible = entry.isIntersecting;
+                if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
+                    playStickerSequence();
+                    startMarqueeAnims(); 
+                } else if (!entry.isIntersecting) {
+                    clearInterval(stickerInterval);
+                    isStickerPlaying = false; 
+                    stopMarqueeAnims(); 
+                }
+            });
+        }, { root: scrollContainer, threshold: [0, 0.1] }); 
+        
+        observer.observe(slide2El);
+
+        // -----------------------------------------------------
+        // SLIDE 1: 2D JUMP ANIMATION LOGIC
+        // -----------------------------------------------------
+        const carEl = document.getElementById('carImg');
+        const charWrap = document.getElementById('charWrap');
+        const textEl = document.getElementById('brandText');
+        const slide1El = document.getElementById('slide-1');
+
+        function init2DAnimation() {
+            carEl.style.display = 'block';
+            charWrap.style.display = 'block';
+            
+            let startTime = performance.now();
+            const totalDuration = 5000; 
+
+            let vw, textRect, sceneRect, baselineBottom, impactPoint, maxJumpHeight, charRestX, charTargetX, jumpDistance, carWidth, carStartX;
+            let lastPose = 1;
+
+            function calculateDimensions() {
+                vw = window.innerWidth;
+                textRect = textEl.getBoundingClientRect();
+                sceneRect = slide1El.getBoundingClientRect();
+                baselineBottom = (sceneRect.bottom - textRect.bottom) + (vw * 0.025); 
+                impactPoint = (vw / 2) + (textRect.width / 2) - (vw * 0.01); 
+                maxJumpHeight = textRect.height * 1.15; 
+                charRestX = vw * 0.05; 
+                charTargetX = vw * 0.70; 
+                jumpDistance = charTargetX - charRestX;
+                carWidth = carEl.getBoundingClientRect().width || (vw * 0.2);
+                carStartX = vw + carWidth + (vw * 0.05);
+            }
+            
+            calculateDimensions();
+            window.addEventListener('resize', calculateDimensions);
+
+            function updateAnimation(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / totalDuration, 1.0);
+
+                let carX = carStartX;
+                let textTranslateX = 0;
+                let charBottomOffset = baselineBottom;
+                let charX = charRestX;
+                let currentPose = 1;
+
+                if (progress > 0.15) {
+                    const carProgress = Math.min((progress - 0.15) / 0.75, 1.0); 
+                    const endCarX = -carWidth - (vw * 0.1); 
+                    const easeP = x => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+                    carX = carStartX - (carStartX - endCarX) * easeP(carProgress);
+                }
+
+                if (carX <= impactPoint) {
+                    textTranslateX = carX - impactPoint; 
+                }
+
+                const jumpStart = 0.30;
+                const jumpEnd = 0.65;
+                
+                if (progress >= jumpStart && progress <= jumpEnd) {
+                    const jumpP = (progress - jumpStart) / (jumpEnd - jumpStart);
+                    const arc = Math.pow(Math.sin(jumpP * Math.PI), 0.4);
+                    
+                    charBottomOffset = baselineBottom + (arc * maxJumpHeight);
+                    charX = charRestX + (jumpP * jumpDistance);
+
+                    if (jumpP < 0.2) currentPose = 1;
+                    else if (jumpP < 0.5) currentPose = 2;
+                    else if (jumpP < 0.8) currentPose = 3;
+                    else currentPose = 4;
+                    
+                } else if (progress > jumpEnd) {
+                    charBottomOffset = baselineBottom;
+                    charX = charTargetX;
+                    currentPose = 4;
+                }
+
+                textEl.style.transform = `translate(-50%, -50%) translateX(${textTranslateX}px) scaleX(0.75) translateZ(0)`;
+                carEl.style.transform = `translate3d(${carX}px, -${baselineBottom}px, 0)`;
+                charWrap.style.transform = `translate3d(${charX}px, -${charBottomOffset}px, 0)`;
+                
+                if (lastPose !== currentPose) {
+                    document.getElementById(`pose-${lastPose}`).classList.remove('active');
+                    document.getElementById(`pose-${currentPose}`).classList.add('active');
+                    lastPose = currentPose;
+                }
+
+                if (progress < 1.0) {
+                    requestAnimationFrame(updateAnimation);
+                } else {
+                    setTimeout(() => {
+                        requestAnimationFrame(t => {
+                            startTime = t;
+                            requestAnimationFrame(updateAnimation);
+                        });
+                    }, 1000);
+                }
+            }
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
             requestAnimationFrame(updateAnimation);
           } else {
             setTimeout(() => {
@@ -1115,6 +1669,7 @@
         { once: true },
       );
 
+<<<<<<< HEAD
       muteBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         const isMuted = !currentVideo.muted;
@@ -1144,11 +1699,24 @@
         400,
       );
       camera.position.set(0, 0, 30);
+=======
+        const renderer = new THREE.WebGLRenderer({ canvas: pspCanvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+        renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.05;
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.setClearColor(0xffffff, 0); 
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 0.1, 400);
+        camera.position.set(0, 0, 30);
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
       const root = new THREE.Group();
       const idleGroup = new THREE.Group();
       const model = new THREE.Group();
 
+<<<<<<< HEAD
       idleGroup.add(model);
       root.add(idleGroup);
       scene.add(root);
@@ -1211,6 +1779,45 @@
         for (let i = 0; i < p.count; i++) {
           v.fromBufferAttribute(p, i).applyMatrix4(mw);
           wp.push(v.clone());
+=======
+        const hemi = new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 1.5);
+        scene.add(hemi);
+        const keyLight = new THREE.DirectionalLight(0xbcd4e8, 1.2);
+        keyLight.position.set(-8, 9, 12);
+        scene.add(keyLight);
+        const rimIce = new THREE.DirectionalLight(0x7fe3ff, 1.5);
+        rimIce.position.set(11, 4, -9);
+        scene.add(rimIce);
+        const rimHot = new THREE.DirectionalLight(0xff2e7e, 1.0);
+        rimHot.position.set(-12, -5, -7);
+        scene.add(rimHot);
+        const pressLight = new THREE.PointLight(0x7fe3ff, 0, 9, 2);
+        scene.add(pressLight);
+        let pressLightLife = 0;
+
+        function largestFaceNormal(mesh) {
+            const geo = mesh.geometry;
+            const pos = geo.getAttribute('position');
+            const idx = geo.getIndex();
+            const count = idx ? idx.count : pos.count;
+            const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+            const ab = new THREE.Vector3(), ac = new THREE.Vector3(), cr = new THREE.Vector3();
+            let best = -1;
+            const out = new THREE.Vector3(0, 0, 1);
+            for (let i = 0; i < count; i += 3) {
+                const i0 = idx ? idx.getX(i) : i;
+                const i1 = idx ? idx.getX(i + 1) : i + 1;
+                const i2 = idx ? idx.getX(i + 2) : i + 2;
+                a.fromBufferAttribute(pos, i0);
+                b.fromBufferAttribute(pos, i1);
+                c.fromBufferAttribute(pos, i2);
+                ab.subVectors(b, a); ac.subVectors(c, a);
+                cr.crossVectors(ab, ac);
+                const area = cr.lengthSq();
+                if (area > best) { best = area; out.copy(cr).normalize(); }
+            }
+            return out.applyMatrix3(new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld)).normalize();
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
         }
 
         const e1 = right.clone().projectOnPlane(nrm).normalize();
@@ -1231,6 +1838,7 @@
         ma /= a.length;
         mb /= b.length;
 
+<<<<<<< HEAD
         let Saa = 0,
           Sbb = 0,
           Sab = 0;
@@ -1244,6 +1852,13 @@
         const th = 0.5 * Math.atan2(2 * Sab, Saa - Sbb);
         const cs = Math.cos(th),
           sn = Math.sin(th);
+=======
+        const videoTex1 = new THREE.VideoTexture(video1);
+        videoTex1.colorSpace = THREE.SRGBColorSpace;
+        const videoTex2 = new THREE.VideoTexture(video2);
+        videoTex2.colorSpace = THREE.SRGBColorSpace;
+        let activeVideoTexture = videoTex1;
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
         const U = e1
           .clone()
@@ -1362,6 +1977,7 @@
           model.add(gltf.scene);
           gltf.scene.updateWorldMatrix(true, true);
 
+<<<<<<< HEAD
           const bin = [];
           gltf.scene.traverse((o) => {
             if (!o.isMesh) return;
@@ -1370,6 +1986,53 @@
             if (n.includes("ground")) {
               bin.push(o);
               return;
+=======
+                const bin = [];
+                gltf.scene.traverse((o) => {
+                    if (!o.isMesh) return;
+                    const n = o.name.toLowerCase();
+
+                    if (n.includes('ground')) {
+                        bin.push(o);
+                        return;
+                    }
+                    if (n.includes('screen') || n.includes('display')) {
+                        screenMesh = o;
+                        o.material = crtMat;
+                    }
+                    const m = n.match(/^button(\d+)/);
+                    if (m || n.includes('button')) {
+                        let role = n;
+                        if(n.includes('left') || n.includes('dpad_l')) role = 'left';
+                        if(n.includes('right') || n.includes('dpad_r')) role = 'right';
+                        if(n.includes('cross') || n.includes('x')) role = 'cross';
+                        if(n.includes('circle') || n.includes('o')) role = 'circle';
+                        mapButton(role, o);
+                    }
+                });
+
+                bin.forEach((o) => { o.parent && o.parent.remove(o); });
+
+                if (screenMesh) {
+                    const sNrm = largestFaceNormal(screenMesh);
+                    if (sNrm.z < 0) sNrm.negate();
+                    buildScreenUVs(screenMesh, sNrm, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0));
+                }
+
+                const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
+                model.scale.setScalar(10 / Math.max(size.x, size.y, size.z));
+                model.updateWorldMatrix(true, true);
+                model.position.sub(new THREE.Box3().setFromObject(model).getCenter(new THREE.Vector3()));
+                
+                fitToView();
+                
+                if (window.UPDATE_REAL_PROGRESS) window.UPDATE_REAL_PROGRESS();
+            },
+            undefined,
+            (err) => {
+                console.error('Failed to load psp.glb', err);
+                if (window.UPDATE_REAL_PROGRESS) window.UPDATE_REAL_PROGRESS();
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
             }
             if (n.includes("screen") || n.includes("display")) {
               screenMesh = o;
@@ -1484,6 +2147,7 @@
           pressLightLife = 1;
         }
 
+<<<<<<< HEAD
         if (currentVideo === video1) {
           video1.pause();
           video2.currentTime = 0;
@@ -1500,11 +2164,79 @@
 
         crtMat.uniforms.uWarp.value = 1.0;
       }
+=======
+        const raycaster = new THREE.Raycaster();
+        const ptr = new THREE.Vector2();
+        
+        let isDragging = false;
+        let startTouchX = 0;
+        let startTouchY = 0;
+        let dragTargetX = 0;
+        let dragTargetY = 0;
+        let previousMousePosition = { x: 0, y: 0 };
+
+        pspCanvas.addEventListener('pointerdown', (e) => {
+            isDragging = true;
+            startTouchX = e.clientX;
+            startTouchY = e.clientY;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+            pspCanvas.setPointerCapture(e.pointerId);
+        });
+
+        pspCanvas.addEventListener('pointermove', (e) => {
+            if (isDragging) {
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+
+                dragTargetX += deltaX * 0.006;
+                dragTargetY += deltaY * 0.006;
+                dragTargetY = Math.max(-0.6, Math.min(0.6, dragTargetY));
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            }
+        });
+
+        function pressButton(role) {
+            const b = buttons[role];
+            if (b) {
+                b.t = 1; 
+                const wp = new THREE.Box3().setFromObject(b.mesh).getCenter(new THREE.Vector3());
+                pressLight.position.copy(wp).add(new THREE.Vector3(0, 0, 1.4));
+                pressLight.color.set(0x7fe3ff);
+                pressLightLife = 1;
+            }
+            
+            if (currentVideo === video1) {
+                video1.pause();
+                video2.currentTime = 0;
+                video2.play();
+                currentVideo = video2;
+                crtMat.uniforms.uTex.value = videoTex2;
+            } else {
+                video2.pause();
+                video1.currentTime = 0;
+                video1.play();
+                currentVideo = video1;
+                crtMat.uniforms.uTex.value = videoTex1;
+            }
+            
+            crtMat.uniforms.uWarp.value = 1.0; 
+        }
+
+        pspCanvas.addEventListener('click', (e) => {
+            const dragDistance = Math.abs(e.clientX - startTouchX) + Math.abs(e.clientY - startTouchY);
+            
+            if (dragDistance < 10) {
+                const r = pspCanvas.getBoundingClientRect();
+                ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+                ptr.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
 
       pspCanvas.addEventListener("click", (e) => {
         const dragDistance =
           Math.abs(e.clientX - startTouchX) + Math.abs(e.clientY - startTouchY);
 
+<<<<<<< HEAD
         if (dragDistance < 10) {
           const r = pspCanvas.getBoundingClientRect();
           ptr.x = ((e.clientX - r.left) / r.width) * 2 - 1;
@@ -1609,6 +2341,94 @@
           pressLight.intensity = Math.max(0, pressLightLife) * 26;
         } else {
           pressLight.intensity = 0;
+=======
+        pspCanvas.addEventListener('pointerup', (e) => {
+            isDragging = false;
+            pspCanvas.releasePointerCapture(e.pointerId);
+        });
+
+        let pspInView = false;
+        const videoObserver = new IntersectionObserver((es) => {
+            pspInView = es[0].isIntersecting;
+            if (es[0].isIntersecting) {
+                currentVideo.play().catch(e => {});
+            } else {
+                currentVideo.pause();
+            }
+        }, { root: scrollContainer, threshold: 0.01 });
+        videoObserver.observe(pspCanvas);
+
+        const composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(scene, camera);
+        renderPass.clearColor = new THREE.Color(0xffffff);
+        renderPass.clearAlpha = 0; 
+        composer.addPass(renderPass);
+        composer.addPass(new OutputPass());
+
+        function fitToView() {
+            if (!model.children.length) return;
+            const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
+            if (size.x === 0 || size.y === 0) return;
+            
+            const fill = 0.7; 
+            const vFov = THREE.MathUtils.degToRad(camera.fov);
+            const distH = (size.y / 2) / Math.tan(vFov / 2);
+            const distW = (size.x / 2) / (Math.tan(vFov / 2) * camera.aspect);
+            camera.position.set(0, 0, Math.max(distH, distW) / fill + size.z);
+            camera.lookAt(0, 0, 0);
+            camera.updateProjectionMatrix();
+        }
+
+        window.addEventListener('resize', () => {
+            const w = stageContainer.clientWidth, h = stageContainer.clientHeight;
+            if(w === 0 || h === 0) return;
+            renderer.setSize(w, h, false);
+            composer.setSize(w, h);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            fitToView();
+        });
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (!pspInView) return; 
+
+            const dt = Math.min(0.05, clock.getDelta());
+            const t = clock.elapsedTime;
+            
+            root.rotation.y += (dragTargetX - root.rotation.y) * 0.1;
+            root.rotation.x += (dragTargetY - root.rotation.x) * 0.1;
+
+            idleGroup.rotation.y = Math.sin(t * 1.5) * 0.05;
+            idleGroup.rotation.x = Math.cos(t * 1.2) * 0.03;
+            idleGroup.position.y = Math.sin(t * 2.0) * 0.08;
+
+            crtMat.uniforms.uTime.value = t;
+            crtMat.uniforms.uWarp.value *= Math.pow(0.0025, dt); 
+            if (crtMat.uniforms.uWarp.value < 0.001) crtMat.uniforms.uWarp.value = 0;
+
+            const PRESS_DEPTH = 0.17;
+            for (const k in buttons) {
+                const b = buttons[k];
+                if (b.t <= 0.0005) continue;
+                b.t *= Math.pow(0.004, dt);
+                if (b.t < 0.0005) b.t = 0;
+                const d = b.axis.clone().multiplyScalar(-PRESS_DEPTH * b.t);
+                b.mesh.position.copy(b.home).add(d);
+            }
+
+            if (pressLightLife > 0) {
+                pressLightLife -= dt * 3.4;
+                pressLight.intensity = Math.max(0, pressLightLife) * 26;
+            } else {
+                pressLight.intensity = 0;
+            }
+
+            composer.render();
+>>>>>>> 6bfa86d9be8c0d2ff218e0e48c37444ffacf7e03
         }
 
         composer.render();
