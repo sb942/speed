@@ -137,6 +137,40 @@
         filter: brightness(0.7);
       }
 
+      .chat-badge {
+        position: absolute;
+        left: clamp(20px, 5vw, 40px);
+        bottom: clamp(20px, 5vw, 40px);
+        width: 15vw;
+        max-width: 110px;
+        aspect-ratio: 1;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        background: rgba(0, 0, 0, 0.78);
+        color: #ffffff;
+        font:
+          900 clamp(9px, 1.25vw, 13px)/1 Arial,
+          sans-serif;
+        text-align: center;
+        letter-spacing: 0.04em;
+        opacity: 0;
+        transform: scale(0.7);
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .chat-badge.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+
       #b-icon {
         left: clamp(20px, 5vw, 40px);
         transform-origin: center;
@@ -146,6 +180,107 @@
       #cd-icon {
         right: clamp(20px, 5vw, 40px);
         transform-origin: center;
+      }
+
+      /* ========================================= */
+      /* --- LIVE STREAM SUBSCRIBER COUNTER ------ */
+      /* ========================================= */
+      #live-sub-widget {
+        position: absolute;
+        right: clamp(14px, 3vw, 34px);
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        pointer-events: none;
+        user-select: none;
+        z-index: 1005;
+        font-family: "Anton", Impact, "Arial Black", sans-serif;
+        color: #000000;
+      }
+
+      .sub-stream-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 900;
+        font-size: clamp(9px, 0.95vw, 12px);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #000000;
+        margin-bottom: 2px;
+      }
+
+      .live-red-dot {
+        display: none;
+      }
+
+      @keyframes livePulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.35);
+          opacity: 0.45;
+        }
+      }
+
+      .sub-odometer {
+        display: inline-flex;
+        align-items: center;
+        font-family: "Anton", Impact, sans-serif;
+        font-size: clamp(1.35rem, 2.6vw, 2.35rem);
+        line-height: 1.05;
+        color: #000000;
+        letter-spacing: 0.02em;
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        padding: 4px 10px;
+        border-radius: 6px;
+        border-right: 4px solid #000000;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      .odo-digit-window {
+        display: inline-block;
+        height: 1.05em;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .odo-digit-ribbon {
+        display: flex;
+        flex-direction: column;
+        will-change: transform;
+        transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .odo-digit-ribbon span {
+        display: block;
+        height: 1.05em;
+        line-height: 1.05em;
+        text-align: center;
+      }
+
+      .odo-sep {
+        display: inline-block;
+        padding: 0 1px;
+        color: #000000;
+      }
+
+      .sub-stream-footer {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 800;
+        font-size: clamp(8px, 0.78vw, 10px);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.65);
+        margin-top: 3px;
       }
 
       .scroll-hint {
@@ -365,8 +500,8 @@
       #slide-4-wrapper {
         position: relative;
         width: 100vw;
-        height: 380vh;
-        height: 380dvh;
+        height: 560vh;
+        height: 560dvh;
         scroll-snap-align: start;
         background-color: #ffffff;
       }
@@ -382,6 +517,7 @@
         justify-content: center;
         align-items: center;
         background-color: #ffffff;
+        touch-action: pan-y;
       }
 
       .green-apple-text {
@@ -415,6 +551,59 @@
         pointer-events: none;
         z-index: 20;
         will-change: opacity;
+      }
+
+      .gif-ring-layer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: visible;
+        perspective: 1200px;
+        transform-style: preserve-3d;
+      }
+
+      #gifRingBack {
+        z-index: 15;
+      }
+
+      #gifRingFront {
+        z-index: 25;
+      }
+
+      /* Curved Multi-Slice GIF Container */
+      .saturn-gif-item {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: clamp(96px, 12.6vw, 178px);
+        height: clamp(66px, 8.5vw, 118px);
+        user-select: none;
+        pointer-events: none;
+        will-change: transform, opacity;
+        opacity: 1;
+        visibility: visible;
+        transform-style: preserve-3d;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.22));
+      }
+
+      .gif-curve-slice {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        background-repeat: no-repeat;
+        backface-visibility: visible;
+        transform-style: preserve-3d;
+        will-change: transform;
+      }
+
+      #slide-4-sticky.ring-interactive {
+        cursor: grab;
+      }
+
+      #slide-4-sticky.ring-interactive.ring-dragging {
+        cursor: grabbing;
       }
     </style>
   </head>
@@ -475,7 +664,15 @@
     <!-- Global Fixed UI Overlay -->
     <div id="ui-layer">
       <img src="6.png" id="b-icon" class="corner-icon" alt="Effect Icon" />
+      <div id="chatBadge" class="chat-badge" aria-hidden="true">
+        W IN THE CHAT
+      </div>
       <img src="cd.png" id="cd-icon" class="corner-icon" alt="CD Icon" />
+
+      <!-- Live IShowSpeed YouTube Subscriber Stream Counter -->
+      <div id="live-sub-widget" aria-label="IShowSpeed Live Subscribers">
+        <div class="sub-odometer" id="subOdometer"></div>
+      </div>
     </div>
 
     <main class="scroll-container" id="scrollContainer">
@@ -576,11 +773,13 @@
         <div class="scroll-hint">Scroll &darr;</div>
       </section>
 
-      <!-- SLIDE 4: Green Apples + 3D gap.glb -->
+      <!-- SLIDE 4: Green Apples + 3D gap.glb + Connected Curved Bottle-Cap Ring of 1.gif-11.gif -->
       <section id="slide-4-wrapper">
         <div id="slide-4-sticky">
           <div class="green-apple-text" id="greenAppleText">GREEN APPLES</div>
+          <div class="gif-ring-layer" id="gifRingBack"></div>
           <canvas id="appleCanvas"></canvas>
+          <div class="gif-ring-layer" id="gifRingFront"></div>
         </div>
       </section>
     </main>
@@ -730,6 +929,101 @@
       }
 
       // -----------------------------------------------------
+      // LIVE ISHOWSPEED YOUTUBE SUBSCRIBER STREAM COUNTER
+      // -----------------------------------------------------
+      (function initLiveSubCounter() {
+        const subOdometer = document.getElementById("subOdometer");
+        if (!subOdometer) return;
+
+        const baseEpoch = Date.UTC(2026, 0, 1, 0, 0, 0);
+        const elapsedSec = Math.max(
+          0,
+          Math.floor((Date.now() - baseEpoch) / 1000),
+        );
+        let currentSubs = 61829440 + Math.floor(elapsedSec * 0.42);
+        let digitRibbons = [];
+
+        function renderOdometerStructure(formattedStr) {
+          subOdometer.innerHTML = "";
+          digitRibbons = [];
+          for (let i = 0; i < formattedStr.length; i++) {
+            const ch = formattedStr[i];
+            if (ch >= "0" && ch <= "9") {
+              const win = document.createElement("span");
+              win.className = "odo-digit-window";
+              const ribbon = document.createElement("span");
+              ribbon.className = "odo-digit-ribbon";
+              for (let d = 0; d <= 9; d++) {
+                const sp = document.createElement("span");
+                sp.textContent = d;
+                ribbon.appendChild(sp);
+              }
+              ribbon.style.transform = `translateY(-${Number(ch) * 1.05}em)`;
+              win.appendChild(ribbon);
+              subOdometer.appendChild(win);
+              digitRibbons.push(ribbon);
+            } else {
+              const sep = document.createElement("span");
+              sep.className = "odo-sep";
+              sep.textContent = ch;
+              subOdometer.appendChild(sep);
+            }
+          }
+        }
+
+        function updateOdometerValue(val) {
+          const formatted = val.toLocaleString("en-US");
+          const digitsOnly = formatted.replace(/[^0-9]/g, "");
+          if (digitsOnly.length !== digitRibbons.length) {
+            renderOdometerStructure(formatted);
+            return;
+          }
+          for (let i = 0; i < digitsOnly.length; i++) {
+            const d = Number(digitsOnly[i]);
+            digitRibbons[i].style.transform = `translateY(-${d * 1.05}em)`;
+          }
+        }
+
+        renderOdometerStructure(currentSubs.toLocaleString("en-US"));
+
+        async function tryFetchLiveSubs() {
+          try {
+            const res = await fetch(
+              "https://mixerno.space/api/youtube-channel-counter/user/UCWsDFcIhY2DBi3GB5uykGXA",
+            );
+            if (res.ok) {
+              const data = await res.json();
+              const counts = data && data.counts;
+              if (Array.isArray(counts)) {
+                const subEntry = counts.find((c) => c.value === "subscribers");
+                if (subEntry && Number(subEntry.count) > 35000000) {
+                  currentSubs = Number(subEntry.count);
+                  updateOdometerValue(currentSubs);
+                }
+              }
+            }
+          } catch (e) {}
+        }
+        tryFetchLiveSubs();
+        setInterval(tryFetchLiveSubs, 25000);
+
+        function scheduleNextTick() {
+          const nextDelay = 900 + Math.random() * 1900;
+          setTimeout(() => {
+            const roll = Math.random();
+            if (roll < 0.86) {
+              currentSubs += 1 + Math.floor(Math.random() * 4);
+            } else {
+              currentSubs += 5 + Math.floor(Math.random() * 9);
+            }
+            updateOdometerValue(currentSubs);
+            scheduleNextTick();
+          }, nextDelay);
+        }
+        scheduleNextTick();
+      })();
+
+      // -----------------------------------------------------
       // CORNER ICON INTERACTIVITY & PHYSICS
       // -----------------------------------------------------
       const bIcon = document.getElementById("b-icon");
@@ -756,7 +1050,17 @@
         }, 300);
       }
 
-      bIcon.addEventListener("click", triggerBEffect);
+      const chatBadge = document.getElementById("chatBadge");
+      let chatBadgeTimer;
+      bIcon.addEventListener("click", () => {
+        triggerBEffect();
+        chatBadge.classList.add("show");
+        clearTimeout(chatBadgeTimer);
+        chatBadgeTimer = setTimeout(
+          () => chatBadge.classList.remove("show"),
+          1400,
+        );
+      });
 
       cdIcon.addEventListener("click", () => {
         isCdPlaying = !isCdPlaying;
@@ -1647,13 +1951,59 @@
       requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
 
       // =====================================================
-      // SLIDE 4: GREEN APPLES (R->L) + 3D GAP.GLB STRIKE & ZOOM
+      // SLIDE 4: GREEN APPLES + GAP.GLB + SEQUENTIAL ONE-SIDE CURVED BOTTLE-CAP GIF RING + FINAL ZOOM-IN
       // =====================================================
       const slide4Wrapper = document.getElementById("slide-4-wrapper");
       const slide4Sticky = document.getElementById("slide-4-sticky");
       const greenAppleText = document.getElementById("greenAppleText");
       const appleCanvas = document.getElementById("appleCanvas");
+      const gifRingBack = document.getElementById("gifRingBack");
+      const gifRingFront = document.getElementById("gifRingFront");
       const scrollContainerEl = document.getElementById("scrollContainer");
+
+      // Create 1.gif to 11.gif as multi-slice curved cylindrical panels so each GIF itself is physically curvy
+      const TOTAL_RING_GIFS = 11;
+      const SLICES_PER_GIF = 11;
+      const gifRingItems = [];
+
+      for (let i = 1; i <= TOTAL_RING_GIFS; i++) {
+        const container = document.createElement("div");
+        container.className = "saturn-gif-item";
+
+        const slices = [];
+        for (let s = 0; s < SLICES_PER_GIF; s++) {
+          const slice = document.createElement("div");
+          slice.className = "gif-curve-slice";
+          const sliceWidthPct = 100 / SLICES_PER_GIF;
+          const bgPosPct =
+            SLICES_PER_GIF > 1 ? (s / (SLICES_PER_GIF - 1)) * 100 : 50;
+
+          slice.style.width = `calc(${sliceWidthPct.toFixed(4)}% + 1.5px)`;
+          slice.style.left = `${(s * sliceWidthPct).toFixed(4)}%`;
+          slice.style.backgroundImage = `url("${i}.gif")`;
+          slice.style.backgroundSize = `${SLICES_PER_GIF * 100}% 100%`;
+          slice.style.backgroundPosition = `${bgPosPct.toFixed(3)}% 50%`;
+
+          if (s === 0) {
+            slice.style.borderTopLeftRadius = "6px";
+            slice.style.borderBottomLeftRadius = "6px";
+          } else if (s === SLICES_PER_GIF - 1) {
+            slice.style.borderTopRightRadius = "6px";
+            slice.style.borderBottomRightRadius = "6px";
+          }
+
+          container.appendChild(slice);
+          slices.push(slice);
+        }
+
+        gifRingFront.appendChild(container);
+        gifRingItems.push({
+          el: container,
+          slices,
+          index: i - 1,
+          inFront: true,
+        });
+      }
 
       const appleRenderer = new THREE.WebGLRenderer({
         canvas: appleCanvas,
@@ -1697,10 +2047,30 @@
       appleRoot.add(appleModelHolder);
       appleScene.add(appleRoot);
 
+      let appleModelHalfWidthUnits = 1.85;
+
       const appleGltfLoader = new GLTFLoader();
       appleGltfLoader.load(
         "gap.glb",
         (gltf) => {
+          gltf.scene.traverse((child) => {
+            if (child.isMesh && child.material) {
+              const mats = Array.isArray(child.material)
+                ? child.material
+                : [child.material];
+              mats.forEach((m) => {
+                m.transparent = false;
+                m.opacity = 1.0;
+                m.depthWrite = true;
+                m.depthTest = true;
+                m.alphaTest = 0;
+                if ("transmission" in m) m.transmission = 0;
+                m.side = THREE.DoubleSide;
+                m.needsUpdate = true;
+              });
+            }
+          });
+
           appleModelHolder.add(gltf.scene);
           gltf.scene.updateWorldMatrix(true, true);
 
@@ -1712,7 +2082,24 @@
 
           const centeredBox = new THREE.Box3().setFromObject(appleModelHolder);
           const center = centeredBox.getCenter(new THREE.Vector3());
+          const scaledSize = centeredBox.getSize(new THREE.Vector3());
           appleModelHolder.position.sub(center);
+
+          const minRadius =
+            Math.min(scaledSize.x, scaledSize.y, scaledSize.z) * 0.24;
+          appleModelHalfWidthUnits =
+            Math.max(scaledSize.x, scaledSize.z) * 0.42;
+
+          const tinyInnerCore = new THREE.Mesh(
+            new THREE.SphereGeometry(minRadius, 24, 24),
+            new THREE.MeshBasicMaterial({
+              color: 0x2e6b12,
+              transparent: false,
+              opacity: 1.0,
+              depthWrite: true,
+            }),
+          );
+          appleRoot.add(tinyInnerCore);
         },
         undefined,
         (err) => {
@@ -1735,6 +2122,57 @@
       let targetAppleProgress = 0;
       let smoothAppleProgress = 0;
 
+      // Bottle-cap ring & apple manual rotation state (smooth inertia)
+      let ringSpinAngle = 0;
+      let ringAngularVelocity = 0;
+      let manualAppleYawOffset = 0;
+      let appleAccumulatedYaw = 0;
+      let currentAppleSpinRate = 2.4;
+      let isSpinningRing = false;
+      let activeRingPointerId = null;
+      let prevPointerX = 0;
+      let prevPointerY = 0;
+
+      slide4Sticky.addEventListener("pointerdown", (e) => {
+        if (smoothAppleProgress < 0.44) return;
+        isSpinningRing = true;
+        activeRingPointerId = e.pointerId;
+        prevPointerX = e.clientX;
+        prevPointerY = e.clientY;
+        slide4Sticky.classList.add("ring-dragging");
+      });
+
+      window.addEventListener("pointermove", (e) => {
+        if (!isSpinningRing || e.pointerId !== activeRingPointerId) return;
+        const dx = e.clientX - prevPointerX;
+        const dy = e.clientY - prevPointerY;
+        prevPointerX = e.clientX;
+        prevPointerY = e.clientY;
+
+        const spinDelta =
+          (dx * 0.0085 - dy * 0.002) *
+          (e.clientY >= window.innerHeight * 0.5 ? 1 : -0.7);
+        ringSpinAngle += spinDelta;
+        manualAppleYawOffset -= spinDelta * 0.85;
+        ringAngularVelocity = spinDelta * 0.9;
+      });
+
+      function endRingPointerDrag(e) {
+        if (!isSpinningRing) return;
+        if (
+          e &&
+          activeRingPointerId !== null &&
+          e.pointerId !== activeRingPointerId
+        )
+          return;
+        isSpinningRing = false;
+        activeRingPointerId = null;
+        slide4Sticky.classList.remove("ring-dragging");
+      }
+
+      window.addEventListener("pointerup", endRingPointerDrag);
+      window.addEventListener("pointercancel", endRingPointerDrag);
+
       function computeSlide4ScrollProgress() {
         const wrapperTop = slide4Wrapper.offsetTop;
         const scrollableDistance =
@@ -1753,22 +2191,31 @@
         targetAppleProgress = computeSlide4ScrollProgress();
       });
 
-      function updateSlide4Animation(p, elapsedTime) {
+      function smoothstep(edge0, edge1, x) {
+        const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+        return t * t * (3 - 2 * t);
+      }
+
+      function updateSlide4Animation(p, elapsedTime, dt) {
         const vw = window.innerWidth;
+        const vh = window.innerHeight;
         const textWidth = greenAppleText.offsetWidth || vw * 1.5;
 
         const vFov = THREE.MathUtils.degToRad(appleCamera.fov);
         const visibleHeight = 2 * Math.tan(vFov / 2) * appleCamera.position.z;
         const visibleWidth = visibleHeight * appleCamera.aspect;
 
-        const textPhase = Math.min(p / 0.56, 1.0);
+        // -----------------------------------------------------------
+        // 1. FIRST HALF (0.00 -> 0.45): GREEN APPLES text + Apple Strike & Rebound to Middle
+        // -----------------------------------------------------------
+        const textPhase = Math.min(p / 0.44, 1.0);
         const startTextX = vw + vw * 0.08;
         const endTextX = -textWidth - vw * 0.15;
         const currentTextX = startTextX + (endTextX - startTextX) * textPhase;
 
         greenAppleText.style.transform = `translate3d(${currentTextX}px, -50%, 0)`;
         greenAppleText.style.opacity =
-          p > 0.62 ? Math.max(0, 1 - (p - 0.62) / 0.12) : 1;
+          p > 0.42 ? Math.max(0, 1 - (p - 0.42) / 0.05) : 1;
 
         const leftWallX = -visibleWidth * 0.41;
         const rightStartX = visibleWidth * 0.72;
@@ -1777,47 +2224,259 @@
         let appleScaleX = 0.85;
         let appleScaleY = 0.85;
         let appleScaleZ = 0.85;
-        let appleOpacity = 1.0;
 
-        if (p <= 0.42) {
-          const followP = Math.max(0, (p - 0.04) / (0.42 - 0.04));
+        // FINAL ZOOM-IN OUT OF THE SCREEN (p > 0.78):
+        // Instead of zooming out small, both the apple and the curved GIF ring grow bigger and bigger and rush past the screen!
+        const zoomInPhase = p > 0.78 ? (p - 0.78) / (1.0 - 0.78) : 0;
+        const zoomInCurve = Math.pow(zoomInPhase, 2.15);
+        const sceneZoomInMultiplier = 1.0 + 13.5 * zoomInCurve;
+        const sceneFadeOut =
+          p > 0.93 ? Math.max(0, 1 - (p - 0.93) / 0.07) : 1.0;
+
+        if (p <= 0.29) {
+          const followP = Math.max(0, (p - 0.03) / (0.29 - 0.03));
           const moveEase = 1 - Math.pow(1 - followP, 1.65);
           appleX = rightStartX + (leftWallX - rightStartX) * moveEase;
 
           const baseScale = 0.55 + 0.45 * moveEase;
-          const strikeImpact = Math.exp(-Math.pow((p - 0.42) / 0.028, 2));
+          const strikeImpact = Math.exp(-Math.pow((p - 0.29) / 0.024, 2));
           appleScaleX = baseScale * (1 - 0.24 * strikeImpact);
           appleScaleY = baseScale * (1 + 0.18 * strikeImpact);
           appleScaleZ = baseScale * (1 + 0.12 * strikeImpact);
-          appleOpacity = Math.min(1, followP * 4.0);
-        } else if (p <= 0.66) {
-          const reboundP = (p - 0.42) / (0.66 - 0.42);
+        } else if (p <= 0.45) {
+          const reboundP = (p - 0.29) / (0.45 - 0.29);
           const easeOutBack = 1 - Math.pow(1 - reboundP, 2.4);
           appleX = leftWallX * (1 - easeOutBack);
-          const midScale = 1.0 + 1.85 * easeOutBack;
-          const strikeImpact = Math.exp(-Math.pow((p - 0.42) / 0.03, 2));
+          const midScale = 1.0 + 1.15 * easeOutBack;
+          const strikeImpact = Math.exp(-Math.pow((p - 0.29) / 0.025, 2));
           appleScaleX = midScale * (1 - 0.24 * strikeImpact);
           appleScaleY = midScale * (1 + 0.18 * strikeImpact);
           appleScaleZ = midScale * (1 + 0.12 * strikeImpact);
-          appleOpacity = 1.0;
         } else {
-          const zoomP = (p - 0.66) / (1.0 - 0.66);
-          const easeZoom = Math.pow(zoomP, 1.85);
+          // Apple stays centered in the middle and scales up huge out of the screen at the end
           appleX = 0;
-          const zoomScale = 2.85 + 15.5 * easeZoom;
-          appleScaleX = zoomScale;
-          appleScaleY = zoomScale;
-          appleScaleZ = zoomScale;
-          appleOpacity = Math.max(0, 1 - Math.pow(zoomP, 1.35));
+          const steadyScale = 2.15 * sceneZoomInMultiplier;
+          appleScaleX = steadyScale;
+          appleScaleY = steadyScale;
+          appleScaleZ = steadyScale;
         }
 
+        // -----------------------------------------------------------
+        // 2. APPLE STRAIGHTENING & SMOOTH DIRECTION REVERSAL IN THE MIDDLE
+        // -----------------------------------------------------------
+        const straightenFactor = 1 - smoothstep(0.31, 0.45, p);
+        const naturalTiltX =
+          Math.sin(p * Math.PI * 5) * 0.35 * straightenFactor;
+        const naturalTiltZ = p * Math.PI * 2.2 * straightenFactor;
+
+        // Once the sequential one-side wrap completes (around p = 0.66),
+        // smoothly reverse the apple's rotation direction while staying in the middle
+        const reverseBlend = smoothstep(0.64, 0.73, p);
+        const targetSpinRate = 2.5 * (1 - 2.0 * reverseBlend);
+        currentAppleSpinRate +=
+          (targetSpinRate - currentAppleSpinRate) * Math.min(1, dt * 6);
+        appleAccumulatedYaw += currentAppleSpinRate * dt;
+
+        const peakP = 0.66;
+        const scrollYaw =
+          p <= peakP
+            ? -p * Math.PI * 7.0
+            : -peakP * Math.PI * 7.0 +
+              smoothstep(peakP, 0.85, p) * (p - peakP) * Math.PI * 7.0;
+
         appleRoot.position.x = appleX;
-        appleRoot.position.y = Math.sin(elapsedTime * 2.2) * 0.12;
+        appleRoot.position.y = Math.sin(elapsedTime * 2.2) * 0.07;
         appleRoot.scale.set(appleScaleX, appleScaleY, appleScaleZ);
-        appleRoot.rotation.y = -p * Math.PI * 11 + elapsedTime * 1.3;
-        appleRoot.rotation.x = Math.sin(p * Math.PI * 5) * 0.38;
-        appleRoot.rotation.z = p * Math.PI * 3.0;
-        appleCanvas.style.opacity = appleOpacity;
+        appleRoot.rotation.x = naturalTiltX;
+        appleRoot.rotation.z = naturalTiltZ;
+        appleRoot.rotation.y =
+          scrollYaw + appleAccumulatedYaw + manualAppleYawOffset;
+
+        appleCanvas.style.opacity = sceneFadeOut;
+
+        // -----------------------------------------------------------
+        // 3. SEQUENTIAL ONE-SIDE WRAPPING OF CURVED GIFS (1.gif -> 11.gif)
+        // -----------------------------------------------------------
+        // Begin showing the GIF ribbon earlier and give it enough scroll distance
+        // to complete the wrap, rather than leaving it hidden until late in the slide.
+        const ringEntryProgress = Math.max(0, Math.min(1, (p - 0.34) / 0.3));
+        const isFullyWrapped = ringEntryProgress >= 0.995;
+
+        if (ringEntryProgress > 0.01 && sceneFadeOut > 0.05) {
+          slide4Sticky.classList.add("ring-interactive");
+        } else {
+          slide4Sticky.classList.remove("ring-interactive");
+        }
+
+        // Only start continuous ring orbit AFTER the sequential one-side wrap finishes covering the apple,
+        // so the entry itself feeds cleanly from the right side only!
+        if (!isSpinningRing) {
+          if (isFullyWrapped) {
+            const ringDirection = -1 + 2.0 * reverseBlend;
+            const autoOrbitSpeed = 1.45 * ringDirection;
+            ringSpinAngle += autoOrbitSpeed * dt + ringAngularVelocity;
+          } else {
+            ringSpinAngle += ringAngularVelocity;
+          }
+          manualAppleYawOffset -= ringAngularVelocity * 0.45;
+          ringAngularVelocity *= Math.pow(0.035, dt);
+          if (Math.abs(ringAngularVelocity) < 0.00005) ringAngularVelocity = 0;
+        }
+
+        const appleScreenOffsetX = (appleX / (visibleWidth * 0.5)) * (vw * 0.5);
+        const appleScreenOffsetY =
+          -(appleRoot.position.y / (visibleHeight * 0.5)) * (vh * 0.5);
+
+        // Unzoomed apple pixel radius for base ring proportions
+        const baseApplePixelRadius =
+          ((appleModelHalfWidthUnits * 2.15) / (visibleWidth * 0.5)) *
+          (vw * 0.5);
+        const currentApplePixelRadius =
+          baseApplePixelRadius * sceneZoomInMultiplier;
+
+        // Clear gap between the apple and the surrounding bottle-cap GIF ring
+        const rawRadiusX = Math.max(
+          baseApplePixelRadius * 2.22,
+          Math.min(vw * 0.37, 435),
+        );
+        const baseRadiusX = rawRadiusX * sceneZoomInMultiplier;
+        const baseRadiusY =
+          Math.min(vh * 0.09, rawRadiusX * 0.24) * sceneZoomInMultiplier;
+
+        const capTiltDeg = -12;
+        const capTiltRad = capTiltDeg * (Math.PI / 180);
+        const cosTilt = Math.cos(capTiltRad);
+        const sinTilt = Math.sin(capTiltRad);
+
+        // Connected width so all 11 GIFs form a continuous collar around the circumference
+        const itemBaseWidth =
+          gifRingItems[0].el.offsetWidth ||
+          Math.min(Math.max(vw * 0.126, 96), 178);
+        const arcStepRad = (Math.PI * 2) / TOTAL_RING_GIFS;
+        const arcLengthPerGif = rawRadiusX * arcStepRad;
+        const connectedWidthFactor = Math.max(
+          1.2,
+          (arcLengthPerGif * 1.12) / Math.max(1, itemBaseWidth),
+        );
+
+        // Total angular distance the leading GIF (1.gif) travels from the right edge of the screen
+        // onto the right tangent of the ring (angle = 0) and then sequentially 360deg around the apple
+        const entryTailDistancePx = vw * 0.65;
+        const entryTailRadians = entryTailDistancePx / Math.max(1, rawRadiusX);
+        const totalFeedAngle =
+          Math.PI * 2 - arcStepRad * 0.35 + entryTailRadians;
+        const headFeedAngle =
+          -entryTailRadians + ringEntryProgress * totalFeedAngle;
+
+        // Right tangent point of the tilted ring (angle = 0) where the incoming ribbon touches the ring from the right side
+        const tangentX = appleScreenOffsetX + baseRadiusX * cosTilt;
+        const tangentY = appleScreenOffsetY + baseRadiusX * sinTilt;
+
+        for (let i = 0; i < TOTAL_RING_GIFS; i++) {
+          const item = gifRingItems[i];
+          const el = item.el;
+
+          if (ringEntryProgress <= 0.001 || sceneFadeOut <= 0.001) {
+            el.style.opacity = "0";
+            el.style.visibility = "hidden";
+            continue;
+          }
+          el.style.visibility = "visible";
+
+          // Sequential position along the single ribbon:
+          // 1.gif (i = 0) is the head of the ribbon; 2.gif..11.gif follow directly behind it in sequence
+          const ribbonAngle = headFeedAngle - i * arcStepRad;
+
+          let finalX, finalY, sinA, cosA, wrapBlend;
+
+          if (ribbonAngle < 0) {
+            // Still approaching on the straight horizontal line from the right side toward the right tangent point (angle = 0)
+            const distFromTangentPx =
+              -ribbonAngle * rawRadiusX * sceneZoomInMultiplier;
+            finalX = tangentX + distFromTangentPx;
+            finalY = tangentY;
+            cosA = 1;
+            sinA = 0;
+            wrapBlend = 0;
+          } else {
+            // Has touched the right side of the ring and is wrapping sequentially around the apple in one direction!
+            // Counter-rotate the ring against the apple as the user scrolls.
+            // The apple follows scrollYaw; subtracting it here makes the ring
+            // rotate in the opposite direction while preserving manual drag spin.
+            const clampedOrbitAngle =
+              Math.min(ribbonAngle, Math.PI * 2 - i * arcStepRad) -
+              scrollYaw +
+              ringSpinAngle;
+
+            cosA = Math.cos(clampedOrbitAngle);
+            sinA = Math.sin(clampedOrbitAngle); // > 0 is front half of ring, < 0 is back half of ring
+            wrapBlend = Math.min(1, ribbonAngle / 0.35);
+
+            const localRingX = cosA * baseRadiusX;
+            const localRingY = sinA * baseRadiusY;
+
+            finalX =
+              appleScreenOffsetX + localRingX * cosTilt - localRingY * sinTilt;
+            finalY =
+              appleScreenOffsetY + localRingX * sinTilt + localRingY * cosTilt;
+          }
+
+          // Cylindrical curvature across the 7 vertical slices of each GIF so each GIF itself curves like a bottle cap
+          const totalBendDeg = 62 * wrapBlend;
+          const sliceStepPx = (itemBaseWidth / SLICES_PER_GIF) * 0.48;
+          for (let s = 0; s < SLICES_PER_GIF; s++) {
+            const normS =
+              (s - (SLICES_PER_GIF - 1) / 2) / ((SLICES_PER_GIF - 1) / 2); // -1 to +1 across the GIF width
+            const sliceRotY = normS * (totalBendDeg * 0.5);
+            // Parabolic Z-arch so the center of each GIF bulges outward along the circular ring perimeter
+            const sliceArchZ =
+              (1 - normS * normS) * 19 * wrapBlend * (sinA >= 0 ? 1 : -1);
+            item.slices[s].style.transform =
+              `translateZ(${sliceArchZ.toFixed(2)}px) rotateY(${sliceRotY.toFixed(2)}deg) translateX(${(normS * sliceStepPx * 0.02).toFixed(2)}px)`;
+          }
+
+          // Tangent orientation of the whole GIF around the bottle-cap wall
+          const cylinderWallRotY = cosA * 56 * wrapBlend;
+          const wideConnectedScaleX =
+            connectedWidthFactor * (1 + 0.12 * Math.abs(cosA) * wrapBlend);
+          const depthScale =
+            (0.92 + 0.16 * (sinA * wrapBlend)) * sceneZoomInMultiplier;
+
+          // Layer switching: front half of bottle cap vs back half
+          const shouldBeInFront = wrapBlend < 0.15 || sinA >= 0;
+          if (shouldBeInFront !== item.inFront) {
+            item.inFront = shouldBeInFront;
+            if (shouldBeInFront) {
+              gifRingFront.appendChild(el);
+            } else {
+              gifRingBack.appendChild(el);
+            }
+          }
+
+          // Hide back-half GIFs ONLY while they pass directly behind the apple's actual silhouette
+          let behindAppleMask = 1.0;
+          if (!shouldBeInFront && wrapBlend > 0.3) {
+            const distFromAppleCenter = Math.hypot(
+              finalX - appleScreenOffsetX,
+              (finalY - appleScreenOffsetY) * 0.9,
+            );
+            const innerHideEdge = currentApplePixelRadius * 0.78;
+            const outerShowEdge = currentApplePixelRadius * 1.02;
+            if (distFromAppleCenter <= innerHideEdge) {
+              behindAppleMask = 0.0;
+            } else if (distFromAppleCenter < outerShowEdge) {
+              behindAppleMask =
+                (distFromAppleCenter - innerHideEdge) /
+                (outerShowEdge - innerHideEdge);
+            }
+          }
+
+          const itemOpacity =
+            Math.min(1, ringEntryProgress * 7) * behindAppleMask * sceneFadeOut;
+
+          el.style.opacity = itemOpacity.toFixed(3);
+          el.style.transform = `translate3d(calc(-50% + ${finalX.toFixed(1)}px), calc(-50% + ${finalY.toFixed(1)}px), ${(sinA * 54 * wrapBlend).toFixed(1)}px) rotateZ(${(capTiltDeg * wrapBlend).toFixed(1)}deg) rotateY(${cylinderWallRotY.toFixed(1)}deg) scale(${(depthScale * wideConnectedScaleX).toFixed(3)}, ${depthScale.toFixed(3)})`;
+        }
       }
 
       function resizeAppleSlide() {
@@ -1833,11 +2492,12 @@
       const appleClock = new THREE.Clock();
       function animateAppleSlide() {
         requestAnimationFrame(animateAppleSlide);
+        const dt = Math.min(0.05, appleClock.getDelta());
         const t = appleClock.elapsedTime;
         if (!document.hidden && slide4InView) {
           smoothAppleProgress +=
             (targetAppleProgress - smoothAppleProgress) * 0.12;
-          updateSlide4Animation(smoothAppleProgress, t);
+          updateSlide4Animation(smoothAppleProgress, t, dt);
           appleRenderer.render(appleScene, appleCamera);
         }
       }
