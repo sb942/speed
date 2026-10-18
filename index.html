@@ -2476,5 +2476,49 @@
       animateAppleSlide();
       resizeAppleSlide();
     </script>
+    <script>
+      // Enter fullscreen on the first user interaction where the browser allows it.
+      // Fullscreen must be initiated by a user gesture; unsupported browsers (notably
+      // iPhone/iPad Safari for ordinary webpages) safely continue without an error.
+      (() => {
+        let fullscreenAttempted = false;
+
+        function enterFullscreenOnFirstInteraction() {
+          if (fullscreenAttempted || document.fullscreenElement) return;
+
+          const page = document.documentElement;
+          const request =
+            page.requestFullscreen ||
+            page.webkitRequestFullscreen ||
+            page.mozRequestFullScreen ||
+            page.msRequestFullscreen;
+
+          if (typeof request !== "function") return;
+          fullscreenAttempted = true;
+
+          try {
+            const result = request.call(page);
+            if (result && typeof result.catch === "function") {
+              result.catch(() => {
+                // Keep the site usable if fullscreen is blocked or unavailable.
+              });
+            }
+          } catch (_) {
+            // Fullscreen is optional; never interrupt the site's interactions.
+          }
+        }
+
+        document.addEventListener(
+          "pointerdown",
+          enterFullscreenOnFirstInteraction,
+          { capture: true, passive: true }
+        );
+        document.addEventListener(
+          "click",
+          enterFullscreenOnFirstInteraction,
+          { capture: true, passive: true }
+        );
+      })();
+    </script>
   </body>
 </html>
